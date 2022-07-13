@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: csharpwars-webapi
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: csharpwars-webapi
+  template:
+    metadata:
+      labels:
+        app: csharpwars-webapi
+    spec:
+      containers:
+      - name: csharpwars-webapi
+        image: csharpwars.azurecr.io/csharpwars-webapi:latest
+        env:
+          - name: AZURE_STORAGE_CONNECTION_STRING
+            value: "..."
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+        ports:
+        - containerPort: 80

@@ -1,0 +1,107 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    deployment.kubernetes.io/revision: "1"
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"apps/v1","kind":"Deployment","metadata":{"annotations":{"deployment.kubernetes.io/revision":"1"},"creationTimestamp":"2022-07-13T12:20:52Z","generation":2,"labels":{"app":"csharpwars-orleans-host"},"name":"csharpwars-orleans-host","namespace":"csharpwars","resourceVersion":"330848","uid":"418e9d28-d9b2-4613-beeb-d238c9a924fd"},"spec":{"minReadySeconds":60,"progressDeadlineSeconds":600,"replicas":10,"revisionHistoryLimit":10,"selector":{"matchLabels":{"app":"csharpwars-orleans-host"}},"strategy":{"rollingUpdate":{"maxSurge":1,"maxUnavailable":0},"type":"RollingUpdate"},"template":{"metadata":{"creationTimestamp":null,"labels":{"app":"csharpwars-orleans-host","orleans/clusterId":"csharpwars-orleans-host","orleans/serviceId":"csharpwars-orleans-host"}},"spec":{"containers":[{"env":[{"name":"AZURE_STORAGE_CONNECTION_STRING","value":"DefaultEndpointsProtocol=https;AccountName=csharpwars;AccountKey=VcgFFuSqa4vHxmr+QTp3/u+++lDQfpp/obJvm6TkUhcg5RsPjjXoxlNYhRST/ZQSU68k0bqyClbP+AStWgQpBA==;EndpointSuffix=core.windows.net"},{"name":"APPLICATION_INSIGHTS_INSTRUMENTATION_KEY","value":"80d07c8e-7629-49cf-ad32-b52f62c65f23"},{"name":"ORLEANS_SERVICE_ID","valueFrom":{"fieldRef":{"apiVersion":"v1","fieldPath":"metadata.labels['orleans/serviceId']"}}},{"name":"ORLEANS_CLUSTER_ID","valueFrom":{"fieldRef":{"apiVersion":"v1","fieldPath":"metadata.labels['orleans/clusterId']"}}},{"name":"POD_NAMESPACE","valueFrom":{"fieldRef":{"apiVersion":"v1","fieldPath":"metadata.namespace"}}},{"name":"POD_NAME","valueFrom":{"fieldRef":{"apiVersion":"v1","fieldPath":"metadata.name"}}},{"name":"POD_IP","valueFrom":{"fieldRef":{"apiVersion":"v1","fieldPath":"status.podIP"}}},{"name":"DOTNET_SHUTDOWNTIMEOUTSECONDS","value":"120"}],"image":"csharpwars.azurecr.io/csharpwars-orleans-host:latest","imagePullPolicy":"Always","name":"main","ports":[{"containerPort":11111,"protocol":"TCP"},{"containerPort":30000,"protocol":"TCP"},{"containerPort":8080,"protocol":"TCP"}],"resources":{},"terminationMessagePath":"/dev/termination-log","terminationMessagePolicy":"File"}],"dnsPolicy":"ClusterFirst","restartPolicy":"Always","schedulerName":"default-scheduler","securityContext":{},"terminationGracePeriodSeconds":180}}},"status":{"availableReplicas":1,"conditions":[{"lastTransitionTime":"2022-07-13T12:20:52Z","lastUpdateTime":"2022-07-13T12:21:54Z","message":"ReplicaSet \"csharpwars-orleans-host-7c99954547\" has successfully progressed.","reason":"NewReplicaSetAvailable","status":"True","type":"Progressing"},{"lastTransitionTime":"2022-07-13T14:06:41Z","lastUpdateTime":"2022-07-13T14:06:41Z","message":"Deployment has minimum availability.","reason":"MinimumReplicasAvailable","status":"True","type":"Available"}],"observedGeneration":2,"readyReplicas":1,"replicas":1,"updatedReplicas":1}}
+  creationTimestamp: "2022-07-13T12:20:52Z"
+  generation: 3
+  labels:
+    app: csharpwars-orleans-host
+  name: csharpwars-orleans-host
+  namespace: csharpwars
+  resourceVersion: "331625"
+  uid: 418e9d28-d9b2-4613-beeb-d238c9a924fd
+spec:
+  minReadySeconds: 60
+  progressDeadlineSeconds: 600
+  replicas: 3
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      app: csharpwars-orleans-host
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+    type: RollingUpdate
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: csharpwars-orleans-host
+        orleans/clusterId: csharpwars-orleans-host
+        orleans/serviceId: csharpwars-orleans-host
+    spec:
+      containers:
+      - env:
+        - name: AZURE_STORAGE_CONNECTION_STRING
+          value: DefaultEndpointsProtocol=https;AccountName=csharpwars;AccountKey=VcgFFuSqa4vHxmr+QTp3/u+++lDQfpp/obJvm6TkUhcg5RsPjjXoxlNYhRST/ZQSU68k0bqyClbP+AStWgQpBA==;EndpointSuffix=core.windows.net
+        - name: APPLICATION_INSIGHTS_INSTRUMENTATION_KEY
+          value: 80d07c8e-7629-49cf-ad32-b52f62c65f23
+        - name: ORLEANS_SERVICE_ID
+          valueFrom:
+            fieldRef:
+              apiVersion: v1
+              fieldPath: metadata.labels['orleans/serviceId']
+        - name: ORLEANS_CLUSTER_ID
+          valueFrom:
+            fieldRef:
+              apiVersion: v1
+              fieldPath: metadata.labels['orleans/clusterId']
+        - name: POD_NAMESPACE
+          valueFrom:
+            fieldRef:
+              apiVersion: v1
+              fieldPath: metadata.namespace
+        - name: POD_NAME
+          valueFrom:
+            fieldRef:
+              apiVersion: v1
+              fieldPath: metadata.name
+        - name: POD_IP
+          valueFrom:
+            fieldRef:
+              apiVersion: v1
+              fieldPath: status.podIP
+        - name: DOTNET_SHUTDOWNTIMEOUTSECONDS
+          value: "120"
+        image: csharpwars.azurecr.io/csharpwars-orleans-host:latest
+        imagePullPolicy: Always
+        name: main
+        ports:
+        - containerPort: 11111
+          protocol: TCP
+        - containerPort: 30000
+          protocol: TCP
+        - containerPort: 8080
+          protocol: TCP
+        resources: {}
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      terminationGracePeriodSeconds: 180
+status:
+  availableReplicas: 9
+  conditions:
+  - lastTransitionTime: "2022-07-13T12:20:52Z"
+    lastUpdateTime: "2022-07-13T12:21:54Z"
+    message: ReplicaSet "csharpwars-orleans-host-7c99954547" has successfully progressed.
+    reason: NewReplicaSetAvailable
+    status: "True"
+    type: Progressing
+  - lastTransitionTime: "2022-07-13T14:20:18Z"
+    lastUpdateTime: "2022-07-13T14:20:18Z"
+    message: Deployment does not have minimum availability.
+    reason: MinimumReplicasUnavailable
+    status: "False"
+    type: Available
+  observedGeneration: 3
+  readyReplicas: 10
+  replicas: 10
+  unavailableReplicas: 1
+  updatedReplicas: 10

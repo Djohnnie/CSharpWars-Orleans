@@ -1,0 +1,59 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: csharpwars-orleans-host
+  labels:
+    app: csharpwars-orleans-host
+spec:
+  selector:
+    matchLabels:
+      app: csharpwars-orleans-host
+  replicas: 3
+  template:
+    metadata:
+      labels:
+        app: csharpwars-orleans-host
+        orleans/serviceId: csharpwars-orleans-host
+        orleans/clusterId: csharpwars-orleans-host
+    spec:
+      containers:
+        - name: main
+          image: csharpwars.azurecr.io/csharpwars-orleans-host:latest
+          imagePullPolicy: Always
+          ports:
+          - containerPort: 11111
+          - containerPort: 30000
+          - containerPort: 8080
+          env:
+          - name: AZURE_STORAGE_CONNECTION_STRING
+            value: "..."
+          - name: APPLICATION_INSIGHTS_INSTRUMENTATION_KEY
+            value: "..."
+          - name: ORLEANS_SERVICE_ID
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.labels['orleans/serviceId']
+          - name: ORLEANS_CLUSTER_ID
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.labels['orleans/clusterId']
+          - name: POD_NAMESPACE
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.namespace
+          - name: POD_NAME
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.name
+          - name: POD_IP
+            valueFrom:
+              fieldRef:
+                fieldPath: status.podIP
+          - name: DOTNET_SHUTDOWNTIMEOUTSECONDS
+            value: "120"
+      terminationGracePeriodSeconds: 180
+  minReadySeconds: 60
+  strategy:
+    rollingUpdate:
+      maxUnavailable: 0
+      maxSurge: 1
