@@ -1,41 +1,40 @@
 using CSharpWars.Orleans.Grains;
 using Orleans;
 
-namespace CSharpWars.Orleans.Host
+namespace CSharpWars.Orleans.Host;
+
+public class Worker : BackgroundService
 {
-    public class Worker : BackgroundService
+    private readonly IGrainFactory _grainFactory;
+    private readonly ILogger<Worker> _logger;
+
+    public Worker(
+        IGrainFactory grainFactory,
+        ILogger<Worker> logger)
     {
-        private readonly IGrainFactory _grainFactory;
-        private readonly ILogger<Worker> _logger;
+        _grainFactory = grainFactory;
+        _logger = logger;
+    }
 
-        public Worker(
-            IGrainFactory grainFactory,
-            ILogger<Worker> logger)
+    protected override async Task ExecuteAsync(CancellationToken stoppingToken)
+    {
+        await Task.Delay(10000, stoppingToken);
+
+        while (!stoppingToken.IsCancellationRequested)
         {
-            _grainFactory = grainFactory;
-            _logger = logger;
-        }
-
-        protected override async Task ExecuteAsync(CancellationToken stoppingToken)
-        {
-            await Task.Delay(10000, stoppingToken);
-
-            while (!stoppingToken.IsCancellationRequested)
+            try
             {
-                try
-                {
-                    var grain = _grainFactory.GetGrain<IArenaGrain>(Guid.Empty);
+                var grain = _grainFactory.GetGrain<IArenaGrain>("dummy");
 
-                    var message = await grain.GetMessage();
+                var arena = await grain.GetArenaDetails();
 
-                    _logger.LogInformation(message);
+                _logger.LogInformation(arena.Name);
 
-                    await Task.Delay(1000, stoppingToken);
-                }
-                catch (Exception ex)
-                {
-                    _logger.LogError(ex, ex.Message);
-                }
+                await Task.Delay(1000, stoppingToken);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, ex.Message);
             }
         }
     }

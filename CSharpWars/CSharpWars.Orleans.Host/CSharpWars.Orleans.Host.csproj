@@ -20,7 +20,6 @@
 		<PackageReference Include="Microsoft.Orleans.OrleansTelemetryConsumers.AI" Version="3.6.2" />
 		<PackageReference Include="Microsoft.Orleans.Persistence.AzureStorage" Version="3.6.2" />
 		<PackageReference Include="Microsoft.Orleans.Server" Version="3.6.2" />
-		<PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.15.1" />
 		<PackageReference Include="OrleansDashboard" Version="3.6.2" />
 	</ItemGroup>
 

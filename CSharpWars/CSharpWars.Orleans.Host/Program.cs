@@ -48,6 +48,13 @@ IHost host = Host.CreateDefaultBuilder(args)
                 options.UseJson = true;
                 options.ConfigureBlobServiceClient(azureStorageConnectionString);
             });
+        siloBuilder.AddAzureBlobGrainStorage(
+            name: "playerStore",
+            configureOptions: options =>
+            {
+                options.UseJson = true;
+                options.ConfigureBlobServiceClient(azureStorageConnectionString);
+            });
 
         siloBuilder.AddMemoryGrainStorage("urls");
 
