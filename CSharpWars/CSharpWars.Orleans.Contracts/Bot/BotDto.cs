@@ -1,12 +1,3 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿namespace CSharpWars.Orleans.Contracts.Bot;
 
-namespace CSharpWars.Orleans.Contracts.Bot;
-
-public class BotDto
-{
-
-}
+public record BotDto(Guid BotId, string BotName, int MaximumHealth, int MaximumStamina);

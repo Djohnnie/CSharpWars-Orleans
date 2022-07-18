@@ -1,4 +1,6 @@
-﻿using CSharpWars.Helpers;
+﻿using CSharpWars.Common.Helpers;
+using CSharpWars.Helpers;
+using CSharpWars.Orleans.Contracts.Player;
 using Orleans;
 using Orleans.Runtime;
 
@@ -15,23 +17,26 @@ public class PlayerState
 
 public interface IPlayerGrain : IGrainWithStringKey
 {
-    Task Login(string username, string password);
+    Task<PlayerDto> Login(string username, string password);
 }
 
 public class PlayerGrain : Grain, IPlayerGrain
 {
     private readonly IPasswordHashHelper _passwordHashHelper;
+    private readonly IJwtHelper _jwtHelper;
     private readonly IPersistentState<PlayerState> _state;
 
     public PlayerGrain(
         IPasswordHashHelper passwordHashHelper,
+        IJwtHelper jwtHelper,
         [PersistentState("player", "playerStore")] IPersistentState<PlayerState> state)
     {
         _passwordHashHelper = passwordHashHelper;
+        _jwtHelper = jwtHelper;
         _state = state;
     }
 
-    public async Task Login(string username, string password)
+    public async Task<PlayerDto> Login(string username, string password)
     {
         if (!_state.State.Exists)
         {
@@ -53,5 +58,8 @@ public class PlayerGrain : Grain, IPlayerGrain
         }
 
         await _state.WriteStateAsync();
+
+        var token = _jwtHelper.GenerateToken(username);
+        return new PlayerDto(username, token);
     }
 }

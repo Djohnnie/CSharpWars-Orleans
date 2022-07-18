@@ -1,3 +1,4 @@
+using CSharpWars.Common.Helpers;
 using CSharpWars.Orleans.Host;
 using Orleans;
 using Orleans.Configuration;
@@ -12,6 +13,7 @@ IHost host = Host.CreateDefaultBuilder(args)
 
     .ConfigureServices(services =>
     {
+        services.AddCommonHelpers();
         services.AddHostedService<Worker>();
     })
 
@@ -50,6 +52,13 @@ IHost host = Host.CreateDefaultBuilder(args)
             });
         siloBuilder.AddAzureBlobGrainStorage(
             name: "playerStore",
+            configureOptions: options =>
+            {
+                options.UseJson = true;
+                options.ConfigureBlobServiceClient(azureStorageConnectionString);
+            });
+        siloBuilder.AddAzureBlobGrainStorage(
+            name: "botStore",
             configureOptions: options =>
             {
                 options.UseJson = true;

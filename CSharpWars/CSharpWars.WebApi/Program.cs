@@ -1,4 +1,4 @@
-using CSharpWars.Helpers;
+using CSharpWars.Common.Helpers;
 using CSharpWars.Mappers;
 using CSharpWars.WebApi;
 using CSharpWars.WebApi.Contracts;
@@ -46,7 +46,8 @@ app.MapGet("/arena/{name}/bots", async (string name, IApiHelper<IBotManager> hel
 
 app.MapPost("/arena/{name}/bots", async (string name, CreateBotRequest request, IApiHelper<IBotManager> helper) =>
 {
-    return await helper.Execute(m => m.CreateBot(request));
+    var finalRequest = request with { ArenaName = name };
+    return await helper.Execute(m => m.CreateBot(finalRequest));
 });
 
 app.Run();

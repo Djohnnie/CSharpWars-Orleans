@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using CSharpWars.Orleans.Contracts.Bot;
 using CSharpWars.Orleans.Grains;
 using CSharpWars.WebApi.Contracts;
 using Orleans;
@@ -35,10 +36,10 @@ public class BotManager : IBotManager
 
     public async Task<CreateBotResponse> CreateBot(CreateBotRequest request)
     {
-        var botKey = Guid.NewGuid();
-        var botGrain = _clusterClient.GetGrain<IBotGrain>(botKey);
-
-        var bot = await botGrain.CreateBot(null);
+        var arenaGrain = _clusterClient.GetGrain<IArenaGrain>(request.ArenaName);
+        
+        var botToCreate = _mapper.Map<BotToCreateDto>(request);
+        var bot = await arenaGrain.CreateBot(botToCreate);
 
         return _mapper.Map<CreateBotResponse>(bot);
     }

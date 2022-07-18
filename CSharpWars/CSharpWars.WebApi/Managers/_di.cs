@@ -7,5 +7,6 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IStatusManager, StatusManager>();
         services.AddScoped<IPlayerManager, PlayerManager>();
         services.AddScoped<IArenaManager, ArenaManager>();
+        services.AddScoped<IBotManager, BotManager>();
     }
 }

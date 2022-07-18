@@ -8,6 +8,7 @@ public class BotMapperProfile : Profile
 {
     public BotMapperProfile()
     {
+        CreateMap<CreateBotRequest, BotToCreateDto>();
         CreateMap<BotDto, CreateBotResponse>();
         CreateMap<List<BotDto>, GetAllActiveBotsResponse>();
     }

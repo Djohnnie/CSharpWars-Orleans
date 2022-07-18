@@ -7,6 +7,15 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Arena\**" />
+    <Compile Remove="Player\**" />
+    <EmbeddedResource Remove="Arena\**" />
+    <EmbeddedResource Remove="Player\**" />
+    <None Remove="Arena\**" />
+    <None Remove="Player\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.Orleans.CodeGenerator.MSBuild" Version="3.6.2">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -22,11 +31,6 @@
   <ItemGroup>
     <ProjectReference Include="..\CSharpWars.Common\CSharpWars.Common.csproj" />
     <ProjectReference Include="..\CSharpWars.Orleans.Contracts\CSharpWars.Orleans.Contracts.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Arena\" />
-    <Folder Include="Player\" />
   </ItemGroup>
 
 </Project>

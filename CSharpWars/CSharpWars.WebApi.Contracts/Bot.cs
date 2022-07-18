@@ -2,14 +2,18 @@
 
 public record GetAllActiveBotsRequest(string ArenaName);
 
-public record GetAllActiveBotsResponse();
+public record GetAllActiveBotsResponse;
 
-public record CreateBotRequest
-{
+public record CreateBotRequest(
+    string PlayerName,
+    string BotName,
+    string ArenaName,
+    int MaximumHealth,
+    int MaximumStamina,
+    string Script);
 
-}
-
-public record CreateBotResponse
-{
-
-}
+public record CreateBotResponse(
+    Guid BotId,
+    string BotName,
+    int MaximumHealth,
+    int MaximumStamina);

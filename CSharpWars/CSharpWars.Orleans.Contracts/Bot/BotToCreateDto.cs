@@ -1,11 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿namespace CSharpWars.Orleans.Contracts.Bot;
 
-namespace CSharpWars.Orleans.Contracts.Bot;
-
-public class BotToCreateDto
-{
-}
+public record BotToCreateDto(
+    string PlayerName,
+    string BotName,
+    string ArenaName,
+    int MaximumHealth,
+    int MaximumStamina,
+    string Script);
