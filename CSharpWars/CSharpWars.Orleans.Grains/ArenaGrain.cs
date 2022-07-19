@@ -83,6 +83,7 @@ public class ArenaGrain : Grain, IArenaGrain
         var createdBot = await botGrain.CreateBot(bot);
 
         _state.State.BotIds.Add(botId);
+        await _state.WriteStateAsync();
 
         return createdBot;
     }

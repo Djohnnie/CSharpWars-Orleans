@@ -10,6 +10,8 @@ public class BotMapperProfile : Profile
     {
         CreateMap<CreateBotRequest, BotToCreateDto>();
         CreateMap<BotDto, CreateBotResponse>();
-        CreateMap<List<BotDto>, GetAllActiveBotsResponse>();
+        CreateMap<List<BotDto>, GetAllActiveBotsResponse>()
+            .ForMember(dest => dest.Bots, o => o.MapFrom(src => src));
+        CreateMap<BotDto, Bot>();
     }
 }

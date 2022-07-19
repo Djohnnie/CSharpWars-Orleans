@@ -57,6 +57,8 @@ public class BotGrain : Grain, IBotGrain
         _state.State.Script = bot.Script;
         _state.State.Exists = true;
 
+        await _state.WriteStateAsync();
+
         return await GetState();
     }
 }

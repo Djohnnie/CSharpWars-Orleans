@@ -2,7 +2,9 @@
 
 public record GetAllActiveBotsRequest(string ArenaName);
 
-public record GetAllActiveBotsResponse;
+public record GetAllActiveBotsResponse(List<Bot> Bots);
+
+public record Bot(Guid BotId, string BotName);
 
 public record CreateBotRequest(
     string PlayerName,

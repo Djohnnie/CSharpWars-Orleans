@@ -78,7 +78,7 @@ IHost host = Host.CreateDefaultBuilder(args)
 
         siloBuilder.Configure<GrainCollectionOptions>(o =>
         {
-            o.CollectionAge = TimeSpan.FromMinutes(2);
+            o.CollectionAge = TimeSpan.FromDays(1);
         });
     })
     .Build();

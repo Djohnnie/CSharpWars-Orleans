@@ -25,9 +25,15 @@ spec:
           - containerPort: 30000
           - containerPort: 8080
           env:
+          - name: ARENA_WIDTH
+            value: "9"
+          - name: ARENA_HEIGHT
+            value: "11"
           - name: AZURE_STORAGE_CONNECTION_STRING
             value: "..."
           - name: APPLICATION_INSIGHTS_INSTRUMENTATION_KEY
+            value: "..."
+          - name: JWT_SECRET
             value: "..."
           - name: ORLEANS_SERVICE_ID
             valueFrom:
