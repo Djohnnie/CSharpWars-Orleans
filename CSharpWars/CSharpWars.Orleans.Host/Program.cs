@@ -1,5 +1,7 @@
 using CSharpWars.Common.Helpers;
 using CSharpWars.Orleans.Host;
+using CSharpWars.Orleans.Host.Extensions;
+using CSharpWars.Scripting;
 using Orleans;
 using Orleans.Configuration;
 using Orleans.Hosting;
@@ -14,6 +16,7 @@ IHost host = Host.CreateDefaultBuilder(args)
     .ConfigureServices(services =>
     {
         services.AddCommonHelpers();
+        services.AddScripting();
         services.AddHostedService<Worker>();
     })
 
@@ -43,27 +46,10 @@ IHost host = Host.CreateDefaultBuilder(args)
             c.AddFromApplicationBaseDirectory();
         });
 
-        siloBuilder.AddAzureBlobGrainStorage(
-            name: "arenaStore",
-            configureOptions: options =>
-            {
-                options.UseJson = true;
-                options.ConfigureBlobServiceClient(azureStorageConnectionString);
-            });
-        siloBuilder.AddAzureBlobGrainStorage(
-            name: "playerStore",
-            configureOptions: options =>
-            {
-                options.UseJson = true;
-                options.ConfigureBlobServiceClient(azureStorageConnectionString);
-            });
-        siloBuilder.AddAzureBlobGrainStorage(
-            name: "botStore",
-            configureOptions: options =>
-            {
-                options.UseJson = true;
-                options.ConfigureBlobServiceClient(azureStorageConnectionString);
-            });
+        siloBuilder.AddAzureBlobGrainStorage("arenaStore", azureStorageConnectionString);
+        siloBuilder.AddAzureBlobGrainStorage("playerStore", azureStorageConnectionString);
+        siloBuilder.AddAzureBlobGrainStorage("botStore", azureStorageConnectionString);
+        siloBuilder.AddAzureBlobGrainStorage("scriptStore", azureStorageConnectionString);
 
         siloBuilder.AddMemoryGrainStorage("urls");
 

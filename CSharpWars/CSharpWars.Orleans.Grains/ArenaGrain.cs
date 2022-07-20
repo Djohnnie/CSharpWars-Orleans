@@ -29,12 +29,37 @@ public class ArenaGrain : Grain, IArenaGrain
     private readonly IPersistentState<ArenaState> _state;
     private readonly IConfiguration _configuration;
 
+    private IDisposable _timer;
+
     public ArenaGrain(
         [PersistentState("arena", "arenaStore")] IPersistentState<ArenaState> state,
         IConfiguration configuration)
     {
         _state = state;
         _configuration = configuration;
+    }
+
+    public override Task OnActivateAsync()
+    {
+        _timer = RegisterTimer(OnTimer, _state, TimeSpan.FromSeconds(30), TimeSpan.FromSeconds(2));
+
+        return base.OnActivateAsync();
+    }
+
+    private async Task OnTimer(object state)
+    {
+        if (_state.State.Exists)
+        {
+            var tasks = new List<Task>();
+
+            foreach (var botId in _state.State.BotIds)
+            {
+                var botGrain = GrainFactory.GetGrain<IBotGrain>(botId);
+                tasks.Add(botGrain.Process());
+            }
+
+            await Task.WhenAll(tasks);
+        }
     }
 
     public async Task<List<BotDto>> GetAllActiveBots()

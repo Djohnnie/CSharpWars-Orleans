@@ -59,5 +59,3 @@ app.MapAuthorizedPost("/arena/{name}/bots", async (string name, CreateBotRequest
 });
 
 app.Run();
-
-public class CustomAttribute { }

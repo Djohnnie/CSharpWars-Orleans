@@ -1,4 +1,5 @@
-﻿using CSharpWars.Orleans.Contracts.Bot;
+﻿using CSharpWars.Enums;
+using CSharpWars.Orleans.Contracts.Bot;
 using Orleans;
 using Orleans.Runtime;
 
@@ -8,9 +9,15 @@ public class BotState
 {
     public bool Exists { get; set; }
     public string BotName { get; set; }
+    public Orientation Orientation { get; set; }
     public int MaximumHealth { get; set; }
+    public int CurrentHealth { get; set; }
     public int MaximumStamina { get; set; }
-    public string Script { get; set; }
+    public int CurrentStamina { get; set; }
+    public int X { get; set; }
+    public int Y { get; set; }
+    public DateTime? TimeOfDeath { get; set; }
+    public string Memory { get; set; }
 }
 
 public interface IBotGrain : IGrainWithGuidKey
@@ -18,6 +25,7 @@ public interface IBotGrain : IGrainWithGuidKey
     Task<BotDto> GetState();
 
     Task<BotDto> CreateBot(BotToCreateDto bot);
+    Task Process();
 }
 
 public class BotGrain : Grain, IBotGrain
@@ -54,11 +62,21 @@ public class BotGrain : Grain, IBotGrain
         _state.State.BotName = bot.BotName;
         _state.State.MaximumHealth = bot.MaximumHealth;
         _state.State.MaximumStamina = bot.MaximumStamina;
-        _state.State.Script = bot.Script;
         _state.State.Exists = true;
 
         await _state.WriteStateAsync();
 
+        var botId = this.GetPrimaryKey();
+        var scriptGrain = GrainFactory.GetGrain<IScriptGrain>(botId);
+        await scriptGrain.SetScript(bot.Script);
+
         return await GetState();
+    }
+
+    public async Task Process()
+    {
+        var botId = this.GetPrimaryKey();
+        var scriptGrain = GrainFactory.GetGrain<IScriptGrain>(botId);
+        await scriptGrain.RunScript();
     }
 }

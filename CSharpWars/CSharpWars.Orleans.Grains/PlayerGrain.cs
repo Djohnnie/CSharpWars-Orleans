@@ -42,7 +42,7 @@ public class PlayerGrain : Grain, IPlayerGrain
     {
         if (!_state.State.Exists)
         {
-            (var salt, var hashed) = _passwordHashHelper.CalculateHash(password);
+            var (salt, hashed) = _passwordHashHelper.CalculateHash(password);
 
             _state.State.Exists = true;
             _state.State.Username = username;
@@ -51,7 +51,7 @@ public class PlayerGrain : Grain, IPlayerGrain
         }
         else
         {
-            (_, var hashed) = _passwordHashHelper.CalculateHash(password, _state.State.PasswordSalt);
+            var (_, hashed) = _passwordHashHelper.CalculateHash(password, _state.State.PasswordSalt);
 
             if (_state.State.PasswordHash != hashed)
             {
