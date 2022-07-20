@@ -24,11 +24,11 @@ public class Worker : BackgroundService
         {
             try
             {
-                var grain = _grainFactory.GetGrain<IArenaGrain>("dummy");
+                //var grain = _grainFactory.GetGrain<IArenaGrain>("dummy");
 
-                var arena = await grain.GetArenaDetails();
+                //var arena = await grain.GetArenaDetails();
 
-                _logger.LogInformation(arena.Name);
+                //_logger.LogInformation(arena.Name);
 
                 await Task.Delay(1000, stoppingToken);
             }

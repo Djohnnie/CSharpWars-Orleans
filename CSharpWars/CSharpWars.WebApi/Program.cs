@@ -2,8 +2,11 @@ using CSharpWars.Common.Helpers;
 using CSharpWars.Mappers;
 using CSharpWars.WebApi;
 using CSharpWars.WebApi.Contracts;
+using CSharpWars.WebApi.Extensions;
 using CSharpWars.WebApi.Helpers;
 using CSharpWars.WebApi.Managers;
+using CSharpWars.WebApi.Middleware;
+using CSharpWars.WebApi.Security;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,11 +18,16 @@ builder.Services.AddSingleton<ClusterClientHostedService>();
 builder.Services.AddSingleton<IHostedService>(sp => sp.GetRequiredService<ClusterClientHostedService>());
 builder.Services.AddSingleton(sp => sp.GetRequiredService<ClusterClientHostedService>().Client);
 
+builder.Services.AddScoped<IPlayerContext, PlayerContext>();
+
 builder.Services.AddCommonHelpers();
 builder.Services.AddHelpers();
 builder.Services.AddManagers();
 
 var app = builder.Build();
+
+app.UseMiddleware<JwtMiddleware>();
+
 app.UsePathBase("/api");
 
 app.MapGet("/", async (IApiHelper<IStatusManager> helper) =>
@@ -44,10 +52,12 @@ app.MapGet("/arena/{name}/bots", async (string name, IApiHelper<IBotManager> hel
     return await helper.Execute(m => m.GetAllActiveBots(request));
 });
 
-app.MapPost("/arena/{name}/bots", async (string name, CreateBotRequest request, IApiHelper<IBotManager> helper) =>
+app.MapAuthorizedPost("/arena/{name}/bots", async (string name, CreateBotRequest request, IPlayerContext playerContext, IApiHelper<IBotManager> helper) =>
 {
-    var finalRequest = request with { ArenaName = name };
+    var finalRequest = request with { ArenaName = name, PlayerName = playerContext.PlayerName };
     return await helper.Execute(m => m.CreateBot(finalRequest));
 });
 
 app.Run();
+
+public class CustomAttribute { }

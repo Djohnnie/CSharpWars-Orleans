@@ -36,10 +36,15 @@ public class BotManager : IBotManager
 
     public async Task<CreateBotResponse> CreateBot(CreateBotRequest request)
     {
+        if (string.IsNullOrWhiteSpace(request.PlayerName))
+        {
+            throw new ArgumentNullException(nameof(request.PlayerName));
+        }
+
         var arenaGrain = _clusterClient.GetGrain<IArenaGrain>(request.ArenaName);
-        
+
         var botToCreate = _mapper.Map<BotToCreateDto>(request);
-        var bot = await arenaGrain.CreateBot(botToCreate);
+        var bot = await arenaGrain.CreateBot(request.PlayerName, botToCreate);
 
         return _mapper.Map<CreateBotResponse>(bot);
     }

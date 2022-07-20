@@ -21,7 +21,7 @@ public interface IArenaGrain : IGrainWithStringKey
 
     Task<ArenaDto> GetArenaDetails();
 
-    Task<BotDto> CreateBot(BotToCreateDto bot);
+    Task<BotDto> CreateBot(string playerName, BotToCreateDto bot);
 }
 
 public class ArenaGrain : Grain, IArenaGrain
@@ -70,12 +70,15 @@ public class ArenaGrain : Grain, IArenaGrain
         return new ArenaDto(_state.State.Name, _state.State.Width, _state.State.Height);
     }
 
-    public async Task<BotDto> CreateBot(BotToCreateDto bot)
+    public async Task<BotDto> CreateBot(string playerName, BotToCreateDto bot)
     {
         if (!_state.State.Exists)
         {
             throw new ArgumentNullException();
         }
+
+        var playerGrain = GrainFactory.GetGrain<IPlayerGrain>(playerName);
+        await playerGrain.ValidateBotDeploymentLimit();
 
         var botId = Guid.NewGuid();
 

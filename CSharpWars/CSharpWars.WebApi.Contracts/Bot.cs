@@ -7,7 +7,7 @@ public record GetAllActiveBotsResponse(List<Bot> Bots);
 public record Bot(Guid BotId, string BotName);
 
 public record CreateBotRequest(
-    string PlayerName,
+    string? PlayerName,
     string BotName,
     string ArenaName,
     int MaximumHealth,

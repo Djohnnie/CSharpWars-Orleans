@@ -13,11 +13,13 @@ public class PlayerState
     public string Username { get; set; }
     public string PasswordHash { get; set; }
     public string PasswordSalt { get; set; }
+    public DateTime LastDeployment { get; set; }
 }
 
 public interface IPlayerGrain : IGrainWithStringKey
 {
     Task<PlayerDto> Login(string username, string password);
+    Task ValidateBotDeploymentLimit();
 }
 
 public class PlayerGrain : Grain, IPlayerGrain
@@ -61,5 +63,21 @@ public class PlayerGrain : Grain, IPlayerGrain
 
         var token = _jwtHelper.GenerateToken(username);
         return new PlayerDto(username, token);
+    }
+
+    public async Task ValidateBotDeploymentLimit()
+    {
+        if (!_state.State.Exists)
+        {
+            throw new ArgumentException("Player does not have state yet!");
+        }
+
+        if (_state.State.LastDeployment >= DateTime.UtcNow.AddMinutes(-1))
+        {
+            throw new ArgumentException("You are not allowed to create multiple robots in rapid succession!");
+        }
+
+        _state.State.LastDeployment = DateTime.UtcNow;
+        await _state.WriteStateAsync();
     }
 }

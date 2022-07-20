@@ -9,7 +9,7 @@ namespace CSharpWars.Common.Helpers;
 public interface IJwtHelper
 {
     public string GenerateToken(string username);
-    public int? ValidateToken(string token);
+    public string? ValidateToken(string? token);
 }
 
 public class JwtHelper : IJwtHelper
@@ -30,7 +30,7 @@ public class JwtHelper : IJwtHelper
         var tokenDescriptor = new SecurityTokenDescriptor
         {
             Subject = new ClaimsIdentity(new[] { new Claim("username", username) }),
-            Expires = DateTime.UtcNow.AddDays(1),
+            Expires = DateTime.UtcNow.AddMinutes(1),
             SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
         };
 
@@ -38,7 +38,7 @@ public class JwtHelper : IJwtHelper
         return tokenHandler.WriteToken(token);
     }
 
-    public int? ValidateToken(string token)
+    public string? ValidateToken(string? token)
     {
         if (string.IsNullOrWhiteSpace(token))
             return null;
@@ -59,10 +59,10 @@ public class JwtHelper : IJwtHelper
             }, out SecurityToken validatedToken);
 
             var jwtToken = (JwtSecurityToken)validatedToken;
-            var userId = int.Parse(jwtToken.Claims.First(x => x.Type == "id").Value);
+            string userName = jwtToken.Claims.First(x => x.Type == "username").Value;
 
             // return user id from JWT token if validation successful
-            return userId;
+            return userName;
         }
         catch
         {
