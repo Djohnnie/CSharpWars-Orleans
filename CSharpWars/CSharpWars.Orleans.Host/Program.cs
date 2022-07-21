@@ -5,6 +5,7 @@ using CSharpWars.Scripting;
 using Orleans;
 using Orleans.Configuration;
 using Orleans.Hosting;
+using Orleans.Statistics;
 
 IHost host = Host.CreateDefaultBuilder(args)
 
@@ -27,6 +28,8 @@ IHost host = Host.CreateDefaultBuilder(args)
 
 #if DEBUG
         siloBuilder.UseLocalhostClustering();
+        siloBuilder.UsePerfCounterEnvironmentStatistics();
+
         siloBuilder.Configure<ClusterOptions>(options =>
         {
             options.ClusterId = "my-first-cluster";
@@ -34,6 +37,7 @@ IHost host = Host.CreateDefaultBuilder(args)
         });
 #else
         siloBuilder.UseKubernetesHosting();
+        siloBuilder.UseLinuxEnvironmentStatistics();
 
         siloBuilder.UseAzureStorageClustering(options =>
         {
