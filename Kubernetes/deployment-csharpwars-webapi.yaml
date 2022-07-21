@@ -18,6 +18,10 @@ spec:
         env:
           - name: AZURE_STORAGE_CONNECTION_STRING
             value: "..."
+          - name: JWT_SECRET
+            value: "..."
+          - name: ADMIN_KEY
+            value: "..."
         resources:
           limits:
             memory: "128Mi"

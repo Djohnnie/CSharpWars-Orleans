@@ -8,11 +8,16 @@ public class JwtMiddleware
 {
     private readonly RequestDelegate _next;
     private readonly IJwtHelper _jwtHelper;
+    private readonly IConfiguration _configuration;
 
-    public JwtMiddleware(RequestDelegate next, IJwtHelper jwtHelper)
+    public JwtMiddleware(
+        RequestDelegate next,
+        IJwtHelper jwtHelper,
+        IConfiguration configuration)
     {
         _next = next;
         _jwtHelper = jwtHelper;
+        _configuration = configuration;
     }
 
     public async Task Invoke(HttpContext context, IPlayerContext playerContext)
@@ -26,19 +31,30 @@ public class JwtMiddleware
             return;
         }
 
-        if (endpoint.Metadata.Any(x => x.GetType() == typeof(JwtAuthorization)))
+        if (endpoint.Metadata.Any(x => x.GetType() == typeof(JwtAuthorization) || x.GetType() == typeof(JwtAdminAuthorization)))
         {
+            var authorizationToken = context.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
 
-            var token = context.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
+            var playerName = _jwtHelper.ValidateToken(authorizationToken);
 
-            var userName = _jwtHelper.ValidateToken(token);
+            playerContext.PlayerName = playerName;
 
-            playerContext.PlayerName = userName;
-
-            if (userName == null)
+            if (playerName == null)
             {
                 context.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
                 await context.Response.WriteAsync("Token Validation Has Failed. Request Access Denied");
+                return;
+            }
+        }
+
+        if (endpoint.Metadata.Any(x => x.GetType() == typeof(JwtAdminAuthorization)))
+        {
+            var adminKey = context.Request.Headers["AdminKey"].FirstOrDefault()?.Split(" ").Last();
+
+            if (_configuration.GetValue<string>("ADMIN_KEY") != adminKey)
+            {
+                context.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
+                await context.Response.WriteAsync("No AdminKey provided. Request Access Denied");
                 return;
             }
         }

@@ -72,7 +72,7 @@ public class PlayerGrain : Grain, IPlayerGrain
             throw new ArgumentException("Player does not have state yet!");
         }
 
-        if (_state.State.LastDeployment >= DateTime.UtcNow.AddMinutes(-1))
+        if (_state.State.LastDeployment >= DateTime.UtcNow.AddSeconds(-1))
         {
             throw new ArgumentException("You are not allowed to create multiple robots in rapid succession!");
         }

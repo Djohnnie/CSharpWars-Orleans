@@ -18,6 +18,7 @@ public interface IScriptGrain : IGrainWithGuidKey
 {
     Task SetScript(string script);
     Task RunScript();
+    Task DeleteScript();
 }
 
 public class ScriptGrain : Grain, IScriptGrain
@@ -66,5 +67,15 @@ public class ScriptGrain : Grain, IScriptGrain
             var scriptGlobals = ScriptGlobals.Build(botProperties);
             _ = await _compiledScript.Invoke(scriptGlobals);
         }
+    }
+
+    public async Task DeleteScript()
+    {
+        if (_state.State.Exists)
+        {
+            await _state.ClearStateAsync();
+        }
+
+        DeactivateOnIdle();
     }
 }

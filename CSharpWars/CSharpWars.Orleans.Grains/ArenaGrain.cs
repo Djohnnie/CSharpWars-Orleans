@@ -22,6 +22,7 @@ public interface IArenaGrain : IGrainWithStringKey
     Task<ArenaDto> GetArenaDetails();
 
     Task<BotDto> CreateBot(string playerName, BotToCreateDto bot);
+    Task DeleteArena();
 }
 
 public class ArenaGrain : Grain, IArenaGrain
@@ -29,7 +30,7 @@ public class ArenaGrain : Grain, IArenaGrain
     private readonly IPersistentState<ArenaState> _state;
     private readonly IConfiguration _configuration;
 
-    private IDisposable _timer;
+    private IDisposable? _timer;
 
     public ArenaGrain(
         [PersistentState("arena", "arenaStore")] IPersistentState<ArenaState> state,
@@ -44,6 +45,16 @@ public class ArenaGrain : Grain, IArenaGrain
         _timer = RegisterTimer(OnTimer, _state, TimeSpan.FromSeconds(30), TimeSpan.FromSeconds(2));
 
         return base.OnActivateAsync();
+    }
+
+    public override Task OnDeactivateAsync()
+    {
+        if (_timer != null)
+        {
+            _timer.Dispose();
+        }
+
+        return base.OnDeactivateAsync();
     }
 
     private async Task OnTimer(object state)
@@ -66,7 +77,7 @@ public class ArenaGrain : Grain, IArenaGrain
     {
         if (!_state.State.Exists)
         {
-            throw new ArgumentNullException();
+            _ = await GetArenaDetails();
         }
 
         var activeBots = new List<BotDto>();
@@ -114,5 +125,28 @@ public class ArenaGrain : Grain, IArenaGrain
         await _state.WriteStateAsync();
 
         return createdBot;
+    }
+
+    public async Task DeleteArena()
+    {
+        if (_state.State.Exists)
+        {
+            if (_timer != null)
+            {
+                _timer.Dispose();
+            }
+
+            await Task.Delay(2000);
+
+            foreach (var botId in _state.State.BotIds)
+            {
+                var botGrain = GrainFactory.GetGrain<IBotGrain>(botId);
+                await botGrain.DeleteBot();
+            }
+
+            await _state.ClearStateAsync();
+        }
+
+        DeactivateOnIdle();
     }
 }

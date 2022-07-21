@@ -8,6 +8,7 @@ namespace CSharpWars.WebApi.Managers;
 public interface IArenaManager
 {
     Task<GetArenaResponse> GetArena(GetArenaRequest request);
+    Task DeleteArena(string arenaName);
 }
 
 public class ArenaManager : IArenaManager
@@ -29,5 +30,11 @@ public class ArenaManager : IArenaManager
         var arena = await arenaGrain.GetArenaDetails();
 
         return _mapper.Map<GetArenaResponse>(arena);
+    }
+
+    public async Task DeleteArena(string arenaName)
+    {
+        var arenaGrain = _clusterClient.GetGrain<IArenaGrain>(arenaName);
+        await arenaGrain.DeleteArena();
     }
 }

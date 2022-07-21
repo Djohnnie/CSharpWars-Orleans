@@ -6,3 +6,10 @@ public class JwtAuthorization
 
     public static JwtAuthorization Instance => _singleton;
 }
+
+public class JwtAdminAuthorization
+{
+    private static readonly JwtAdminAuthorization _singleton = new JwtAdminAuthorization();
+
+    public static JwtAdminAuthorization Instance => _singleton;
+}
