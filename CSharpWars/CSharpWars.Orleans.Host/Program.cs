@@ -51,6 +51,7 @@ IHost host = Host.CreateDefaultBuilder(args)
         });
 
         siloBuilder.AddAzureBlobGrainStorage("arenaStore", azureStorageConnectionString);
+        siloBuilder.AddAzureBlobGrainStorage("playersStore", azureStorageConnectionString);
         siloBuilder.AddAzureBlobGrainStorage("playerStore", azureStorageConnectionString);
         siloBuilder.AddAzureBlobGrainStorage("botStore", azureStorageConnectionString);
         siloBuilder.AddAzureBlobGrainStorage("scriptStore", azureStorageConnectionString);
@@ -68,7 +69,8 @@ IHost host = Host.CreateDefaultBuilder(args)
 
         siloBuilder.Configure<GrainCollectionOptions>(o =>
         {
-            o.CollectionAge = TimeSpan.FromDays(1);
+            o.CollectionAge = TimeSpan.FromHours(1);
+            o.CollectionQuantum = TimeSpan.FromMinutes(10);
         });
     })
     .Build();

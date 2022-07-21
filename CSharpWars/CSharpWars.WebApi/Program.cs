@@ -58,10 +58,10 @@ app.MapAuthorizedPost("/arena/{name}/bots", async (string name, CreateBotRequest
     return await helper.Execute(m => m.CreateBot(finalRequest));
 });
 
-//app.MapAdminDelete("/players", async (IApiHelper<IPlayerManager> helper) =>
-//{
-//    await helper.Execute(m => m.DeleteAllPlayers());
-//});
+app.MapAdminDelete("/players", async (IApiHelper<IPlayerManager> helper) =>
+{
+    await helper.Execute(m => m.DeleteAllPlayers());
+});
 
 app.MapAdminDelete("/arena/{name}", async (string name, IApiHelper<IArenaManager> helper) =>
 {

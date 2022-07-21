@@ -61,15 +61,25 @@ public class ArenaGrain : Grain, IArenaGrain
     {
         if (_state.State.Exists)
         {
-            var tasks = new List<Task>();
+            var tasks = new Dictionary<Guid, Task<bool>>();
 
             foreach (var botId in _state.State.BotIds)
             {
                 var botGrain = GrainFactory.GetGrain<IBotGrain>(botId);
-                tasks.Add(botGrain.Process());
+                tasks.Add(botId, botGrain.Process());
             }
 
-            await Task.WhenAll(tasks);
+            await Task.WhenAll(tasks.Values);
+
+            foreach (var processTask in tasks)
+            {
+                if (!processTask.Value.Result)
+                {
+                    _state.State.BotIds.Remove(processTask.Key);
+                }
+            }
+
+            await _state.WriteStateAsync();
         }
     }
 
@@ -113,10 +123,11 @@ public class ArenaGrain : Grain, IArenaGrain
             throw new ArgumentNullException();
         }
 
+        var botId = Guid.NewGuid();
+
         var playerGrain = GrainFactory.GetGrain<IPlayerGrain>(playerName);
         await playerGrain.ValidateBotDeploymentLimit();
-
-        var botId = Guid.NewGuid();
+        await playerGrain.BotCeated(botId);
 
         var botGrain = GrainFactory.GetGrain<IBotGrain>(botId);
         var createdBot = await botGrain.CreateBot(bot);

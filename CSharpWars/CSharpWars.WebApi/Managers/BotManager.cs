@@ -41,9 +41,9 @@ public class BotManager : IBotManager
             throw new ArgumentNullException(nameof(request.PlayerName));
         }
 
-        var arenaGrain = _clusterClient.GetGrain<IArenaGrain>(request.ArenaName);
+                var botToCreate = _mapper.Map<BotToCreateDto>(request);
 
-        var botToCreate = _mapper.Map<BotToCreateDto>(request);
+        var arenaGrain = _clusterClient.GetGrain<IArenaGrain>(request.ArenaName);
         var bot = await arenaGrain.CreateBot(request.PlayerName, botToCreate);
 
         return _mapper.Map<CreateBotResponse>(bot);

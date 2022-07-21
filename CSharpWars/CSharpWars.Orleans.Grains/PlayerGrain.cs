@@ -13,13 +13,16 @@ public class PlayerState
     public string Username { get; set; }
     public string PasswordHash { get; set; }
     public string PasswordSalt { get; set; }
-    public DateTime LastDeployment { get; set; }
+    public DateTime? LastDeployment { get; set; }
+    public List<Guid> BotIds { get; set; }
 }
 
 public interface IPlayerGrain : IGrainWithStringKey
 {
     Task<PlayerDto> Login(string username, string password);
     Task ValidateBotDeploymentLimit();
+    Task BotCeated(Guid botId);
+    Task DeletePlayer();
 }
 
 public class PlayerGrain : Grain, IPlayerGrain
@@ -48,6 +51,8 @@ public class PlayerGrain : Grain, IPlayerGrain
             _state.State.Username = username;
             _state.State.PasswordSalt = salt;
             _state.State.PasswordHash = hashed;
+            _state.State.LastDeployment = null;
+            _state.State.BotIds = new List<Guid>();
         }
         else
         {
@@ -72,12 +77,40 @@ public class PlayerGrain : Grain, IPlayerGrain
             throw new ArgumentException("Player does not have state yet!");
         }
 
-        if (_state.State.LastDeployment >= DateTime.UtcNow.AddSeconds(-1))
+        if (_state.State.LastDeployment.HasValue && _state.State.LastDeployment >= DateTime.UtcNow.AddSeconds(-1))
         {
             throw new ArgumentException("You are not allowed to create multiple robots in rapid succession!");
         }
 
         _state.State.LastDeployment = DateTime.UtcNow;
         await _state.WriteStateAsync();
+    }
+
+    public async Task BotCeated(Guid botId)
+    {
+        if (!_state.State.Exists)
+        {
+            throw new ArgumentException("Player does not have state yet!");
+        }
+
+        _state.State.BotIds.Add(botId);
+
+        await _state.WriteStateAsync();
+    }
+
+    public async Task DeletePlayer()
+    {
+        if (_state.State.Exists)
+        {
+            foreach (var botId in _state.State.BotIds)
+            {
+                var botGrain = GrainFactory.GetGrain<IBotGrain>(botId);
+                await botGrain.DeleteBot();
+            }
+
+            await _state.ClearStateAsync();
+        }
+
+        DeactivateOnIdle();
     }
 }

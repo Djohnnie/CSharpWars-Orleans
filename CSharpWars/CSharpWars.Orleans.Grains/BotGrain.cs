@@ -25,7 +25,7 @@ public interface IBotGrain : IGrainWithGuidKey
     Task<BotDto> GetState();
 
     Task<BotDto> CreateBot(BotToCreateDto bot);
-    Task Process();
+    Task<bool> Process();
     Task DeleteBot();
 }
 
@@ -74,11 +74,20 @@ public class BotGrain : Grain, IBotGrain
         return await GetState();
     }
 
-    public async Task Process()
+    public async Task<bool> Process()
     {
+        if (!_state.State.Exists)
+        {
+            DeactivateOnIdle();
+
+            return false;
+        }
+
         var botId = this.GetPrimaryKey();
         var scriptGrain = GrainFactory.GetGrain<IScriptGrain>(botId);
         await scriptGrain.RunScript();
+
+        return true;
     }
 
     public async Task DeleteBot()
