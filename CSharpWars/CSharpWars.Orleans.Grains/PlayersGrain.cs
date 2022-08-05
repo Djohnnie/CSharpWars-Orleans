@@ -7,7 +7,7 @@ namespace CSharpWars.Orleans.Grains;
 public class PlayersState
 {
     public bool Exists { get; set; }
-    public List<string> PlayerNames { get; set; }
+    public IList<string>? PlayerNames { get; set; }
 }
 
 public interface IPlayersGrain : IGrainWithStringKey
@@ -30,7 +30,7 @@ public class PlayersGrain : Grain, IPlayersGrain
     {
         if (!_state.State.Exists)
         {
-            _state.State.PlayerNames = new();
+            _state.State.PlayerNames = new List<string>();
             _state.State.Exists = true;
 
             await _state.WriteStateAsync();
@@ -39,7 +39,7 @@ public class PlayersGrain : Grain, IPlayersGrain
         var playerGrain = GrainFactory.GetGrain<IPlayerGrain>(username);
         var player = await playerGrain.Login(username, password);
 
-        if (!_state.State.PlayerNames.Contains(username))
+        if (_state.State.PlayerNames != null && !_state.State.PlayerNames.Contains(username))
         {
             _state.State.PlayerNames.Add(username);
         }
@@ -49,7 +49,7 @@ public class PlayersGrain : Grain, IPlayersGrain
 
     public async Task DeleteAllPlayers()
     {
-        if (_state.State.Exists)
+        if (_state.State.Exists && _state.State.PlayerNames != null)
         {
             foreach (var playerName in _state.State.PlayerNames)
             {

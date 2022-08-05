@@ -12,7 +12,7 @@ public class ArenaState
     public string Name { get; set; }
     public int Width { get; set; }
     public int Height { get; set; }
-    public List<Guid> BotIds { get; set; }
+    public IList<Guid>? BotIds { get; set; }
 }
 
 public interface IArenaGrain : IGrainWithStringKey
@@ -30,57 +30,12 @@ public class ArenaGrain : Grain, IArenaGrain
     private readonly IPersistentState<ArenaState> _state;
     private readonly IConfiguration _configuration;
 
-    private IDisposable? _timer;
-
     public ArenaGrain(
         [PersistentState("arena", "arenaStore")] IPersistentState<ArenaState> state,
         IConfiguration configuration)
     {
         _state = state;
         _configuration = configuration;
-    }
-
-    public override Task OnActivateAsync()
-    {
-        _timer = RegisterTimer(OnTimer, _state, TimeSpan.FromSeconds(30), TimeSpan.FromSeconds(2));
-
-        return base.OnActivateAsync();
-    }
-
-    public override Task OnDeactivateAsync()
-    {
-        if (_timer != null)
-        {
-            _timer.Dispose();
-        }
-
-        return base.OnDeactivateAsync();
-    }
-
-    private async Task OnTimer(object state)
-    {
-        if (_state.State.Exists)
-        {
-            var tasks = new Dictionary<Guid, Task<bool>>();
-
-            foreach (var botId in _state.State.BotIds)
-            {
-                var botGrain = GrainFactory.GetGrain<IBotGrain>(botId);
-                tasks.Add(botId, botGrain.Process());
-            }
-
-            await Task.WhenAll(tasks.Values);
-
-            foreach (var processTask in tasks)
-            {
-                if (!processTask.Value.Result)
-                {
-                    _state.State.BotIds.Remove(processTask.Key);
-                }
-            }
-
-            await _state.WriteStateAsync();
-        }
     }
 
     public async Task<List<BotDto>> GetAllActiveBots()
@@ -92,11 +47,16 @@ public class ArenaGrain : Grain, IArenaGrain
 
         var activeBots = new List<BotDto>();
 
-        foreach (var botId in _state.State.BotIds)
+        if (_state.State.BotIds != null)
         {
-            var botGrain = GrainFactory.GetGrain<IBotGrain>(botId);
-            activeBots.Add(await botGrain.GetState());
+            foreach (var botId in _state.State.BotIds)
+            {
+                var botGrain = GrainFactory.GetGrain<IBotGrain>(botId);
+                activeBots.Add(await botGrain.GetState());
+            }
         }
+
+        await PingProcessor();
 
         return activeBots;
     }
@@ -113,12 +73,14 @@ public class ArenaGrain : Grain, IArenaGrain
             await _state.WriteStateAsync();
         }
 
+        await PingProcessor();
+
         return new ArenaDto(_state.State.Name, _state.State.Width, _state.State.Height);
     }
 
     public async Task<BotDto> CreateBot(string playerName, BotToCreateDto bot)
     {
-        if (!_state.State.Exists)
+        if (!_state.State.Exists || _state.State.BotIds == null)
         {
             throw new ArgumentNullException();
         }
@@ -140,12 +102,10 @@ public class ArenaGrain : Grain, IArenaGrain
 
     public async Task DeleteArena()
     {
-        if (_state.State.Exists)
+        if (_state.State.Exists && _state.State.BotIds != null)
         {
-            if (_timer != null)
-            {
-                _timer.Dispose();
-            }
+            var processingGrain = GrainFactory.GetGrain<IProcessingGrain>(_state.State.Name);
+            await processingGrain.Stop();
 
             await Task.Delay(2000);
 
@@ -159,5 +119,11 @@ public class ArenaGrain : Grain, IArenaGrain
         }
 
         DeactivateOnIdle();
+    }
+
+    private async Task PingProcessor()
+    {
+        var processingGrain = GrainFactory.GetGrain<IProcessingGrain>(_state.State.Name);
+        await processingGrain.Ping();
     }
 }

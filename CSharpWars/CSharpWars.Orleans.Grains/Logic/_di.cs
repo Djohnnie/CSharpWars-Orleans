@@ -1,10 +1,10 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 
-namespace CSharpWars.Logic;
+namespace CSharpWars.Orleans.Grains.Logic;
 
 public static class ServiceCollectionExtensions
 {
-    public static void AddLogic(this IServiceCollection services)
+    public static void AddGrainLogic(this IServiceCollection services)
     {
         services.AddSingleton<IProcessorLogic, ProcessorLogic>();
         services.AddSingleton<IPreprocessingLogic, PreprocessingLogic>();
