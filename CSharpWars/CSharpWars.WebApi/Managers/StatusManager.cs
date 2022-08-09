@@ -1,6 +1,9 @@
 ﻿using AutoMapper;
+using CSharpWars.Orleans.Contracts.Status;
 using CSharpWars.Orleans.Grains;
 using CSharpWars.WebApi.Contracts;
+using CSharpWars.WebApi.Extensions;
+using CSharpWars.WebApi.Helpers;
 using Orleans;
 
 namespace CSharpWars.WebApi.Managers;
@@ -12,22 +15,20 @@ public interface IStatusManager
 
 public class StatusManager : IStatusManager
 {
-    private readonly IClusterClient _clusterClient;
+    private readonly IClusterClientHelper<IStatusGrain> _clusterClientHelper;
     private readonly IMapper _mapper;
 
     public StatusManager(
-        IClusterClient clusterClient,
+        IClusterClientHelper<IStatusGrain> clusterClientHelper,
         IMapper mapper)
     {
-        _clusterClient = clusterClient;
+        _clusterClientHelper = clusterClientHelper;
         _mapper = mapper;
     }
 
     public async Task<GetStatusResponse> GetStatus()
     {
-        var statusGrain = _clusterClient.GetGrain<IStatusGrain>("CSharpWars.Orleans.Host");
-        var status = await statusGrain.GetStatus();
-
+        var status = await _clusterClientHelper.FromGrain(g => g.GetStatus());
         return _mapper.Map<GetStatusResponse>(status);
     }
 }

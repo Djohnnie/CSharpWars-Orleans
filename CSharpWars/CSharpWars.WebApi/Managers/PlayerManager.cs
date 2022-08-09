@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using CSharpWars.Orleans.Grains;
 using CSharpWars.WebApi.Contracts;
-using Orleans;
+using CSharpWars.WebApi.Helpers;
 
 namespace CSharpWars.WebApi.Managers;
 
@@ -13,27 +13,25 @@ public interface IPlayerManager
 
 public class PlayerManager : IPlayerManager
 {
+    private readonly IClusterClientHelper<IPlayersGrain> _clusterClientHelper;
     private readonly IMapper _mapper;
-    private readonly IClusterClient _clusterClient;
 
     public PlayerManager(
-        IMapper mapper,
-        IClusterClient clusterClient)
+        IClusterClientHelper<IPlayersGrain> clusterClientHelper,
+        IMapper mapper)
     {
+        _clusterClientHelper = clusterClientHelper;
         _mapper = mapper;
-        _clusterClient = clusterClient;
     }
 
     public async Task<LoginResponse> Login(LoginRequest request)
     {
-        var playersGrain = _clusterClient.GetGrain<IPlayersGrain>(nameof(PlayerManager));
-        var player = await playersGrain.Login(request.Username, request.Password);
+        var player = await _clusterClientHelper.FromGrain(g => g.Login(request.Username, request.Password));
         return _mapper.Map<LoginResponse>(player);
     }
 
     public async Task DeleteAllPlayers()
     {
-        var playersGrain = _clusterClient.GetGrain<IPlayersGrain>(nameof(PlayerManager));
-        await playersGrain.DeleteAllPlayers();
+        await _clusterClientHelper.FromGrain(g => g.DeleteAllPlayers());
     }
 }

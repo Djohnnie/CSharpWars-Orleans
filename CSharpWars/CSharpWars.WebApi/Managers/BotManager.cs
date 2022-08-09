@@ -2,7 +2,7 @@
 using CSharpWars.Orleans.Contracts.Bot;
 using CSharpWars.Orleans.Grains;
 using CSharpWars.WebApi.Contracts;
-using Orleans;
+using CSharpWars.WebApi.Helpers;
 
 namespace CSharpWars.WebApi.Managers;
 
@@ -15,22 +15,20 @@ public interface IBotManager
 
 public class BotManager : IBotManager
 {
-    private readonly IClusterClient _clusterClient;
+    private readonly IClusterClientHelperWithStringKey<IArenaGrain> _clusterClientHelper;
     private readonly IMapper _mapper;
 
     public BotManager(
-        IClusterClient clusterClient,
+        IClusterClientHelperWithStringKey<IArenaGrain> clusterClientHelper,
         IMapper mapper)
     {
-        _clusterClient = clusterClient;
+        _clusterClientHelper = clusterClientHelper;
         _mapper = mapper;
     }
 
     public async Task<GetAllActiveBotsResponse> GetAllActiveBots(GetAllActiveBotsRequest request)
     {
-        var arenaGrain = _clusterClient.GetGrain<IArenaGrain>(request.ArenaName);
-        var bots = await arenaGrain.GetAllActiveBots();
-
+        var bots = await _clusterClientHelper.FromGrain(request.ArenaName, g => g.GetAllActiveBots());
         return _mapper.Map<GetAllActiveBotsResponse>(bots);
     }
 
@@ -41,11 +39,9 @@ public class BotManager : IBotManager
             throw new ArgumentNullException(nameof(request.PlayerName));
         }
 
-                var botToCreate = _mapper.Map<BotToCreateDto>(request);
+        var botToCreate = _mapper.Map<BotToCreateDto>(request);
 
-        var arenaGrain = _clusterClient.GetGrain<IArenaGrain>(request.ArenaName);
-        var bot = await arenaGrain.CreateBot(request.PlayerName, botToCreate);
-
+        var bot = await _clusterClientHelper.FromGrain(request.ArenaName, g => g.CreateBot(request.PlayerName, botToCreate));
         return _mapper.Map<CreateBotResponse>(bot);
     }
 }

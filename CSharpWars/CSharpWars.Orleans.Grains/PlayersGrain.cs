@@ -10,7 +10,7 @@ public class PlayersState
     public IList<string>? PlayerNames { get; set; }
 }
 
-public interface IPlayersGrain : IGrainWithStringKey
+public interface IPlayersGrain : IGrainWithGuidKey
 {
     Task<PlayerDto> Login(string username, string password);
     Task DeleteAllPlayers();

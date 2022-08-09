@@ -4,7 +4,7 @@ using Orleans;
 namespace CSharpWars.Orleans.Grains;
 
 
-public interface IStatusGrain : IGrainWithStringKey
+public interface IStatusGrain : IGrainWithGuidKey
 {
     Task<StatusDto> GetStatus();
 }

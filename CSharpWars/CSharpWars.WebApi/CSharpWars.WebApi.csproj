@@ -25,4 +25,8 @@
     <ProjectReference Include="..\CSharpWars.WebApi.Contracts\CSharpWars.WebApi.Contracts.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Orleans_CodeGenInputs Remove="Extensions\ClusterClientExtensions.cs" />
+  </ItemGroup>
+
 </Project>
