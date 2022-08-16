@@ -1,5 +1,6 @@
 ﻿using CSharpWars.Enums;
 using CSharpWars.Orleans.Contracts.Bot;
+using CSharpWars.Orleans.Grains.Helpers;
 using Orleans;
 using Orleans.Runtime;
 
@@ -31,11 +32,14 @@ public interface IBotGrain : IGrainWithGuidKey
 
 public class BotGrain : Grain, IBotGrain
 {
+    private readonly IGrainFactoryHelperWithGuidKey<IScriptGrain> _scriptGrainFactory;
     private readonly IPersistentState<BotState> _state;
 
     public BotGrain(
+        IGrainFactoryHelperWithGuidKey<IScriptGrain> scriptGrainFactory,
         [PersistentState("bot", "botStore")] IPersistentState<BotState> state)
     {
+        _scriptGrainFactory = scriptGrainFactory;
         _state = state;
     }
 
@@ -68,8 +72,7 @@ public class BotGrain : Grain, IBotGrain
         await _state.WriteStateAsync();
 
         var botId = this.GetPrimaryKey();
-        var scriptGrain = GrainFactory.GetGrain<IScriptGrain>(botId);
-        await scriptGrain.SetScript(bot.Script);
+        await _scriptGrainFactory.FromGrain(botId, g => g.SetScript(bot.Script));
 
         return await GetState();
     }
@@ -84,8 +87,8 @@ public class BotGrain : Grain, IBotGrain
         }
 
         var botId = this.GetPrimaryKey();
-        var scriptGrain = GrainFactory.GetGrain<IScriptGrain>(botId);
-        await scriptGrain.RunScript();
+
+        await _scriptGrainFactory.FromGrain(botId, g => g.RunScript());
 
         return true;
     }
@@ -95,8 +98,7 @@ public class BotGrain : Grain, IBotGrain
         if (_state.State.Exists)
         {
             var botId = this.GetPrimaryKey();
-            var scriptGrain = GrainFactory.GetGrain<IScriptGrain>(botId);
-            await scriptGrain.DeleteScript();
+            await _scriptGrainFactory.FromGrain(botId, g => g.DeleteScript());
 
             await _state.ClearStateAsync();
         }

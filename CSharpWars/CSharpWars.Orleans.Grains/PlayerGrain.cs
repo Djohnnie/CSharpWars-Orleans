@@ -1,11 +1,11 @@
 ﻿using CSharpWars.Common.Helpers;
 using CSharpWars.Helpers;
 using CSharpWars.Orleans.Contracts.Player;
+using CSharpWars.Orleans.Grains.Helpers;
 using Orleans;
 using Orleans.Runtime;
 
 namespace CSharpWars.Orleans.Grains;
-
 
 public class PlayerState
 {
@@ -29,15 +29,18 @@ public class PlayerGrain : Grain, IPlayerGrain
 {
     private readonly IPasswordHashHelper _passwordHashHelper;
     private readonly IJwtHelper _jwtHelper;
+    private readonly IGrainFactoryHelperWithGuidKey<IBotGrain> _botGrainHelper;
     private readonly IPersistentState<PlayerState> _state;
 
     public PlayerGrain(
         IPasswordHashHelper passwordHashHelper,
         IJwtHelper jwtHelper,
+        IGrainFactoryHelperWithGuidKey<IBotGrain> botGrainHelper,
         [PersistentState("player", "playerStore")] IPersistentState<PlayerState> state)
     {
         _passwordHashHelper = passwordHashHelper;
         _jwtHelper = jwtHelper;
+        _botGrainHelper = botGrainHelper;
         _state = state;
     }
 
@@ -104,8 +107,7 @@ public class PlayerGrain : Grain, IPlayerGrain
         {
             foreach (var botId in _state.State.BotIds)
             {
-                var botGrain = GrainFactory.GetGrain<IBotGrain>(botId);
-                await botGrain.DeleteBot();
+                await _botGrainHelper.FromGrain(botId, g => g.DeleteBot());
             }
 
             await _state.ClearStateAsync();

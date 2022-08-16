@@ -1,5 +1,6 @@
 ﻿using CSharpWars.Orleans.Contracts.Arena;
 using CSharpWars.Orleans.Contracts.Bot;
+using CSharpWars.Orleans.Grains.Helpers;
 using Microsoft.Extensions.Configuration;
 using Orleans;
 using Orleans.Runtime;
@@ -27,13 +28,22 @@ public interface IArenaGrain : IGrainWithStringKey
 
 public class ArenaGrain : Grain, IArenaGrain
 {
+    private readonly IGrainFactoryHelperWithStringKey<IPlayerGrain> _playerGrainFactory;
+    private readonly IGrainFactoryHelperWithGuidKey<IBotGrain> _botGrainFactory;
+    private readonly IGrainFactoryHelperWithStringKey<IProcessingGrain> _processingGrainFactory;
     private readonly IPersistentState<ArenaState> _state;
     private readonly IConfiguration _configuration;
 
     public ArenaGrain(
+        IGrainFactoryHelperWithStringKey<IPlayerGrain> playerGrainFactory,
+        IGrainFactoryHelperWithGuidKey<IBotGrain> botGrainFactory,
+        IGrainFactoryHelperWithStringKey<IProcessingGrain> processingGrainFactory,
         [PersistentState("arena", "arenaStore")] IPersistentState<ArenaState> state,
         IConfiguration configuration)
     {
+        _playerGrainFactory = playerGrainFactory;
+        _botGrainFactory = botGrainFactory;
+        _processingGrainFactory = processingGrainFactory;
         _state = state;
         _configuration = configuration;
     }
@@ -51,8 +61,8 @@ public class ArenaGrain : Grain, IArenaGrain
         {
             foreach (var botId in _state.State.BotIds)
             {
-                var botGrain = GrainFactory.GetGrain<IBotGrain>(botId);
-                activeBots.Add(await botGrain.GetState());
+                var botState = await _botGrainFactory.FromGrain(botId, g => g.GetState());
+                activeBots.Add(botState);
             }
         }
 
@@ -87,12 +97,13 @@ public class ArenaGrain : Grain, IArenaGrain
 
         var botId = Guid.NewGuid();
 
-        var playerGrain = GrainFactory.GetGrain<IPlayerGrain>(playerName);
-        await playerGrain.ValidateBotDeploymentLimit();
-        await playerGrain.BotCeated(botId);
+        await _playerGrainFactory.FromGrain(playerName, async playerGrain =>
+        {
+            await playerGrain.ValidateBotDeploymentLimit();
+            await playerGrain.BotCeated(botId);
+        });
 
-        var botGrain = GrainFactory.GetGrain<IBotGrain>(botId);
-        var createdBot = await botGrain.CreateBot(bot);
+        var createdBot = await _botGrainFactory.FromGrain(botId, g => g.CreateBot(bot));
 
         _state.State.BotIds.Add(botId);
         await _state.WriteStateAsync();
@@ -104,15 +115,13 @@ public class ArenaGrain : Grain, IArenaGrain
     {
         if (_state.State.Exists && _state.State.BotIds != null)
         {
-            var processingGrain = GrainFactory.GetGrain<IProcessingGrain>(_state.State.Name);
-            await processingGrain.Stop();
+            await _processingGrainFactory.FromGrain(_state.State.Name, g => g.Stop());
 
             await Task.Delay(2000);
 
             foreach (var botId in _state.State.BotIds)
             {
-                var botGrain = GrainFactory.GetGrain<IBotGrain>(botId);
-                await botGrain.DeleteBot();
+                await _botGrainFactory.FromGrain(botId, g => g.DeleteBot());
             }
 
             await _state.ClearStateAsync();
@@ -123,7 +132,6 @@ public class ArenaGrain : Grain, IArenaGrain
 
     private async Task PingProcessor()
     {
-        var processingGrain = GrainFactory.GetGrain<IProcessingGrain>(_state.State.Name);
-        await processingGrain.Ping();
+        await _processingGrainFactory.FromGrain(_state.State.Name, g => g.Ping());
     }
 }

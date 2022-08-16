@@ -1,4 +1,5 @@
 ﻿using CSharpWars.Orleans.Contracts.Player;
+using CSharpWars.Orleans.Grains.Helpers;
 using Orleans;
 using Orleans.Runtime;
 
@@ -19,11 +20,14 @@ public interface IPlayersGrain : IGrainWithGuidKey
 public class PlayersGrain : Grain, IPlayersGrain
 {
     private readonly IPersistentState<PlayersState> _state;
+    private readonly IGrainFactoryHelperWithStringKey<IPlayerGrain> _playerGrainFactoryHelper;
 
     public PlayersGrain(
-        [PersistentState("players", "playersStore")] IPersistentState<PlayersState> state)
+        [PersistentState("players", "playersStore")] IPersistentState<PlayersState> state,
+        IGrainFactoryHelperWithStringKey<IPlayerGrain> playerGrainFactoryHelper)
     {
         _state = state;
+        _playerGrainFactoryHelper = playerGrainFactoryHelper;
     }
 
     public async Task<PlayerDto> Login(string username, string password)
@@ -36,8 +40,8 @@ public class PlayersGrain : Grain, IPlayersGrain
             await _state.WriteStateAsync();
         }
 
-        var playerGrain = GrainFactory.GetGrain<IPlayerGrain>(username);
-        var player = await playerGrain.Login(username, password);
+        var player = await _playerGrainFactoryHelper.FromGrain(
+            username, g => g.Login(username, password));
 
         if (_state.State.PlayerNames != null && !_state.State.PlayerNames.Contains(username))
         {
@@ -53,8 +57,7 @@ public class PlayersGrain : Grain, IPlayersGrain
         {
             foreach (var playerName in _state.State.PlayerNames)
             {
-                var playerGrain = GrainFactory.GetGrain<IPlayerGrain>(playerName);
-                await playerGrain.DeletePlayer();
+                await _playerGrainFactoryHelper.FromGrain(playerName, g => g.DeletePlayer());
             }
 
             await _state.ClearStateAsync();
