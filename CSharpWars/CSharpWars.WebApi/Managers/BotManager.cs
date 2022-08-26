@@ -15,20 +15,24 @@ public interface IBotManager
 
 public class BotManager : IBotManager
 {
-    private readonly IClusterClientHelperWithStringKey<IArenaGrain> _clusterClientHelper;
+    private readonly IClusterClientHelperWithStringKey<IArenaGrain> _arenaGrainClient;
+    private readonly IClusterClientHelperWithStringKey<IProcessingGrain> _processingGrainClient;
     private readonly IMapper _mapper;
 
     public BotManager(
-        IClusterClientHelperWithStringKey<IArenaGrain> clusterClientHelper,
+        IClusterClientHelperWithStringKey<IArenaGrain> arenaGrainClient,
+        IClusterClientHelperWithStringKey<IProcessingGrain> processingGrainClient,
         IMapper mapper)
     {
-        _clusterClientHelper = clusterClientHelper;
+        _arenaGrainClient = arenaGrainClient;
+        _processingGrainClient = processingGrainClient;
         _mapper = mapper;
     }
 
     public async Task<GetAllActiveBotsResponse> GetAllActiveBots(GetAllActiveBotsRequest request)
     {
-        var bots = await _clusterClientHelper.FromGrain(request.ArenaName, g => g.GetAllActiveBots());
+        var bots = await _arenaGrainClient.FromGrain(request.ArenaName, g => g.GetAllActiveBots());
+        await _processingGrainClient.FromGrain(request.ArenaName, g => g.Ping());
         return _mapper.Map<GetAllActiveBotsResponse>(bots);
     }
 
@@ -41,7 +45,7 @@ public class BotManager : IBotManager
 
         var botToCreate = _mapper.Map<BotToCreateDto>(request);
 
-        var bot = await _clusterClientHelper.FromGrain(request.ArenaName, g => g.CreateBot(request.PlayerName, botToCreate));
+        var bot = await _arenaGrainClient.FromGrain(request.ArenaName, g => g.CreateBot(request.PlayerName, botToCreate));
         return _mapper.Map<CreateBotResponse>(bot);
     }
 }

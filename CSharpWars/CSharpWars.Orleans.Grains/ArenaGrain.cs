@@ -1,8 +1,11 @@
-﻿using CSharpWars.Enums;
+﻿using CSharpWars.Common.Extensions;
+using CSharpWars.Enums;
 using CSharpWars.Orleans.Contracts.Arena;
 using CSharpWars.Orleans.Contracts.Bot;
+using CSharpWars.Orleans.Grains.Base;
 using CSharpWars.Orleans.Grains.Helpers;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using Orleans;
 using Orleans.Runtime;
 
@@ -29,33 +32,33 @@ public interface IArenaGrain : IGrainWithStringKey
     Task DeleteBot(Guid botId);
 }
 
-public class ArenaGrain : Grain, IArenaGrain
+public class ArenaGrain : GrainBase<IArenaGrain>, IArenaGrain
 {
     private readonly IGrainFactoryHelperWithStringKey<IPlayerGrain> _playerGrainFactory;
     private readonly IGrainFactoryHelperWithGuidKey<IBotGrain> _botGrainFactory;
     private readonly IGrainFactoryHelperWithStringKey<IProcessingGrain> _processingGrainFactory;
     private readonly IPersistentState<ArenaState> _state;
     private readonly IConfiguration _configuration;
+    private readonly ILogger<IArenaGrain> _logger;
 
     public ArenaGrain(
         IGrainFactoryHelperWithStringKey<IPlayerGrain> playerGrainFactory,
         IGrainFactoryHelperWithGuidKey<IBotGrain> botGrainFactory,
         IGrainFactoryHelperWithStringKey<IProcessingGrain> processingGrainFactory,
         [PersistentState("arena", "arenaStore")] IPersistentState<ArenaState> state,
-        IConfiguration configuration)
+        IConfiguration configuration, ILogger<IArenaGrain> logger) : base(logger)
     {
         _playerGrainFactory = playerGrainFactory;
         _botGrainFactory = botGrainFactory;
         _processingGrainFactory = processingGrainFactory;
         _state = state;
         _configuration = configuration;
+        _logger = logger;
     }
 
     public async Task<List<BotDto>> GetAllActiveBots()
     {
         var activeBots = await GetBots(false);
-
-        await PingProcessor();
 
         return activeBots;
     }
@@ -87,15 +90,17 @@ public class ArenaGrain : Grain, IArenaGrain
             }
         }
 
-        await PingProcessor();
-
         return activeBots;
     }
 
     public async Task<ArenaDto> GetArenaDetails()
     {
+        _logger.AutoLogInformation($"Getting arena details for '{this.GetPrimaryKeyString()}'");
+
         if (!_state.State.Exists)
         {
+            _logger.AutoLogInformation($"Creating new arena '{this.GetPrimaryKeyString()}'");
+
             _state.State.Name = this.GetPrimaryKeyString();
             _state.State.Width = _configuration.GetValue<int>("ARENA_WIDTH");
             _state.State.Height = _configuration.GetValue<int>("ARENA_HEIGHT");
@@ -103,8 +108,6 @@ public class ArenaGrain : Grain, IArenaGrain
             _state.State.Exists = true;
             await _state.WriteStateAsync();
         }
-
-        await PingProcessor();
 
         return new ArenaDto(_state.State.Name, _state.State.Width, _state.State.Height);
     }
@@ -118,13 +121,9 @@ public class ArenaGrain : Grain, IArenaGrain
 
         var botId = Guid.NewGuid();
 
-        await _playerGrainFactory.FromGrain(playerName, async playerGrain =>
-        {
-            await playerGrain.ValidateBotDeploymentLimit();
-            await playerGrain.BotCeated(botId);
-        });
-
+        await _playerGrainFactory.FromGrain(playerName, g => g.ValidateBotDeploymentLimit());
         var createdBot = await _botGrainFactory.FromGrain(botId, g => g.CreateBot(bot));
+        await _playerGrainFactory.FromGrain(playerName, g => g.BotCreated(botId));
 
         _state.State.BotIds.Add(botId);
         await _state.WriteStateAsync();
@@ -151,18 +150,12 @@ public class ArenaGrain : Grain, IArenaGrain
         DeactivateOnIdle();
     }
 
-    public Task DeleteBot(Guid botId)
+    public async Task DeleteBot(Guid botId)
     {
         if (_state.State.Exists && _state.State.BotIds != null)
         {
             _state.State.BotIds.Remove(botId);
+            await _state.WriteStateAsync();
         }
-
-        return Task.CompletedTask;
-    }
-
-    private async Task PingProcessor()
-    {
-        await _processingGrainFactory.FromGrain(_state.State.Name, g => g.Ping());
     }
 }

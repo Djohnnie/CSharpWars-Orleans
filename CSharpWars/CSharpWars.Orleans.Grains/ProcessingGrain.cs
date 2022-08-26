@@ -1,4 +1,7 @@
-﻿using CSharpWars.Orleans.Grains.Logic;
+﻿using CSharpWars.Common.Extensions;
+using CSharpWars.Orleans.Grains.Base;
+using CSharpWars.Orleans.Grains.Logic;
+using Microsoft.Extensions.Logging;
 using Orleans;
 
 namespace CSharpWars.Orleans.Grains;
@@ -10,14 +13,18 @@ public interface IProcessingGrain : IGrainWithStringKey
     Task Stop();
 }
 
-public class ProcessingGrain : Grain, IProcessingGrain
+public class ProcessingGrain : GrainBase<IProcessingGrain>, IProcessingGrain
 {
+    private readonly ILogger<IProcessingGrain> _logger;
     private readonly IProcessorLogic _processorLogic;
 
     private IDisposable? _timer;
 
-    public ProcessingGrain(IProcessorLogic processorLogic)
+    public ProcessingGrain(
+        ILogger<IProcessingGrain> logger,
+        IProcessorLogic processorLogic) : base(logger)
     {
+        _logger = logger;
         _processorLogic = processorLogic;
     }
 
@@ -38,12 +45,15 @@ public class ProcessingGrain : Grain, IProcessingGrain
     private async Task OnTimer(object state)
     {
         var arenaName = this.GetPrimaryKeyString();
+        _logger.AutoLogInformation($"{nameof(ProcessingGrain)} timer for '{this.GetPrimaryKeyString()}' has ticked");
 
         await _processorLogic.Go(arenaName);
     }
 
     public Task Ping()
     {
+        _logger.AutoLogInformation($"{nameof(ProcessingGrain)} for '{this.GetPrimaryKeyString()}' was pinged");
+
         return Task.CompletedTask;
     }
 

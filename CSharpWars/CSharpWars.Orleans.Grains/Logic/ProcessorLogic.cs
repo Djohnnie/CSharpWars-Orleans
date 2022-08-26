@@ -51,7 +51,7 @@ public class ProcessorLogic : IProcessorLogic
 
         foreach (var bot in allBots)
         {
-            if (bot.Move == Move.Died && bot.TimeOfDeath < DateTime.UtcNow.AddSeconds(-10))
+            if (bot.TimeOfDeath < DateTime.UtcNow.AddSeconds(-10))
             {
                 await _botGrainFactory.FromGrain(bot.BotId, g => g.DeleteBot(false));
             }

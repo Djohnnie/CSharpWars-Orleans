@@ -1,9 +1,9 @@
 ﻿using CSharpWars.Enums;
-using CSharpWars.Orleans.Contracts.Arena;
-using CSharpWars.Orleans.Contracts.Bot;
+using CSharpWars.Orleans.Grains.Base;
 using CSharpWars.Scripting;
 using CSharpWars.Scripting.Model;
 using Microsoft.CodeAnalysis.Scripting;
+using Microsoft.Extensions.Logging;
 using Orleans;
 using Orleans.Placement;
 using Orleans.Runtime;
@@ -24,18 +24,20 @@ public interface IScriptGrain : IGrainWithGuidKey
 }
 
 [PreferLocalPlacement]
-public class ScriptGrain : Grain, IScriptGrain
+public class ScriptGrain : GrainBase<IScriptGrain>, IScriptGrain
 {
     private readonly IScriptCompiler _scriptCompiler;
+    private readonly ILogger<IScriptGrain> _logger;
     private readonly IPersistentState<ScriptState> _state;
 
     private ScriptRunner<object>? _compiledScript;
 
     public ScriptGrain(
-        IScriptCompiler scriptCompiler,
-        [PersistentState("script", "scriptStore")] IPersistentState<ScriptState> state)
+        IScriptCompiler scriptCompiler, ILogger<IScriptGrain> logger,
+        [PersistentState("script", "scriptStore")] IPersistentState<ScriptState> state) : base(logger)
     {
         _scriptCompiler = scriptCompiler;
+        _logger = logger;
         _state = state;
     }
 

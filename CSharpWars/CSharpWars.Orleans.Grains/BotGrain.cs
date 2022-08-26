@@ -2,7 +2,9 @@
 using CSharpWars.Common.Helpers;
 using CSharpWars.Enums;
 using CSharpWars.Orleans.Contracts.Bot;
+using CSharpWars.Orleans.Grains.Base;
 using CSharpWars.Orleans.Grains.Helpers;
+using Microsoft.Extensions.Logging;
 using Orleans;
 using Orleans.Runtime;
 
@@ -41,22 +43,24 @@ public interface IBotGrain : IGrainWithGuidKey
     Task UpdateState(BotDto bot);
 }
 
-public class BotGrain : Grain, IBotGrain
+public class BotGrain : GrainBase<IBotGrain>, IBotGrain
 {
     private readonly IGrainFactoryHelperWithGuidKey<IScriptGrain> _scriptGrainFactory;
     private readonly IGrainFactoryHelperWithStringKey<IArenaGrain> _arenaGrainFactory;
     private readonly IRandomHelper _randomHelper;
+    private readonly ILogger<IBotGrain> _logger;
     private readonly IPersistentState<BotState> _state;
 
     public BotGrain(
         IGrainFactoryHelperWithGuidKey<IScriptGrain> scriptGrainFactory,
         IGrainFactoryHelperWithStringKey<IArenaGrain> arenaGrainFactory,
-        IRandomHelper randomHelper,
-        [PersistentState("bot", "botStore")] IPersistentState<BotState> state)
+        IRandomHelper randomHelper, ILogger<IBotGrain> logger,
+        [PersistentState("bot", "botStore")] IPersistentState<BotState> state) : base(logger)
     {
         _scriptGrainFactory = scriptGrainFactory;
         _arenaGrainFactory = arenaGrainFactory;
         _randomHelper = randomHelper;
+        _logger = logger;
         _state = state;
     }
 
@@ -84,7 +88,8 @@ public class BotGrain : Grain, IBotGrain
             LastAttackY = _state.State.LastAttackY,
             Orientation = _state.State.Orientation,
             Move = _state.State.Move,
-            Memory = _state.State.Memory
+            Memory = _state.State.Memory,
+            TimeOfDeath = _state.State.TimeOfDeath
         });
     }
 
@@ -161,7 +166,7 @@ public class BotGrain : Grain, IBotGrain
         DeactivateOnIdle();
     }
 
-    public Task UpdateState(BotDto bot)
+    public async Task UpdateState(BotDto bot)
     {
         if (_state.State.Exists)
         {
@@ -177,8 +182,8 @@ public class BotGrain : Grain, IBotGrain
             _state.State.Memory = bot.Memory;
             _state.State.TimeOfDeath = bot.TimeOfDeath;
             _state.State.Move = bot.Move;
-        }
 
-        return Task.CompletedTask;
+            await _state.WriteStateAsync();
+        }
     }
 }

@@ -22,7 +22,6 @@ IHost host = Host.CreateDefaultBuilder(args)
         services.AddScripting();
         services.AddGrainHelpers();
         services.AddGrainLogic();
-        services.AddHostedService<Worker>();
     })
 
     .UseOrleans((hostBuilder, siloBuilder) =>
@@ -73,8 +72,8 @@ IHost host = Host.CreateDefaultBuilder(args)
 
         siloBuilder.Configure<GrainCollectionOptions>(o =>
         {
-            o.CollectionAge = TimeSpan.FromHours(1);
-            o.CollectionQuantum = TimeSpan.FromMinutes(10);
+            o.CollectionAge = TimeSpan.FromMinutes(10);
+            o.CollectionQuantum = TimeSpan.FromMinutes(5);
         });
     })
     .Build();

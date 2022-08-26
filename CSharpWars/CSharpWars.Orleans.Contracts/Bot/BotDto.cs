@@ -19,6 +19,6 @@ public class BotDto
     public int LastAttackY { get; set; }
     public Orientation Orientation { get; set; }
     public Move Move { get; set; }
-    public DateTime TimeOfDeath { get; set; }
+    public DateTime? TimeOfDeath { get; set; }
     public string Memory { get; set; }
 }
