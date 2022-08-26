@@ -1,4 +1,5 @@
-﻿using CSharpWars.Enums;
+﻿using CSharpWars.Common.Extensions;
+using CSharpWars.Enums;
 using CSharpWars.Orleans.Contracts.Arena;
 using CSharpWars.Orleans.Contracts.Bot;
 
@@ -30,29 +31,29 @@ public class BotProperties
 
     public void Update(BotDto bot)
     {
-        //CurrentHealth = bot.CurrentHealth;
-        //X = bot.X;
-        //Y = bot.Y;
+        CurrentHealth = bot.CurrentHealth;
+        X = bot.X;
+        Y = bot.Y;
     }
 
     public static BotProperties Build(BotDto bot, ArenaDto arena, IList<BotDto> bots)
     {
         return new BotProperties
         {
-            //BotId = bot.Id,
-            //Name = bot.Name,
-            //PlayerName = bot.PlayerName,
+            BotId = bot.BotId,
+            Name = bot.BotName,
+            PlayerName = bot.PlayerName,
             Width = arena.Width,
             Height = arena.Height,
-            //X = bot.X,
-            //Y = bot.Y,
-            //Orientation = bot.Orientation,
-            //LastMove = bot.Move,
+            X = bot.X,
+            Y = bot.Y,
+            Orientation = bot.Orientation,
+            LastMove = bot.Move,
             MaximumHealth = bot.MaximumHealth,
-            //CurrentHealth = bot.CurrentHealth,
+            CurrentHealth = bot.CurrentHealth,
             MaximumStamina = bot.MaximumStamina,
-            //CurrentStamina = bot.CurrentStamina,
-            //Memory = bot.Memory.Deserialize<Dictionary<string, string>>(),
+            CurrentStamina = bot.CurrentStamina,
+            Memory = bot.Memory.Deserialize<Dictionary<string, string>>() ?? new Dictionary<string, string>(),
             Messages = new List<string>(),
             Bots = BuildBots(bots),
             CurrentMove = Move.Idling

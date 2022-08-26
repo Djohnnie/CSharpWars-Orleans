@@ -1,9 +1,11 @@
-﻿using CSharpWars.Orleans.Contracts.Arena;
+﻿using CSharpWars.Enums;
+using CSharpWars.Orleans.Contracts.Arena;
 using CSharpWars.Orleans.Contracts.Bot;
 using CSharpWars.Scripting;
 using CSharpWars.Scripting.Model;
 using Microsoft.CodeAnalysis.Scripting;
 using Orleans;
+using Orleans.Placement;
 using Orleans.Runtime;
 
 namespace CSharpWars.Orleans.Grains;
@@ -17,10 +19,11 @@ public class ScriptState
 public interface IScriptGrain : IGrainWithGuidKey
 {
     Task SetScript(string script);
-    Task RunScript();
+    Task<BotProperties> Process(BotProperties botProperties);
     Task DeleteScript();
 }
 
+[PreferLocalPlacement]
 public class ScriptGrain : Grain, IScriptGrain
 {
     private readonly IScriptCompiler _scriptCompiler;
@@ -56,17 +59,23 @@ public class ScriptGrain : Grain, IScriptGrain
         await _state.WriteStateAsync();
     }
 
-    public async Task RunScript()
+    public async Task<BotProperties> Process(BotProperties botProperties)
     {
         if (_state.State.Exists && _compiledScript != null)
         {
-            var botProperties = BotProperties.Build(
-                new BotDto(Guid.NewGuid(), "", 100, 100),
-                new ArenaDto("", 10, 10),
-                new List<BotDto>());
-            var scriptGlobals = ScriptGlobals.Build(botProperties);
-            _ = await _compiledScript.Invoke(scriptGlobals);
+            try
+            {
+                var scriptGlobals = ScriptGlobals.Build(botProperties);
+
+                _ = await _compiledScript.Invoke(scriptGlobals);
+            }
+            catch
+            {
+                botProperties.CurrentMove = Move.ScriptError;
+            }
         }
+
+        return botProperties;
     }
 
     public async Task DeleteScript()

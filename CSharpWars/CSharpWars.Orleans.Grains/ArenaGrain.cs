@@ -1,4 +1,5 @@
-﻿using CSharpWars.Orleans.Contracts.Arena;
+﻿using CSharpWars.Enums;
+using CSharpWars.Orleans.Contracts.Arena;
 using CSharpWars.Orleans.Contracts.Bot;
 using CSharpWars.Orleans.Grains.Helpers;
 using Microsoft.Extensions.Configuration;
@@ -19,11 +20,13 @@ public class ArenaState
 public interface IArenaGrain : IGrainWithStringKey
 {
     Task<List<BotDto>> GetAllActiveBots();
+    Task<List<BotDto>> GetAllLiveBots();
 
     Task<ArenaDto> GetArenaDetails();
 
     Task<BotDto> CreateBot(string playerName, BotToCreateDto bot);
     Task DeleteArena();
+    Task DeleteBot(Guid botId);
 }
 
 public class ArenaGrain : Grain, IArenaGrain
@@ -50,6 +53,20 @@ public class ArenaGrain : Grain, IArenaGrain
 
     public async Task<List<BotDto>> GetAllActiveBots()
     {
+        var activeBots = await GetBots(false);
+
+        await PingProcessor();
+
+        return activeBots;
+    }
+
+    public async Task<List<BotDto>> GetAllLiveBots()
+    {
+        return await GetBots(true);
+    }
+
+    private async Task<List<BotDto>> GetBots(bool onlyLive)
+    {
         if (!_state.State.Exists)
         {
             _ = await GetArenaDetails();
@@ -62,7 +79,11 @@ public class ArenaGrain : Grain, IArenaGrain
             foreach (var botId in _state.State.BotIds)
             {
                 var botState = await _botGrainFactory.FromGrain(botId, g => g.GetState());
-                activeBots.Add(botState);
+
+                if (!onlyLive || botState.Move != Move.Died)
+                {
+                    activeBots.Add(botState);
+                }
             }
         }
 
@@ -121,13 +142,23 @@ public class ArenaGrain : Grain, IArenaGrain
 
             foreach (var botId in _state.State.BotIds)
             {
-                await _botGrainFactory.FromGrain(botId, g => g.DeleteBot());
+                await _botGrainFactory.FromGrain(botId, g => g.DeleteBot(true));
             }
 
             await _state.ClearStateAsync();
         }
 
         DeactivateOnIdle();
+    }
+
+    public Task DeleteBot(Guid botId)
+    {
+        if (_state.State.Exists && _state.State.BotIds != null)
+        {
+            _state.State.BotIds.Remove(botId);
+        }
+
+        return Task.CompletedTask;
     }
 
     private async Task PingProcessor()

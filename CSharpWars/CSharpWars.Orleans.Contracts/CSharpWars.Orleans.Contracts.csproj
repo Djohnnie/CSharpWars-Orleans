@@ -6,4 +6,8 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\CSharpWars.Enums\CSharpWars.Enums.csproj" />
+  </ItemGroup>
+
 </Project>

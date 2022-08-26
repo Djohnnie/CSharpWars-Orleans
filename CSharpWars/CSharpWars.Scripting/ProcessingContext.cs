@@ -1,13 +1,12 @@
 ﻿using CSharpWars.Orleans.Contracts.Arena;
 using CSharpWars.Orleans.Contracts.Bot;
 using CSharpWars.Scripting.Model;
-using System.Collections.Concurrent;
 
 namespace CSharpWars.Scripting;
 
 public class ProcessingContext
 {
-    private readonly ConcurrentDictionary<Guid, BotProperties> _botProperties = new();
+    private readonly Dictionary<Guid, BotProperties> _botProperties = new();
 
     public ArenaDto Arena { get; }
     public IList<BotDto> Bots { get; }
@@ -25,7 +24,7 @@ public class ProcessingContext
 
     public void AddBotProperties(Guid botId, BotProperties botProperties)
     {
-        _botProperties.TryAdd(botId, botProperties);
+        _botProperties.Add(botId, botProperties);
     }
 
     public BotProperties GetBotProperties(Guid botId)
@@ -33,9 +32,11 @@ public class ProcessingContext
         return _botProperties[botId];
     }
 
-    public IEnumerable<BotProperties> GetOrderedBotProperties()
+    public List<BotProperties> GetOrderedBotProperties()
     {
-        return _botProperties.Values.OrderBy(x => x.CurrentMove, new MoveComparer());
+        return _botProperties.Values
+            .OrderBy(x => x.CurrentMove, MoveComparer.Default)
+            .ToList();
     }
 
     public void UpdateBotProperties(BotDto bot)
@@ -48,5 +49,11 @@ public class ProcessingContext
 
         var botPropertiesToUpdate = _botProperties.Values.Single(x => x.BotId == bot.BotId);
         botPropertiesToUpdate.Update(bot);
+    }
+
+    public void UpdateBotProperties(BotProperties botProperties)
+    {
+        _botProperties.Remove(botProperties.BotId);
+        _botProperties.Add(botProperties.BotId, botProperties);
     }
 }

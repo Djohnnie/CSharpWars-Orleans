@@ -9,5 +9,6 @@ public static class ServiceCollectionExtensions
     {
         services.AddSingleton<IJwtHelper, JwtHelper>();
         services.AddSingleton<IPasswordHashHelper, PasswordHashHelper>();
+        services.AddSingleton<IRandomHelper, RandomHelper>();
     }
 }

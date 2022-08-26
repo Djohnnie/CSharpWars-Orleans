@@ -1,4 +1,5 @@
-﻿using CSharpWars.Enums;
+﻿using CSharpWars.Common.Extensions;
+using CSharpWars.Enums;
 using CSharpWars.Scripting.Model;
 
 namespace CSharpWars.Scripting;
@@ -150,14 +151,14 @@ public class ScriptGlobals
     /// <param name="value"></param>
     public void StoreInMemory<T>(string key, T value)
     {
-        //if (_50437079C366407D978Fe4Afd60C535F.Memory.ContainsKey(key))
-        //{
-        //    //_50437079C366407D978Fe4Afd60C535F.Memory[key] = value.Serialize();
-        //}
-        //else
-        //{
-        //    //_50437079C366407D978Fe4Afd60C535F.Memory.Add(key, value.Serialize());
-        //}
+        if (_50437079C366407D978Fe4Afd60C535F.Memory.ContainsKey(key))
+        {
+            _50437079C366407D978Fe4Afd60C535F.Memory[key] = value.Serialize();
+        }
+        else
+        {
+            _50437079C366407D978Fe4Afd60C535F.Memory.Add(key, value.Serialize());
+        }
     }
 
     /// <summary>
@@ -166,12 +167,13 @@ public class ScriptGlobals
     /// <typeparam name="T"></typeparam>
     /// <param name="key"></param>
     /// <returns></returns>
-    public T LoadFromMemory<T>(string key)
+    public T? LoadFromMemory<T>(string key)
     {
-        //if (_50437079C366407D978Fe4Afd60C535F.Memory.ContainsKey(key))
-        //{
-        //    //return _50437079C366407D978Fe4Afd60C535F.Memory[key].Deserialize<T>();
-        //}
+        if (_50437079C366407D978Fe4Afd60C535F.Memory.ContainsKey(key))
+        {
+            return _50437079C366407D978Fe4Afd60C535F.Memory[key].Deserialize<T>();
+        }
+
         return default;
     }
 
@@ -205,6 +207,7 @@ public class ScriptGlobals
         if (_50437079C366407D978Fe4Afd60C535F.CurrentMove == Move.Idling)
         {
             _50437079C366407D978Fe4Afd60C535F.CurrentMove = currentMove;
+
             return true;
         }
 

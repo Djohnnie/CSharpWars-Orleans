@@ -6,9 +6,9 @@ public static class ServiceCollectionExtensions
 {
     public static void AddGrainLogic(this IServiceCollection services)
     {
-        services.AddSingleton<IProcessorLogic, ProcessorLogic>();
-        services.AddSingleton<IPreprocessingLogic, PreprocessingLogic>();
-        services.AddSingleton<IProcessingLogic, ProcessingLogic>();
-        services.AddSingleton<IPostprocessingLogic, PostprocessingLogic>();
+        services.AddScoped<IProcessorLogic, ProcessorLogic>();
+        services.AddScoped<IPreprocessingLogic, PreprocessingLogic>();
+        services.AddScoped<IProcessingLogic, ProcessingLogic>();
+        services.AddScoped<IPostprocessingLogic, PostprocessingLogic>();
     }
 }

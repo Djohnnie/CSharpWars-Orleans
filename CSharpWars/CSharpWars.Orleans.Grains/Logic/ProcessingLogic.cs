@@ -1,5 +1,7 @@
-﻿using CSharpWars.Scripting;
-using Orleans;
+﻿using CSharpWars.Orleans.Grains.Helpers;
+using CSharpWars.Scripting;
+using CSharpWars.Scripting.Model;
+using System.ComponentModel.Design.Serialization;
 
 namespace CSharpWars.Orleans.Grains.Logic;
 
@@ -10,31 +12,29 @@ public interface IProcessingLogic
 
 public class ProcessingLogic : IProcessingLogic
 {
-    private readonly IGrainFactory _grainFactory;
+    private readonly IGrainFactoryHelperWithGuidKey<IScriptGrain> _scriptGrainFactory;
 
-    public ProcessingLogic(IGrainFactory grainFactory)
+    public ProcessingLogic(IGrainFactoryHelperWithGuidKey<IScriptGrain> scriptGrainFactory)
     {
-        _grainFactory = grainFactory;
+        _scriptGrainFactory = scriptGrainFactory;
     }
 
     public async Task Go(ProcessingContext context)
     {
-        var tasks = new Dictionary<Guid, Task<bool>>();
+        var tasks = new Dictionary<Guid, Task<BotProperties>>();
 
         foreach (var bot in context.Bots)
         {
-            var botGrain = _grainFactory.GetGrain<IBotGrain>(bot.BotId);
-            tasks.Add(bot.BotId, botGrain.Process());
+            var botProperties = context.GetBotProperties(bot.BotId);
+            var task = _scriptGrainFactory.FromGrain(bot.BotId, g => g.Process(botProperties));
+            tasks.Add(bot.BotId, task);
         }
 
         await Task.WhenAll(tasks.Values);
 
-        foreach (var processTask in tasks)
+        foreach (var task in tasks.Values)
         {
-            if (!processTask.Value.Result)
-            {
-                //_state.State.BotIds.Remove(processTask.Key);
-            }
+            context.UpdateBotProperties(task.Result);
         }
     }
 }

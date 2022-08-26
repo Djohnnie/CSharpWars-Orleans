@@ -18,19 +18,19 @@ public class Bot
     {
         return new Bot
         {
-            //Id = bot.Id,
-            //Name = bot.Name,
-            //PlayerName = bot.PlayerName,
-            //X = bot.X,
-            //Y = bot.Y,
-            //Orientation = bot.Orientation
+            Id = bot.BotId,
+            Name = bot.BotName,
+            PlayerName = bot.PlayerName,
+            X = bot.X,
+            Y = bot.Y,
+            Orientation = bot.Orientation
         };
     }
 
     public void Update(BotDto bot)
     {
-        //X = bot.X;
-        //Y = bot.Y;
-        //Orientation = bot.Orientation;
+        X = bot.X;
+        Y = bot.Y;
+        Orientation = bot.Orientation;
     }
 }

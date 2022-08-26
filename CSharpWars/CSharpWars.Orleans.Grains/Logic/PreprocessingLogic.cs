@@ -1,6 +1,5 @@
 ﻿using CSharpWars.Scripting;
 using CSharpWars.Scripting.Model;
-using Orleans;
 
 namespace CSharpWars.Orleans.Grains.Logic;
 

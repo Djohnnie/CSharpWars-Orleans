@@ -4,6 +4,8 @@ namespace CSharpWars.Scripting;
 
 public class MoveComparer : IComparer<Move>
 {
+    public static MoveComparer Default => new();
+
     private readonly Dictionary<Move, int> _weights = new()
     {
         { Move.Idling, 0 },
@@ -18,6 +20,8 @@ public class MoveComparer : IComparer<Move>
         { Move.TurningRight, 6 },
         { Move.TurningAround, 6 }
     };
+
+    private MoveComparer() { }
 
     public int Compare(Move x, Move y)
     {
