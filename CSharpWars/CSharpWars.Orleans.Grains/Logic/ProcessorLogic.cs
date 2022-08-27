@@ -1,6 +1,6 @@
 ﻿using CSharpWars.Enums;
+using CSharpWars.Orleans.Common;
 using CSharpWars.Orleans.Contracts.Grains;
-using CSharpWars.Orleans.Grains.Helpers;
 using CSharpWars.Scripting;
 
 namespace CSharpWars.Orleans.Grains.Logic;

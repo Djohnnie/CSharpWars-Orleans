@@ -17,6 +17,7 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\CSharpWars.Orleans.Contracts\CSharpWars.Orleans.Contracts.csproj" />
+		<ProjectReference Include="..\CSharpWars.Scripting\CSharpWars.Scripting.csproj" />
 	</ItemGroup>
 
 </Project>

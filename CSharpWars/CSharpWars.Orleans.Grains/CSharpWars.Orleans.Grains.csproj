@@ -31,6 +31,7 @@
   <ItemGroup>
     <ProjectReference Include="..\CSharpWars.Common\CSharpWars.Common.csproj" />
     <ProjectReference Include="..\CSharpWars.Enums\CSharpWars.Enums.csproj" />
+    <ProjectReference Include="..\CSharpWars.Orleans.Common\CSharpWars.Orleans.Common.csproj" />
     <ProjectReference Include="..\CSharpWars.Orleans.Contracts\CSharpWars.Orleans.Contracts.csproj" />
     <ProjectReference Include="..\CSharpWars.Scripting\CSharpWars.Scripting.csproj" />
   </ItemGroup>

@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using CSharpWars.Orleans.Contracts.Player;
+using CSharpWars.Orleans.Contracts;
 using CSharpWars.WebApi.Contracts;
 
 namespace CSharpWars.Mappers;

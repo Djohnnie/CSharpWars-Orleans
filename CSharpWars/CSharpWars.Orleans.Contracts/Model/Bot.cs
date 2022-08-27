@@ -1,5 +1,4 @@
 ﻿using CSharpWars.Enums;
-using CSharpWars.Orleans.Contracts.Bot;
 
 namespace CSharpWars.Orleans.Contracts.Model;
 

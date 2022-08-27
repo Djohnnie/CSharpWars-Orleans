@@ -1,5 +1,4 @@
-﻿using CSharpWars.Orleans.Contracts.Arena;
-using CSharpWars.Orleans.Contracts.Bot;
+﻿using CSharpWars.Orleans.Contracts;
 using CSharpWars.Orleans.Contracts.Model;
 
 namespace CSharpWars.Scripting;

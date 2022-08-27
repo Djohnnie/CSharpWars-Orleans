@@ -1,5 +1,4 @@
-﻿using CSharpWars.Orleans.Contracts.Bot;
-using Orleans;
+﻿using Orleans;
 
 namespace CSharpWars.Orleans.Contracts.Grains;
 

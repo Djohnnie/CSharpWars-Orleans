@@ -1,6 +1,6 @@
 using CSharpWars.Common.Helpers;
 using CSharpWars.Mappers;
-using CSharpWars.WebApi;
+using CSharpWars.Orleans.Common;
 using CSharpWars.WebApi.Contracts;
 using CSharpWars.WebApi.Extensions;
 using CSharpWars.WebApi.Helpers;
@@ -17,6 +17,7 @@ builder.Services.AddAutoMapper(typeof(StatusMapperProfile));
 builder.Services.AddSingleton<ClusterClientHostedService>();
 builder.Services.AddSingleton<IHostedService>(sp => sp.GetRequiredService<ClusterClientHostedService>());
 builder.Services.AddSingleton(sp => sp.GetRequiredService<ClusterClientHostedService>().Client);
+builder.Services.AddOrleansHelpers();
 
 builder.Services.AddScoped<IPlayerContext, PlayerContext>();
 

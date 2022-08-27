@@ -1,3 +1,5 @@
+using CSharpWars.Orleans.Common;
+using CSharpWars.Scripting;
 using Orleans.Configuration;
 using Orleans.Hosting;
 using Orleans.Statistics;
@@ -11,7 +13,8 @@ IHost host = Host.CreateDefaultBuilder(args)
 
     .ConfigureServices(services =>
     {
-
+        services.AddOrleansHelpers();
+        services.AddScripting();
     })
 
     .UseOrleans((hostBuilder, siloBuilder) =>

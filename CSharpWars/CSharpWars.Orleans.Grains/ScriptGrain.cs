@@ -1,7 +1,7 @@
 ﻿using CSharpWars.Enums;
+using CSharpWars.Orleans.Common;
 using CSharpWars.Orleans.Contracts.Grains;
 using CSharpWars.Orleans.Contracts.Model;
-using CSharpWars.Orleans.Grains.Base;
 using CSharpWars.Scripting;
 using Microsoft.CodeAnalysis.Scripting;
 using Microsoft.Extensions.Logging;
@@ -23,7 +23,7 @@ public class ScriptGrain : GrainBase<IScriptGrain>, IScriptGrain
     private readonly ILogger<IScriptGrain> _logger;
     private readonly IPersistentState<ScriptState> _state;
 
-    private ScriptRunner<object>? _compiledScript;
+    private ScriptRunner<object?> _compiledScript;
 
     public ScriptGrain(
         IScriptCompiler scriptCompiler, ILogger<IScriptGrain> logger,
@@ -38,7 +38,7 @@ public class ScriptGrain : GrainBase<IScriptGrain>, IScriptGrain
     {
         if (_state.State.Exists)
         {
-            _compiledScript = await _scriptCompiler.Compile(_state.State.Script);
+            _compiledScript = await _scriptCompiler.CompileForExecution(_state.State.Script);
         }
 
         await base.OnActivateAsync();
@@ -49,7 +49,7 @@ public class ScriptGrain : GrainBase<IScriptGrain>, IScriptGrain
         _state.State.Script = script;
         _state.State.Exists = true;
 
-        _compiledScript = await _scriptCompiler.Compile(script);
+        _compiledScript = await _scriptCompiler.CompileForExecution(script);
 
         await _state.WriteStateAsync();
     }

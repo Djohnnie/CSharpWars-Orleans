@@ -27,9 +27,15 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CSharpWars.Enums", "CSharpW
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CSharpWars.Scripting", "CSharpWars.Scripting\CSharpWars.Scripting.csproj", "{29C0A534-241B-4BE1-A7DC-9DE41B2C9B64}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CSharpWars.Orleans.Validation.Host", "CSharpWars.Orleans.Validation.Host\CSharpWars.Orleans.Validation.Host.csproj", "{ADFAEC61-33EA-43B6-9244-19FB490B8C6D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CSharpWars.Orleans.Validation.Host", "CSharpWars.Orleans.Validation.Host\CSharpWars.Orleans.Validation.Host.csproj", "{ADFAEC61-33EA-43B6-9244-19FB490B8C6D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CSharpWars.Orleans.Validation.Grains", "CSharpWars.Orleans.Validation.Grains\CSharpWars.Orleans.Validation.Grains.csproj", "{C9A45067-4819-459C-A828-394A49F5C814}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CSharpWars.Orleans.Validation.Grains", "CSharpWars.Orleans.Validation.Grains\CSharpWars.Orleans.Validation.Grains.csproj", "{C9A45067-4819-459C-A828-394A49F5C814}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "4. Web", "4. Web", "{F8C20651-C3A2-45A3-AD80-48962768D0C1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CSharpWars.Web", "CSharpWars.Web\CSharpWars.Web.csproj", "{30F9A39F-A57E-4510-9AA8-D7CC58202675}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CSharpWars.Orleans.Common", "CSharpWars.Orleans.Common\CSharpWars.Orleans.Common.csproj", "{197A8714-6AFA-46C5-9AC7-57CC98E6E6A3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -81,6 +87,14 @@ Global
 		{C9A45067-4819-459C-A828-394A49F5C814}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C9A45067-4819-459C-A828-394A49F5C814}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C9A45067-4819-459C-A828-394A49F5C814}.Release|Any CPU.Build.0 = Release|Any CPU
+		{30F9A39F-A57E-4510-9AA8-D7CC58202675}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{30F9A39F-A57E-4510-9AA8-D7CC58202675}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{30F9A39F-A57E-4510-9AA8-D7CC58202675}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{30F9A39F-A57E-4510-9AA8-D7CC58202675}.Release|Any CPU.Build.0 = Release|Any CPU
+		{197A8714-6AFA-46C5-9AC7-57CC98E6E6A3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{197A8714-6AFA-46C5-9AC7-57CC98E6E6A3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{197A8714-6AFA-46C5-9AC7-57CC98E6E6A3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{197A8714-6AFA-46C5-9AC7-57CC98E6E6A3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -97,6 +111,8 @@ Global
 		{29C0A534-241B-4BE1-A7DC-9DE41B2C9B64} = {F3E689E0-27AE-42B7-BDA8-F1C17E5308E0}
 		{ADFAEC61-33EA-43B6-9244-19FB490B8C6D} = {0626C636-685C-4368-A23E-AC35AF4A03BE}
 		{C9A45067-4819-459C-A828-394A49F5C814} = {0626C636-685C-4368-A23E-AC35AF4A03BE}
+		{30F9A39F-A57E-4510-9AA8-D7CC58202675} = {F8C20651-C3A2-45A3-AD80-48962768D0C1}
+		{197A8714-6AFA-46C5-9AC7-57CC98E6E6A3} = {0626C636-685C-4368-A23E-AC35AF4A03BE}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {05E77F45-867D-46A1-8612-6BDC4F1EAAB3}

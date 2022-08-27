@@ -1,8 +1,7 @@
 ﻿using CSharpWars.Common.Extensions;
+using CSharpWars.Orleans.Common;
+using CSharpWars.Orleans.Contracts;
 using CSharpWars.Orleans.Contracts.Grains;
-using CSharpWars.Orleans.Contracts.Player;
-using CSharpWars.Orleans.Grains.Base;
-using CSharpWars.Orleans.Grains.Helpers;
 using Microsoft.Extensions.Logging;
 using Orleans.Runtime;
 

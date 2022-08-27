@@ -17,12 +17,9 @@
   <ItemGroup>
     <ProjectReference Include="..\CSharpWars.Common\CSharpWars.Common.csproj" />
     <ProjectReference Include="..\CSharpWars.Mappers\CSharpWars.Mappers.csproj" />
+    <ProjectReference Include="..\CSharpWars.Orleans.Common\CSharpWars.Orleans.Common.csproj" />
     <ProjectReference Include="..\CSharpWars.Orleans.Contracts\CSharpWars.Orleans.Contracts.csproj" />
     <ProjectReference Include="..\CSharpWars.WebApi.Contracts\CSharpWars.WebApi.Contracts.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Orleans_CodeGenInputs Remove="Extensions\ClusterClientExtensions.cs" />
   </ItemGroup>
 
 </Project>

@@ -1,5 +1,5 @@
 using CSharpWars.Common.Helpers;
-using CSharpWars.Orleans.Grains.Helpers;
+using CSharpWars.Orleans.Common;
 using CSharpWars.Orleans.Grains.Logic;
 using CSharpWars.Orleans.Host.Extensions;
 using CSharpWars.Scripting;
@@ -19,7 +19,7 @@ IHost host = Host.CreateDefaultBuilder(args)
     {
         services.AddCommonHelpers();
         services.AddScripting();
-        services.AddGrainHelpers();
+        services.AddOrleansHelpers();
         services.AddGrainLogic();
     })
 
