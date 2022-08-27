@@ -14,7 +14,15 @@ public class ClusterClientHostedService : IHostedService
     {
         Client = new ClientBuilder()
 #if DEBUG
-            .UseLocalhostClustering()
+            .Configure<ClusterOptions>(options =>
+            {
+                options.ClusterId = "csharpwars-orleans-host";
+                options.ServiceId = "csharpwars-orleans-host";
+            })
+            .UseAzureStorageClustering(options =>
+            {
+                options.ConfigureTableServiceClient(configuration.GetValue<string>("AZURE_STORAGE_CONNECTION_STRING"));
+            })
 #else
             .Configure<ClusterOptions>(options =>
             {

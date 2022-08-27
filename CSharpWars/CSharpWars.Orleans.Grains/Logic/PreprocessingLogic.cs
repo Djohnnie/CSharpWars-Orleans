@@ -1,5 +1,5 @@
-﻿using CSharpWars.Scripting;
-using CSharpWars.Scripting.Model;
+﻿using CSharpWars.Orleans.Contracts.Model;
+using CSharpWars.Scripting;
 
 namespace CSharpWars.Orleans.Grains.Logic;
 

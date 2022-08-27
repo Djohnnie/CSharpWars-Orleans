@@ -2,6 +2,7 @@
 using CSharpWars.Common.Helpers;
 using CSharpWars.Enums;
 using CSharpWars.Orleans.Contracts.Bot;
+using CSharpWars.Orleans.Contracts.Grains;
 using CSharpWars.Orleans.Grains.Base;
 using CSharpWars.Orleans.Grains.Helpers;
 using Microsoft.Extensions.Logging;
@@ -30,17 +31,6 @@ public class BotState
     public int LastAttackY { get; set; }
     public DateTime? TimeOfDeath { get; set; }
     public string Memory { get; set; }
-}
-
-public interface IBotGrain : IGrainWithGuidKey
-{
-    Task<BotDto> GetState();
-
-    Task<BotDto> CreateBot(BotToCreateDto bot);
-
-    Task DeleteBot(bool clearArena);
-
-    Task UpdateState(BotDto bot);
 }
 
 public class BotGrain : GrainBase<IBotGrain>, IBotGrain

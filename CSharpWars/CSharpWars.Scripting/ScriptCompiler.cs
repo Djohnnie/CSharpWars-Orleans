@@ -1,10 +1,10 @@
-﻿using System.Runtime.CompilerServices;
-using CSharpWars.Common.Extensions;
+﻿using CSharpWars.Common.Extensions;
 using CSharpWars.Enums;
-using CSharpWars.Scripting.Model;
+using CSharpWars.Orleans.Contracts.Model;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Scripting;
 using Microsoft.CodeAnalysis.Scripting;
+using System.Runtime.CompilerServices;
 
 namespace CSharpWars.Scripting;
 
@@ -29,7 +29,7 @@ public class ScriptCompiler : IScriptCompiler
             scriptOptions = scriptOptions.WithImports(
                 "System", "System.Linq", "System.Collections",
                 "System.Collections.Generic", "CSharpWars.Enums", 
-                "CSharpWars.Scripting", "CSharpWars.Scripting.Model",
+                "CSharpWars.Orleans.Contracts.Model",
                 "System.Runtime.CompilerServices");
             scriptOptions = scriptOptions.WithOptimizationLevel(OptimizationLevel.Release);
             var botScript = CSharpScript.Create(decodedScript, scriptOptions, typeof(ScriptGlobals));

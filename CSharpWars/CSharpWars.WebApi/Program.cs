@@ -69,7 +69,7 @@ app.MapAdminDelete("/arena/{name}", async (string name, IApiHelper<IArenaManager
 });
 
 #if DEBUG
-    await Task.Delay(10000);
+    await Task.Delay(30000);
 #endif
 
 app.Run();

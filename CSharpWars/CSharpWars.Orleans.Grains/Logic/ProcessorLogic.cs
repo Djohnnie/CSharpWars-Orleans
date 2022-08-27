@@ -1,4 +1,5 @@
 ﻿using CSharpWars.Enums;
+using CSharpWars.Orleans.Contracts.Grains;
 using CSharpWars.Orleans.Grains.Helpers;
 using CSharpWars.Scripting;
 

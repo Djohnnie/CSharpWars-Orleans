@@ -1,9 +1,3 @@
-using CSharpWars.Common.Helpers;
-using CSharpWars.Orleans.Grains.Helpers;
-using CSharpWars.Orleans.Grains.Logic;
-using CSharpWars.Orleans.Host.Extensions;
-using CSharpWars.Scripting;
-using Orleans;
 using Orleans.Configuration;
 using Orleans.Hosting;
 using Orleans.Statistics;
@@ -17,10 +11,7 @@ IHost host = Host.CreateDefaultBuilder(args)
 
     .ConfigureServices(services =>
     {
-        services.AddCommonHelpers();
-        services.AddScripting();
-        services.AddGrainHelpers();
-        services.AddGrainLogic();
+
     })
 
     .UseOrleans((hostBuilder, siloBuilder) =>
@@ -31,7 +22,7 @@ IHost host = Host.CreateDefaultBuilder(args)
 
 #if DEBUG
         siloBuilder.UsePerfCounterEnvironmentStatistics();
-        siloBuilder.ConfigureEndpoints(siloPort: 11112, gatewayPort: 30001);
+        siloBuilder.ConfigureEndpoints(siloPort: 11111, gatewayPort: 30000);
 #else
         siloBuilder.UseKubernetesHosting();
         siloBuilder.UseLinuxEnvironmentStatistics();
@@ -48,20 +39,12 @@ IHost host = Host.CreateDefaultBuilder(args)
             options.ConfigureTableServiceClient(azureStorageConnectionString);
         });
 
-        siloBuilder.AddAzureBlobGrainStorage("arenaStore", azureStorageConnectionString);
-        siloBuilder.AddAzureBlobGrainStorage("playersStore", azureStorageConnectionString);
-        siloBuilder.AddAzureBlobGrainStorage("playerStore", azureStorageConnectionString);
-        siloBuilder.AddAzureBlobGrainStorage("botStore", azureStorageConnectionString);
-        siloBuilder.AddAzureBlobGrainStorage("scriptStore", azureStorageConnectionString);
-
         siloBuilder.AddApplicationInsightsTelemetryConsumer(applicationInsightsInstrumentationKey);
         siloBuilder.ConfigureLogging(loggingBuilder =>
         {
             loggingBuilder.AddConsole();
             loggingBuilder.AddApplicationInsights(c => c.ConnectionString = applicationInsightsConnectionString, _ => { });
         });
-
-        siloBuilder.UseDashboard();
 
         siloBuilder.Configure<GrainCollectionOptions>(o =>
         {

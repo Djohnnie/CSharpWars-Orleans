@@ -1,6 +1,6 @@
 ﻿using CSharpWars.Enums;
 
-namespace CSharpWars.Scripting.Model;
+namespace CSharpWars.Orleans.Contracts.Model;
 
 public class Vision
 {

@@ -11,17 +11,13 @@
     <PackageReference Include="AutoMapper" Version="11.0.1" />
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="11.0.0" />
     <PackageReference Include="Microsoft.Orleans.Clustering.AzureStorage" Version="3.6.5" />
-    <PackageReference Include="Microsoft.Orleans.CodeGenerator.MSBuild" Version="3.6.5">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
     <PackageReference Include="Microsoft.Orleans.Core" Version="3.6.5" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\CSharpWars.Common\CSharpWars.Common.csproj" />
     <ProjectReference Include="..\CSharpWars.Mappers\CSharpWars.Mappers.csproj" />
-    <ProjectReference Include="..\CSharpWars.Orleans.Grains\CSharpWars.Orleans.Grains.csproj" />
+    <ProjectReference Include="..\CSharpWars.Orleans.Contracts\CSharpWars.Orleans.Contracts.csproj" />
     <ProjectReference Include="..\CSharpWars.WebApi.Contracts\CSharpWars.WebApi.Contracts.csproj" />
   </ItemGroup>
 

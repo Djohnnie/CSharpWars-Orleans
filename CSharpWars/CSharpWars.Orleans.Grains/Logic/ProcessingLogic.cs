@@ -1,7 +1,8 @@
 ﻿using CSharpWars.Orleans.Grains.Helpers;
 using CSharpWars.Scripting;
-using CSharpWars.Scripting.Model;
 using System.ComponentModel.Design.Serialization;
+using CSharpWars.Orleans.Contracts.Grains;
+using CSharpWars.Orleans.Contracts.Model;
 
 namespace CSharpWars.Orleans.Grains.Logic;
 

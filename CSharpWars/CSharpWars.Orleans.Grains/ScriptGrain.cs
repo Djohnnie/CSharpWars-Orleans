@@ -1,10 +1,10 @@
 ﻿using CSharpWars.Enums;
+using CSharpWars.Orleans.Contracts.Grains;
+using CSharpWars.Orleans.Contracts.Model;
 using CSharpWars.Orleans.Grains.Base;
 using CSharpWars.Scripting;
-using CSharpWars.Scripting.Model;
 using Microsoft.CodeAnalysis.Scripting;
 using Microsoft.Extensions.Logging;
-using Orleans;
 using Orleans.Placement;
 using Orleans.Runtime;
 
@@ -14,13 +14,6 @@ public class ScriptState
 {
     public bool Exists { get; set; }
     public string Script { get; set; }
-}
-
-public interface IScriptGrain : IGrainWithGuidKey
-{
-    Task SetScript(string script);
-    Task<BotProperties> Process(BotProperties botProperties);
-    Task DeleteScript();
 }
 
 [PreferLocalPlacement]

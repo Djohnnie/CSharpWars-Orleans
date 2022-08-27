@@ -1,5 +1,5 @@
 ﻿using CSharpWars.Enums;
-using CSharpWars.Scripting.Model;
+using CSharpWars.Orleans.Contracts.Model;
 
 namespace CSharpWars.Scripting.Moves;
 

@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using CSharpWars.Orleans.Contracts.Bot;
-using CSharpWars.Orleans.Grains;
+using CSharpWars.Orleans.Contracts.Grains;
 using CSharpWars.WebApi.Contracts;
 using CSharpWars.WebApi.Helpers;
 

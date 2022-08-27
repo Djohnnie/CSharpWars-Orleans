@@ -2,6 +2,7 @@
 using CSharpWars.Enums;
 using CSharpWars.Orleans.Contracts.Arena;
 using CSharpWars.Orleans.Contracts.Bot;
+using CSharpWars.Orleans.Contracts.Grains;
 using CSharpWars.Orleans.Grains.Base;
 using CSharpWars.Orleans.Grains.Helpers;
 using Microsoft.Extensions.Configuration;
@@ -18,18 +19,6 @@ public class ArenaState
     public int Width { get; set; }
     public int Height { get; set; }
     public IList<Guid>? BotIds { get; set; }
-}
-
-public interface IArenaGrain : IGrainWithStringKey
-{
-    Task<List<BotDto>> GetAllActiveBots();
-    Task<List<BotDto>> GetAllLiveBots();
-
-    Task<ArenaDto> GetArenaDetails();
-
-    Task<BotDto> CreateBot(string playerName, BotToCreateDto bot);
-    Task DeleteArena();
-    Task DeleteBot(Guid botId);
 }
 
 public class ArenaGrain : GrainBase<IArenaGrain>, IArenaGrain

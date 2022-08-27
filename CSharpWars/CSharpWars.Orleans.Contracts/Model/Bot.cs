@@ -1,7 +1,7 @@
 ﻿using CSharpWars.Enums;
 using CSharpWars.Orleans.Contracts.Bot;
 
-namespace CSharpWars.Scripting.Model;
+namespace CSharpWars.Orleans.Contracts.Model;
 
 public class Bot
 {

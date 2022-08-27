@@ -1,9 +1,9 @@
 ﻿using CSharpWars.Common.Extensions;
+using CSharpWars.Orleans.Contracts.Grains;
 using CSharpWars.Orleans.Contracts.Player;
 using CSharpWars.Orleans.Grains.Base;
 using CSharpWars.Orleans.Grains.Helpers;
 using Microsoft.Extensions.Logging;
-using Orleans;
 using Orleans.Runtime;
 
 namespace CSharpWars.Orleans.Grains;
@@ -12,12 +12,6 @@ public class PlayersState
 {
     public bool Exists { get; set; }
     public IList<string>? PlayerNames { get; set; }
-}
-
-public interface IPlayersGrain : IGrainWithGuidKey
-{
-    Task<PlayerDto> Login(string username, string password);
-    Task DeleteAllPlayers();
 }
 
 public class PlayersGrain : GrainBase<IPlayersGrain>, IPlayersGrain

@@ -1,16 +1,10 @@
 ﻿using CSharpWars.Common.Extensions;
+using CSharpWars.Orleans.Contracts.Grains;
 using CSharpWars.Orleans.Contracts.Status;
 using CSharpWars.Orleans.Grains.Base;
 using Microsoft.Extensions.Logging;
-using Orleans;
 
 namespace CSharpWars.Orleans.Grains;
-
-
-public interface IStatusGrain : IGrainWithGuidKey
-{
-    Task<StatusDto> GetStatus();
-}
 
 public class StatusGrain : GrainBase<IStatusGrain>, IStatusGrain
 {
@@ -21,11 +15,11 @@ public class StatusGrain : GrainBase<IStatusGrain>, IStatusGrain
         _logger = logger;
     }
 
-    public Task<StatusDto> GetStatus()
+    public async Task<StatusDto> GetStatus()
     {
         var message = "Hi from the <StatusGrain>";
         _logger.AutoLogInformation(message);
 
-        return Task.FromResult(new StatusDto(message));
+        return new StatusDto(message);
     }
 }

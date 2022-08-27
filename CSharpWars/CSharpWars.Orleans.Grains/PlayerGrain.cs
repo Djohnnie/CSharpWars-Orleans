@@ -1,11 +1,11 @@
 ﻿using CSharpWars.Common.Extensions;
 using CSharpWars.Common.Helpers;
 using CSharpWars.Helpers;
+using CSharpWars.Orleans.Contracts.Grains;
 using CSharpWars.Orleans.Contracts.Player;
 using CSharpWars.Orleans.Grains.Base;
 using CSharpWars.Orleans.Grains.Helpers;
 using Microsoft.Extensions.Logging;
-using Orleans;
 using Orleans.Runtime;
 
 namespace CSharpWars.Orleans.Grains;
@@ -18,14 +18,6 @@ public class PlayerState
     public string PasswordSalt { get; set; }
     public DateTime? LastDeployment { get; set; }
     public List<Guid> BotIds { get; set; }
-}
-
-public interface IPlayerGrain : IGrainWithStringKey
-{
-    Task<PlayerDto> Login(string username, string password);
-    Task ValidateBotDeploymentLimit();
-    Task BotCreated(Guid botId);
-    Task DeletePlayer();
 }
 
 public class PlayerGrain : GrainBase<IPlayerGrain>, IPlayerGrain

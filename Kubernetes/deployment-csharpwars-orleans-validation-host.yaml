@@ -1,29 +1,28 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: csharpwars-orleans-host
+  name: csharpwars-orleans-validation-host
   labels:
-    app: csharpwars-orleans-host
+    app: csharpwars-orleans-validation-host
 spec:
   selector:
     matchLabels:
-      app: csharpwars-orleans-host
-  replicas: 3
+      app: csharpwars-orleans-validation-host
+  replicas: 2
   template:
     metadata:
       labels:
-        app: csharpwars-orleans-host
+        app: csharpwars-orleans-validation-host
         orleans/serviceId: csharpwars-orleans-host
         orleans/clusterId: csharpwars-orleans-host
     spec:
       containers:
         - name: main
-          image: csharpwars.azurecr.io/csharpwars-orleans-host:latest
+          image: csharpwars.azurecr.io/csharpwars-orleans-validation-host:latest
           imagePullPolicy: Always
           ports:
           - containerPort: 11111
           - containerPort: 30000
-          - containerPort: 8080
           env:
           - name: ARENA_WIDTH
             value: "9"
