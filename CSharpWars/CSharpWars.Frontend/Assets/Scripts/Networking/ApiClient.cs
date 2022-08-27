@@ -13,7 +13,8 @@ namespace Assets.Scripts.Networking
 
     public class ApiClient : IApiClient
     {
-        private readonly string _baseUrl = "http://localhost:5133";
+        //private readonly string _baseUrl = "http://localhost:5133";
+        private readonly string _baseUrl = "http://api.csharpwars.com";
 
         public Task<Arena> GetArena()
         {

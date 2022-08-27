@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: csharpwars-web
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: csharpwars-web
+  template:
+    metadata:
+      labels:
+        app: csharpwars-web
+    spec:
+      containers:
+      - name: csharpwars-web
+        image: csharpwars.azurecr.io/csharpwars-web:latest
+        env:
+          - name: AZURE_STORAGE_CONNECTION_STRING
+            value: "..."
+          - name: POINTS_LIMIT
+            value: "200"
+          - name: ARENA_URL
+            value: "https://www.google.be"
+          - name: SCRIPT_TEMPLATE_URL
+            value: "https://www.google.be"
+          - name: ENABLE_CUSTOM_PLAY
+            value: "True"
+          - name: ENABLE_TEMPLATE_PLAY
+            value: "True"
+        ports:
+        - containerPort: 80

@@ -17,6 +17,13 @@ spec:
             name: csharpwars-webapi
             port:
               number: 80
+      - path: /web/(.*)
+        pathType: Prefix
+        backend:
+          service:
+            name: csharpwars-web
+            port:
+              number: 80
       - path: /(.*)
         pathType: Prefix
         backend:
