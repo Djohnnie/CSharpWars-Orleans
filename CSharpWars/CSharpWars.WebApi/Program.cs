@@ -53,6 +53,18 @@ app.MapGet("/arena/{name}/bots", async (string name, IApiHelper<IBotManager> hel
     return await helper.Execute(m => m.GetAllActiveBots(request));
 });
 
+app.MapGet("/arena/{name}/messages", async (string name, IApiHelper<IMessagesManager> helper) =>
+{
+    var request = new GetAllMessagesRequest(name);
+    return await helper.Execute(m => m.GetAllMessages(request));
+});
+
+app.MapGet("/arena/{name}/moves", async (string name, IApiHelper<IMovesManager> helper) =>
+{
+    var request = new GetAllMovesRequest(name);
+    return await helper.Execute(m => m.GetMoves(request));
+});
+
 app.MapAuthorizedPost("/arena/{name}/bots", async (string name, CreateBotRequest request, IPlayerContext playerContext, IApiHelper<IBotManager> helper) =>
 {
     var finalRequest = request with { ArenaName = name, PlayerName = playerContext.PlayerName };

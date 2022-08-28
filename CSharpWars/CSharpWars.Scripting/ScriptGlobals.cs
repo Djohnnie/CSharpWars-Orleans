@@ -195,7 +195,7 @@ public class ScriptGlobals
     /// <param name="message"></param>
     public void Talk(string message)
     {
-        _50437079C366407D978Fe4Afd60C535F.Messages.Add(message);
+        _50437079C366407D978Fe4Afd60C535F.Message = message;
     }
 
     #endregion

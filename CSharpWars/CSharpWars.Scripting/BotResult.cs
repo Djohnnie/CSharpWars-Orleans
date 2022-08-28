@@ -14,10 +14,10 @@ public class BotResult
     public int CurrentHealth { get; set; }
     public int CurrentStamina { get; set; }
     public Dictionary<string, string> Memory { get; set; }
-    public List<string> Messages { get; set; }
     public Move Move { get; set; }
     public int LastAttackX { get; set; }
     public int LastAttackY { get; set; }
+    public string Message { get; set; }
 
     private BotResult() { }
 
@@ -31,10 +31,10 @@ public class BotResult
             CurrentHealth = botProperties.CurrentHealth,
             CurrentStamina = botProperties.CurrentStamina,
             Memory = botProperties.Memory,
-            Messages = botProperties.Messages,
             Move = Move.Idling,
             LastAttackX = botProperties.MoveDestinationX,
-            LastAttackY = botProperties.MoveDestinationY
+            LastAttackY = botProperties.MoveDestinationY,
+            Message = botProperties.Message
         };
     }
 

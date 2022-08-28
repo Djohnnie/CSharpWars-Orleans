@@ -19,11 +19,11 @@ public class BotProperties
     public int MaximumStamina { get; private set; }
     public int CurrentStamina { get; private set; }
     public Dictionary<string, string> Memory { get; private set; }
-    public List<string> Messages { get; private set; }
     public List<Bot> Bots { get; set; }
     public Move CurrentMove { get; set; }
     public int MoveDestinationX { get; set; }
     public int MoveDestinationY { get; set; }
+    public string Message { get; set; }
 
     private BotProperties() { }
 
@@ -52,7 +52,6 @@ public class BotProperties
             MaximumStamina = bot.MaximumStamina,
             CurrentStamina = bot.CurrentStamina,
             Memory = bot.Memory.Deserialize<Dictionary<string, string>>() ?? new Dictionary<string, string>(),
-            Messages = new List<string>(),
             Bots = BuildBots(bots),
             CurrentMove = Move.Idling
         };

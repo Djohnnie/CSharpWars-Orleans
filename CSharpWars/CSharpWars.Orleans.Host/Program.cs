@@ -53,6 +53,8 @@ IHost host = Host.CreateDefaultBuilder(args)
         siloBuilder.AddAzureBlobGrainStorage("playerStore", azureStorageConnectionString);
         siloBuilder.AddAzureBlobGrainStorage("botStore", azureStorageConnectionString);
         siloBuilder.AddAzureBlobGrainStorage("scriptStore", azureStorageConnectionString);
+        siloBuilder.AddAzureBlobGrainStorage("messagesStore", azureStorageConnectionString);
+        siloBuilder.AddAzureBlobGrainStorage("movesStore", azureStorageConnectionString);
 
         siloBuilder.AddApplicationInsightsTelemetryConsumer(applicationInsightsInstrumentationKey);
         siloBuilder.ConfigureLogging(loggingBuilder =>

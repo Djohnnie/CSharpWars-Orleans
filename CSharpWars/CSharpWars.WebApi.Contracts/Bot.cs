@@ -1,4 +1,5 @@
 ﻿using CSharpWars.Enums;
+using MoveEnum = CSharpWars.Enums.Move;
 
 namespace CSharpWars.WebApi.Contracts;
 
@@ -22,7 +23,7 @@ public record Bot
     public int LastAttackX { get; init; }
     public int LastAttackY { get; init; }
     public Orientation Orientation { get; init; }
-    public Move Move { get; init; }
+    public MoveEnum Move { get; init; }
 }
 
 public record CreateBotRequest(

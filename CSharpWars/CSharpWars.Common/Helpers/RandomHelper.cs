@@ -6,6 +6,7 @@ public interface IRandomHelper
     int Get(int min, int max);
     TEnum Get<TEnum>() where TEnum : Enum;
     TItem GetItem<TItem>(List<TItem> items);
+    TItem GetItem<TItem>(TItem[] items);
 }
 
 public class RandomHelper : IRandomHelper
@@ -33,5 +34,10 @@ public class RandomHelper : IRandomHelper
     public TItem GetItem<TItem>(List<TItem> items)
     {
         return items[_random.Next(items.Count)];
+    }
+
+    public TItem GetItem<TItem>(TItem[] items)
+    {
+        return items[_random.Next(items.Length)];
     }
 }
