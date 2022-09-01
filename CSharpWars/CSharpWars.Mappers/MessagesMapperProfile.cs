@@ -10,5 +10,7 @@ public class MessagesMapperProfile : Profile
     {
         CreateMap<List<MessageDto>, GetAllMessagesResponse>()
             .ConstructUsing((src, ctx) => new GetAllMessagesResponse(ctx.Mapper.Map<List<Message>>(src)));
+        CreateMap<MessageDto, Message>()
+            .ForMember(dest => dest.Text, opt => opt.MapFrom(src => src.Message));
     }
 }

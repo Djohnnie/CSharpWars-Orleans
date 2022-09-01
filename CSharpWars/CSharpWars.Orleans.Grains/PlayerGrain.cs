@@ -1,4 +1,5 @@
-﻿using CSharpWars.Common.Extensions;
+﻿using CSharpWars.Common.Exceptions;
+using CSharpWars.Common.Extensions;
 using CSharpWars.Common.Helpers;
 using CSharpWars.Helpers;
 using CSharpWars.Orleans.Common;
@@ -64,7 +65,7 @@ public class PlayerGrain : GrainBase<IPlayerGrain>, IPlayerGrain
 
             if (_state.State.PasswordHash != hashed)
             {
-                throw new ArgumentException("Invalid username and password", nameof(password));
+                throw new CSharpWarsException("Unknown username and password");
             }
         }
 
@@ -80,14 +81,14 @@ public class PlayerGrain : GrainBase<IPlayerGrain>, IPlayerGrain
     {
         if (!_state.State.Exists)
         {
-            throw new ArgumentException("Player does not have state yet!");
+            throw new CSharpWarsException("Player does not have state yet!");
         }
 
         _logger.AutoLogInformation($"Validating bot deployment limit for '{_state.State.Username}'");
 
         if (_state.State.LastDeployment.HasValue && _state.State.LastDeployment >= DateTime.UtcNow.AddSeconds(-1))
         {
-            throw new ArgumentException("You are not allowed to create multiple robots in rapid succession!");
+            throw new CSharpWarsException("You are not allowed to create multiple robots in rapid succession!");
         }
 
         _state.State.LastDeployment = DateTime.UtcNow;

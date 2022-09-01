@@ -14,6 +14,17 @@
     <p>Please use an existing user, or create a new user to start!</p>
 </div>
 
+@if (!string.IsNullOrEmpty(Model.Message))
+{
+    <div class="row">
+        <div class="col-12">
+            <div class="alert alert-danger" role="alert">
+                @Model.Message
+            </div>
+        </div>
+    </div>
+}
+
 <form method="post">
 
     <div class="row">

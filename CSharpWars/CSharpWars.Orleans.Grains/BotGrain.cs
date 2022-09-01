@@ -1,4 +1,5 @@
-﻿using CSharpWars.Common.Extensions;
+﻿using CSharpWars.Common.Exceptions;
+using CSharpWars.Common.Extensions;
 using CSharpWars.Common.Helpers;
 using CSharpWars.Enums;
 using CSharpWars.Orleans.Common;
@@ -86,7 +87,7 @@ public class BotGrain : GrainBase<IBotGrain>, IBotGrain
     {
         if (_state.State.Exists)
         {
-            throw new ArgumentNullException();
+            throw new CSharpWarsException("Bot cannot be created because it already exists");
         }
 
         _state.State.BotName = bot.BotName;
@@ -132,6 +133,11 @@ public class BotGrain : GrainBase<IBotGrain>, IBotGrain
                     freeLocations.Add((x, y));
                 }
             }
+        }
+
+        if (freeLocations.Count == 0)
+        {
+            throw new CSharpWarsException("Your robot cannot be deployed because the arena is full :(");
         }
 
         return _randomHelper.GetItem(freeLocations);

@@ -1,4 +1,5 @@
-﻿using CSharpWars.Common.Extensions;
+﻿using System.Text;
+using CSharpWars.Common.Extensions;
 using CSharpWars.Orleans.Contracts;
 using CSharpWars.Web.Client;
 using CSharpWars.Web.Extensions;
@@ -49,8 +50,7 @@ public class PlayController : Controller
         {
             var player = HttpContext.Session.GetObject<LoginResponse>("PLAYER");
 
-            var valid = IsValid(vm);
-            var sadMessage = "You have made some errors!";
+            var (valid, sadMessage) = IsValid(vm);
 
             if (valid)
             {
@@ -142,8 +142,7 @@ public class PlayController : Controller
         {
             var player = HttpContext.Session.GetObject<LoginResponse>("PLAYER");
 
-            var valid = IsValid(vm);
-            string sadMessage = "You have made some errors!";
+            var (valid, sadMessage) = IsValid(vm);
 
             if (valid)
             {
@@ -206,11 +205,33 @@ public class PlayController : Controller
         return RedirectToAction("Index", "Home");
     }
 
-    private bool IsValid(PlayViewModel vm)
+    private (bool, string) IsValid(PlayViewModel vm)
     {
         var validBotName = !string.IsNullOrEmpty(vm.BotName);
         var validHealthAndStamina = vm.BotHealth > 0 && vm.BotStamina > 0 && vm.BotHealth + vm.BotStamina <= _configuration.GetValue<int>("POINTS_LIMIT");
         var validScript = vm.SelectedScript != Guid.Empty || !string.IsNullOrEmpty(vm.Script);
-        return validBotName && validHealthAndStamina && validScript;
+
+        var sadMessage = new StringBuilder();
+        if (!validBotName || !validHealthAndStamina || !validScript)
+        {
+            sadMessage.AppendLine("You have made some errors:");
+
+            if (!validBotName)
+            {
+                sadMessage.AppendLine(" - Your robot name cannot be empty");
+            }
+
+            if (!validHealthAndStamina)
+            {
+                sadMessage.AppendLine(" - Your health and stamina are not valid");
+            }
+
+            if (!validScript)
+            {
+                sadMessage.AppendLine(" - Your script cannot be empty");
+            }
+        }
+
+        return (validBotName && validHealthAndStamina && validScript, sadMessage.ToString());
     }
 }

@@ -34,11 +34,18 @@ public class HomeController : Controller
     [HttpPost]
     public async Task<IActionResult> Index(PlayerViewModel vm)
     {
-        var player = await _orleansClient.Login(vm.Name, vm.Secret);
-        if (player != null)
+        try
         {
-            HttpContext.Session.SetObject("PLAYER", player);
-            return RedirectToAction(nameof(Play));
+            var player = await _orleansClient.Login(vm.Name, vm.Secret);
+            if (player != null)
+            {
+                HttpContext.Session.SetObject("PLAYER", player);
+                return RedirectToAction(nameof(Play));
+            }
+        }
+        catch (Exception ex)
+        {
+            vm.Message = ex.Message;
         }
 
         return View(vm);
