@@ -43,7 +43,7 @@ public class MessagesGrain : GrainBase<IMessagesGrain>, IMessagesGrain
 
     public Task<List<MessageDto>> GetMessages()
     {
-        var result = _state.State.Exists ? _state.State.Messages : new List<MessageDto>();
+        var result = _state.State.Exists ? _state.State.Messages.OrderByDescending(x => x.TimeStamp).ToList() : new List<MessageDto>();
         return Task.FromResult(result);
     }
 }

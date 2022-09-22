@@ -115,14 +115,17 @@ public class PostprocessingLogic : IPostprocessingLogic
 
     private async Task SendMessage(string arenaName, string botName, string playerName, string message)
     {
-        var messageDetails = new MessageDto
+        if (!string.IsNullOrWhiteSpace(message))
         {
-            TimeStamp = DateTime.UtcNow,
-            Owner = $"{botName} ({playerName})",
-            Message = message
-        };
+            var messageDetails = new MessageDto
+            {
+                TimeStamp = DateTime.UtcNow,
+                Owner = $"{botName} ({playerName})",
+                Message = message
+            };
 
-        await _messagesGrainHelper.FromGrain(arenaName, g => g.AddMessage(messageDetails));
+            await _messagesGrainHelper.FromGrain(arenaName, g => g.AddMessage(messageDetails));
+        }
     }
 
     private string BuildMoveDescription(Move move, int targetX, int targetY)
