@@ -1,0 +1,56 @@
+﻿@model LogsViewModel
+
+@{
+    ViewData["Title"] = "CSharpWars";
+}
+
+<div class="text-center">
+    <img src="~/images/logo2-small.png" class="img-fluid" />
+</div>
+
+<div class="text-center">
+    <h1 class="display-4">CSharpWars</h1>
+    <p>Please use an existing user, or create a new user to start!</p>
+</div>
+
+<div class="row">
+    <div id="moves" class="col-6">
+        <partial name="_Moves" model="Model.Moves" />
+    </div>
+    <div id="messages" class="col-6">
+        <partial name="_Messages" model="Model.Messages" />
+    </div>
+</div>
+
+@section Scripts 
+{
+    <script>
+        $(function () {
+            setInterval(function () {
+                $.ajax({
+                    url: '/Logs/Moves',
+                    type: 'GET',
+                    async: false,
+                    dataType: 'html',
+                    success: function (result) {
+                        console.log('Success... : ' + result);
+                    }
+                }).done(function (response) {
+                    $("#moves").html(response);
+                });
+
+                $.ajax({
+                    url: '/Logs/Messages',
+                    type: 'GET',
+                    async: false,
+                    dataType: 'html',
+                    success: function (result) {
+                        console.log('Success... : ' + result);
+                    }
+                }).done(function (response) {
+                    $("#messages").html(response);
+                });
+            }, 2000);
+        });
+    </script>
+}

@@ -21,7 +21,7 @@ namespace Assets.Scripts.Controllers
 
         #region <| Start |>
 
-        public async override Task Start()
+        public override async Task Start()
         {
             await base.Start();
 

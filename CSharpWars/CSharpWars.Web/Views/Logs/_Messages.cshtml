@@ -1,0 +1,17 @@
+﻿@model MessageLogsViewModel
+
+<table class="table table-dark">
+    <thead>
+        <tr>
+            <th scope="col">Messages</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var message in Model.Items)
+        {
+            <tr>
+                <td>@message</td>
+            </tr>
+        }
+    </tbody>
+</table>

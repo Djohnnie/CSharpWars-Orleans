@@ -9,6 +9,8 @@ namespace Assets.Scripts.Networking
         Task<Arena> GetArena();
 
         Task<ActiveBots> GetBots();
+
+        Task<ActiveMessages> GetMessages();
     }
 
     public class ApiClient : IApiClient
@@ -24,6 +26,11 @@ namespace Assets.Scripts.Networking
         public Task<ActiveBots> GetBots()
         {
             return Get<ActiveBots>("arena/default/bots");
+        }
+
+        public Task<ActiveMessages> GetMessages()
+        {
+            return Get<ActiveMessages>("arena/default/messages");
         }
 
         private async Task<TResult> Get<TResult>(string resource) where TResult : new()

@@ -4,6 +4,7 @@ using Adic;
 using Assets.Scripts.Controllers;
 using Assets.Scripts.Helpers;
 using Assets.Scripts.Networking;
+using TMPro;
 using UnityEngine;
 
 namespace Assets.Scripts
@@ -34,6 +35,8 @@ namespace Assets.Scripts
         public GameObject camera;
         public GameObject floor;
         public GameObject arena;
+        public GameObject canvas;
+        public GameObject messages;
         public Prefabs Prefabs;
 
         #endregion
@@ -57,6 +60,10 @@ namespace Assets.Scripts
                     c.Bind<Renderer>().To(floor.GetComponent<Renderer>()).As("floor-renderer");
 
                     c.Bind<Transform>().To(FindDeepChild(Prefabs.BotPrefab.transform,"robo_rigg_2014:head")).As("robot-head");
+                })
+                .Group("Messages", c =>
+                {
+                    c.Bind<GameObject>().To(messages).As("messages-text");
                 })
                 .Group("Prefabs", c =>
                 {
@@ -83,6 +90,7 @@ namespace Assets.Scripts
                     c.Bind<CameraController>().ToGameObject(camera);
                     c.Bind<ArenaController>().ToGameObject(arena);
                     c.Bind<BotsController>().ToGameObject(arena);
+                    c.Bind<MessagesController>().ToGameObject(canvas);
                 });
         }
 

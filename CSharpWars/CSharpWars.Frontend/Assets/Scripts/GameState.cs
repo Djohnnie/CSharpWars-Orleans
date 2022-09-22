@@ -26,6 +26,7 @@ namespace Assets.Scripts
         BotEvent BotShouldBeUpdated { get; }
         BotEvent BotShouldBeRemoved { get; }
         BotEvent BotHasDied { get; }
+        MessagesEvent MessagesShouldBeUpdated { get; }
 
         Task Update();
 
@@ -88,6 +89,17 @@ namespace Assets.Scripts
 
         #endregion
 
+        #region <| Properties - Messages |>
+
+        private ActiveMessages _messages;
+
+        public ActiveMessages Messages
+        {
+            get => _messages ?? new ActiveMessages { Messages = new List<Message>() };
+        }
+
+        #endregion
+
         #region <| Properties - ArenaThickness |>
 
         public float ArenaThickness
@@ -104,6 +116,7 @@ namespace Assets.Scripts
         public BotEvent BotShouldBeUpdated { get; }
         public BotEvent BotShouldBeRemoved { get; }
         public BotEvent BotHasDied { get; }
+        public MessagesEvent MessagesShouldBeUpdated { get; }
 
         #endregion
 
@@ -117,6 +130,7 @@ namespace Assets.Scripts
             BotShouldBeUpdated = new BotEvent();
             BotShouldBeRemoved = new BotEvent();
             BotHasDied = new BotEvent();
+            MessagesShouldBeUpdated = new MessagesEvent();
         }
 
         #endregion
@@ -126,8 +140,10 @@ namespace Assets.Scripts
         public async Task Update()
         {
             _bots = await _apiClient.GetBots();
+            _messages = await _apiClient.GetMessages();
 
             RefreshBots();
+            RefreshMessages();
 
             Updated.Invoke();
         }
@@ -180,6 +196,11 @@ namespace Assets.Scripts
                 _cachedBots.Remove(botId);
                 BotShouldBeRemoved.Invoke(botId);
             }
+        }
+
+        private void RefreshMessages()
+        {
+            MessagesShouldBeUpdated.Invoke(_messages);
         }
 
         public Vector3 ArenaToWorldPosition(int x, int y)

@@ -1,0 +1,17 @@
+﻿@model MoveLogsViewModel
+
+<table class="table table-dark">
+    <thead>
+        <tr>
+            <th scope="col">Moves</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var move in Model.Items)
+        {
+            <tr>
+                <td>@move</td>
+            </tr>
+        }
+    </tbody>
+</table>
