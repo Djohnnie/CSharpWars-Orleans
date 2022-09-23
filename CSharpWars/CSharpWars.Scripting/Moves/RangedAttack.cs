@@ -12,13 +12,18 @@ public class RangedAttack : BaseMove
         // Build result based on current properties.
         var botResult = BotResult.Build(BotProperties);
 
-        var victimizedBot = FindVictimizedBot();
-        if (victimizedBot != null)
+        // Only perform move if enough stamina is available.
+        if (BotProperties.CurrentStamina - Constants.STAMINA_ON_RANGED_ATTACK >= 0)
         {
-            botResult.InflictDamage(victimizedBot.Id, Constants.RANGED_DAMAGE);
-        }
+            var victimizedBot = FindVictimizedBot();
+            if (victimizedBot != null)
+            {
+                botResult.InflictDamage(victimizedBot.Id, Constants.RANGED_DAMAGE);
+            }
 
-        botResult.Move = Move.RangedAttack;
+            botResult.Move = Move.RangedAttack;
+            botResult.CurrentStamina -= Constants.STAMINA_ON_RANGED_ATTACK;
+        }
 
         return botResult;
     }

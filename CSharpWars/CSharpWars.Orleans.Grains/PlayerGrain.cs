@@ -5,6 +5,7 @@ using CSharpWars.Helpers;
 using CSharpWars.Orleans.Common;
 using CSharpWars.Orleans.Contracts;
 using CSharpWars.Orleans.Contracts.Grains;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Orleans.Runtime;
 
@@ -26,6 +27,7 @@ public class PlayerGrain : GrainBase<IPlayerGrain>, IPlayerGrain
     private readonly IJwtHelper _jwtHelper;
     private readonly IGrainFactoryHelperWithGuidKey<IBotGrain> _botGrainHelper;
     private readonly ILogger<IPlayerGrain> _logger;
+    private readonly IConfiguration _configuration;
     private readonly IPersistentState<PlayerState> _state;
 
     public PlayerGrain(
@@ -33,12 +35,14 @@ public class PlayerGrain : GrainBase<IPlayerGrain>, IPlayerGrain
         IJwtHelper jwtHelper,
         IGrainFactoryHelperWithGuidKey<IBotGrain> botGrainHelper,
         ILogger<IPlayerGrain> logger,
+        IConfiguration configuration,
         [PersistentState("player", "playerStore")] IPersistentState<PlayerState> state) : base(logger)
     {
         _passwordHashHelper = passwordHashHelper;
         _jwtHelper = jwtHelper;
         _botGrainHelper = botGrainHelper;
         _logger = logger;
+        _configuration = configuration;
         _state = state;
     }
 
@@ -84,9 +88,11 @@ public class PlayerGrain : GrainBase<IPlayerGrain>, IPlayerGrain
             throw new CSharpWarsException("Player does not have state yet!");
         }
 
+        var deploymentLimit = _configuration.GetValue<int>("DEPLOYMENT_LIMIT");
+
         _logger.AutoLogInformation($"Validating bot deployment limit for '{_state.State.Username}'");
 
-        if (_state.State.LastDeployment.HasValue && _state.State.LastDeployment >= DateTime.UtcNow.AddSeconds(-1))
+        if (_state.State.LastDeployment.HasValue && _state.State.LastDeployment >= DateTime.UtcNow.AddMinutes(-deploymentLimit))
         {
             throw new CSharpWarsException("You are not allowed to create multiple robots in rapid succession!");
         }

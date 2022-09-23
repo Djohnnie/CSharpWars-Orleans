@@ -21,7 +21,6 @@ public class Teleport : BaseMove
         // Only perform move if enough stamina is available.
         if (BotProperties.CurrentStamina - Constants.STAMINA_ON_TELEPORT >= 0)
         {
-
             NormalizeDestination();
 
             var victimizedBot = FindVictimizedBot();

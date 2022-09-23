@@ -16,30 +16,30 @@ public static class Templates
             Name = "Walk back and forth",
             Script = WalkBackAndForth
         },
-        new()
-        {
-            Id = Guid.NewGuid(),
-            Name = "Look around and self destruct",
-            Script = LookAroundAndSelfDestruct
-        },
-        new()
-        {
-            Id = Guid.NewGuid(),
-            Name = "Look around and range attack",
-            Script = LookAroundAndRangeAttack
-        },
+        //new()
+        //{
+        //    Id = Guid.NewGuid(),
+        //    Name = "Look around and self destruct",
+        //    Script = LookAroundAndSelfDestruct
+        //},
+        //new()
+        //{
+        //    Id = Guid.NewGuid(),
+        //    Name = "Look around and range attack",
+        //    Script = LookAroundAndRangeAttack
+        //},
         new()
         {
             Id = Guid.NewGuid(),
             Name = "Teleport around at random",
             Script = TeleportAround
-        },
-        new()
-        {
-            Id = Guid.NewGuid(),
-            Name = "Hunt down other robots",
-            Script = HuntDown
         }
+        //new()
+        //{
+        //    Id = Guid.NewGuid(),
+        //    Name = "Hunt down other robots",
+        //    Script = HuntDown
+        //}
     };
 
     public const string WalkAround =

@@ -14,27 +14,34 @@ public class SelfDestruct : BaseMove
         // Build result based on current properties.
         var botResult = BotResult.Build(BotProperties);
 
-        var botsInMaximumVicinity = FindBotsInVicinity(1);
-        var botsInMediumVicinity = FindBotsInVicinity(2);
-        var botsInMinimumVicinity = FindBotsInVicinity(3);
-
-        foreach (var bot in botsInMinimumVicinity)
+        if (BotProperties.CurrentHealth > 0)
         {
-            botResult.InflictDamage(bot.Id, Constants.SELF_DESTRUCT_MIN_DAMAGE);
-        }
+            var botsInMaximumVicinity = FindBotsInVicinity(1);
+            var botsInMediumVicinity = FindBotsInVicinity(2);
+            var botsInMinimumVicinity = FindBotsInVicinity(3);
 
-        foreach (var bot in botsInMediumVicinity)
+            foreach (var bot in botsInMinimumVicinity)
+            {
+                botResult.InflictDamage(bot.Id, Constants.SELF_DESTRUCT_MIN_DAMAGE);
+            }
+
+            foreach (var bot in botsInMediumVicinity)
+            {
+                botResult.InflictDamage(bot.Id, Constants.SELF_DESTRUCT_MED_DAMAGE);
+            }
+
+            foreach (var bot in botsInMaximumVicinity)
+            {
+                botResult.InflictDamage(bot.Id, Constants.SELF_DESTRUCT_MAX_DAMAGE);
+            }
+
+            botResult.CurrentHealth = 0;
+            botResult.Move = Move.SelfDestruct;
+        }
+        else
         {
-            botResult.InflictDamage(bot.Id, Constants.SELF_DESTRUCT_MED_DAMAGE);
+            botResult.Move = Move.Died;
         }
-
-        foreach (var bot in botsInMaximumVicinity)
-        {
-            botResult.InflictDamage(bot.Id, Constants.SELF_DESTRUCT_MAX_DAMAGE);
-        }
-
-        botResult.CurrentHealth = 0;
-        botResult.Move = Move.SelfDestruct;
 
         return botResult;
     }

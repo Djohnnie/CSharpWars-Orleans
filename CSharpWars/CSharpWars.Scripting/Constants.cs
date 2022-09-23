@@ -29,6 +29,9 @@ public static class Constants
     // Stamina use for a single move
     public const int STAMINA_ON_MOVE = 1;
 
+    // Stamina use for a ranged attack
+    public const int STAMINA_ON_RANGED_ATTACK = 2;
+
     // Stamina use for a teleport
     public const int STAMINA_ON_TELEPORT = 10;
 }
