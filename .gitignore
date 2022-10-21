@@ -338,7 +338,7 @@ ASALocalRun/
 ![Aa]ssets/**/*.meta
 
 # Never ignore RestSharp.dll
-!src/frontend/CSharpWars/Assets/Packages/RestSharp.dll
+!CSharpWars/CSharpWars.Frontend/Assets/Packages/RestSharp.dll
 
 # Uncomment this line if you wish to ignore the asset store tools plugin
 # [Aa]ssets/AssetStoreTools*
