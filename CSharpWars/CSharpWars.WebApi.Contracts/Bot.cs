@@ -3,11 +3,17 @@ using MoveEnum = CSharpWars.Enums.Move;
 
 namespace CSharpWars.WebApi.Contracts;
 
-public record GetAllActiveBotsRequest(string ArenaName);
+public class GetAllActiveBotsRequest
+{
+    public string ArenaName { get; set; }
+}
 
-public record GetAllActiveBotsResponse(List<Bot> Bots);
+public class GetAllActiveBotsResponse
+{
+    public List<Bot> Bots { get; set; }
+}
 
-public record Bot
+public class Bot
 {
     public Guid BotId { get; init; }
     public string BotName { get; init; }
@@ -26,16 +32,20 @@ public record Bot
     public MoveEnum Move { get; init; }
 }
 
-public record CreateBotRequest(
-    string? PlayerName,
-    string BotName,
-    string ArenaName,
-    int MaximumHealth,
-    int MaximumStamina,
-    string Script);
+public class CreateBotRequest
+{
+    public string? PlayerName { get; set; }
+    public string BotName { get; set; }
+    public string ArenaName { get; set; }
+    public int MaximumHealth { get; set; }
+    public int MaximumStamina { get; set; }
+    public string Script { get; set; }
+}
 
-public record CreateBotResponse(
-    Guid BotId,
-    string BotName,
-    int MaximumHealth,
-    int MaximumStamina);
+public class CreateBotResponse
+{
+    public Guid BotId { get; set; }
+    public string BotName { get; set; }
+    public int MaximumHealth { get; set; }
+    public int MaximumStamina { get; set; }
+}

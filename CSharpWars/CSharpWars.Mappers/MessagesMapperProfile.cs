@@ -9,7 +9,7 @@ public class MessagesMapperProfile : Profile
     public MessagesMapperProfile()
     {
         CreateMap<List<MessageDto>, GetAllMessagesResponse>()
-            .ConstructUsing((src, ctx) => new GetAllMessagesResponse(ctx.Mapper.Map<List<Message>>(src)));
+            .ConstructUsing((src, ctx) => new GetAllMessagesResponse { Messages = ctx.Mapper.Map<List<Message>>(src) });
         CreateMap<MessageDto, Message>()
             .ForMember(dest => dest.Text, opt => opt.MapFrom(src => src.Message));
     }

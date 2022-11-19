@@ -60,7 +60,15 @@ public class PlayController : Controller
 
                 if (validatedScript != null && validatedScript.ValidationMessages.Count == 0)
                 {
-                    var botToCreate = new BotToCreateDto(player.Username, vm.BotName, "default", vm.BotHealth, vm.BotStamina, script);
+                    var botToCreate = new BotToCreateDto
+                    {
+                        PlayerName = player.Username,
+                        BotName = vm.BotName,
+                        ArenaName = "default",
+                        MaximumHealth = vm.BotHealth,
+                        MaximumStamina = vm.BotStamina,
+                        Script = script
+                    };
 
                     try
                     {
@@ -152,7 +160,15 @@ public class PlayController : Controller
 
                 if (validatedScript != null && validatedScript.ValidationMessages.Count == 0)
                 {
-                    var botToCreate = new BotToCreateDto(player.Username, vm.BotName, "default", vm.BotHealth, vm.BotStamina, script);
+                    var botToCreate = new BotToCreateDto
+                    {
+                        PlayerName = player.Username,
+                        BotName = vm.BotName,
+                        ArenaName = "default",
+                        MaximumHealth = vm.BotHealth,
+                        MaximumStamina = vm.BotStamina,
+                        Script = script
+                    };
 
                     try
                     {

@@ -1,3 +1,10 @@
-﻿namespace CSharpWars.Orleans.Contracts;
+﻿using Orleans;
 
-public record StatusDto(string Message);
+namespace CSharpWars.Orleans.Contracts;
+
+[GenerateSerializer]
+public class StatusDto
+{
+    [Id(0)]
+    public string Message { get; set; }
+}

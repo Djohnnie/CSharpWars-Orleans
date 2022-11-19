@@ -1,10 +1,16 @@
 ﻿namespace CSharpWars.WebApi.Contracts;
 
-public record GetAllMessagesRequest(string ArenaName);
+public class GetAllMessagesRequest
+{
+    public string ArenaName { get; set; }
+}
 
-public record GetAllMessagesResponse(List<Message> Messages);
+public class GetAllMessagesResponse
+{
+    public List<Message> Messages { get; set; }
+}
 
-public record Message
+public class Message
 {
     public DateTime TimeStamp { get; init; }
     public string Owner { get; init; }

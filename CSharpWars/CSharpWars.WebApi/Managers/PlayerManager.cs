@@ -13,11 +13,11 @@ public interface IPlayerManager
 
 public class PlayerManager : IPlayerManager
 {
-    private readonly IClusterClientHelper<IPlayersGrain> _clusterClientHelper;
+    private readonly IGrainFactoryHelper<IPlayersGrain> _clusterClientHelper;
     private readonly IMapper _mapper;
 
     public PlayerManager(
-        IClusterClientHelper<IPlayersGrain> clusterClientHelper,
+        IGrainFactoryHelper<IPlayersGrain> clusterClientHelper,
         IMapper mapper)
     {
         _clusterClientHelper = clusterClientHelper;

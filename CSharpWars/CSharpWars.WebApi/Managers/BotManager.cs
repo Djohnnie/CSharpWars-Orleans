@@ -15,13 +15,13 @@ public interface IBotManager
 
 public class BotManager : IBotManager
 {
-    private readonly IClusterClientHelperWithStringKey<IArenaGrain> _arenaGrainClient;
-    private readonly IClusterClientHelperWithStringKey<IProcessingGrain> _processingGrainClient;
+    private readonly IGrainFactoryHelperWithStringKey<IArenaGrain> _arenaGrainClient;
+    private readonly IGrainFactoryHelperWithStringKey<IProcessingGrain> _processingGrainClient;
     private readonly IMapper _mapper;
 
     public BotManager(
-        IClusterClientHelperWithStringKey<IArenaGrain> arenaGrainClient,
-        IClusterClientHelperWithStringKey<IProcessingGrain> processingGrainClient,
+        IGrainFactoryHelperWithStringKey<IArenaGrain> arenaGrainClient,
+        IGrainFactoryHelperWithStringKey<IProcessingGrain> processingGrainClient,
         IMapper mapper)
     {
         _arenaGrainClient = arenaGrainClient;

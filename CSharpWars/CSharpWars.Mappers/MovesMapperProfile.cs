@@ -9,7 +9,7 @@ public class MovesMapperProfile : Profile
     public MovesMapperProfile()
     {
         CreateMap<List<MoveDto>, GetAllMovesResponse>()
-            .ConstructUsing((src, ctx) => new GetAllMovesResponse(ctx.Mapper.Map<List<Move>>(src)));
+            .ConstructUsing((src, ctx) => new GetAllMovesResponse { Moves = ctx.Mapper.Map<List<Move>>(src) });
         CreateMap<MoveDto, Move>();
     }
 }

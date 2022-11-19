@@ -1,10 +1,16 @@
 ﻿namespace CSharpWars.WebApi.Contracts;
 
-public record GetAllMovesRequest(string ArenaName);
+public class GetAllMovesRequest
+{
+    public string ArenaName { get; set; }
+}
 
-public record GetAllMovesResponse(List<Move> Moves);
+public class GetAllMovesResponse
+{
+    public List<Move> Moves { get; set; }
+}
 
-public record Move
+public class Move
 {
     public string Description { get; init; }
 }

@@ -20,6 +20,9 @@ public class StatusGrain : GrainBase<IStatusGrain>, IStatusGrain
         var message = "Hi from the <StatusGrain>";
         _logger.AutoLogInformation(message);
 
-        return new StatusDto(message);
+        return new StatusDto
+        {
+            Message = message
+        };
     }
 }

@@ -12,11 +12,11 @@ public interface IMovesManager
 
 public class MovesManager : IMovesManager
 {
-    private readonly IClusterClientHelperWithStringKey<IMovesGrain> _movesGrainClient;
+    private readonly IGrainFactoryHelperWithStringKey<IMovesGrain> _movesGrainClient;
     private readonly IMapper _mapper;
 
     public MovesManager(
-        IClusterClientHelperWithStringKey<IMovesGrain> movesGrainClient,
+        IGrainFactoryHelperWithStringKey<IMovesGrain> movesGrainClient,
         IMapper mapper)
     {
         _movesGrainClient = movesGrainClient;

@@ -78,7 +78,11 @@ public class PlayerGrain : GrainBase<IPlayerGrain>, IPlayerGrain
         var token = _jwtHelper.GenerateToken(username);
         _logger.AutoLogInformation($"Generated '{token}' for '{username}'");
 
-        return new PlayerDto(username, token);
+        return new PlayerDto
+        {
+            Username = username,
+            Token = token
+        };
     }
 
     public async Task ValidateBotDeploymentLimit()

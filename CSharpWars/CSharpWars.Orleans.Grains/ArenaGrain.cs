@@ -24,6 +24,7 @@ public class ArenaGrain : GrainBase<IArenaGrain>, IArenaGrain
     private readonly IGrainFactoryHelperWithStringKey<IPlayerGrain> _playerGrainFactory;
     private readonly IGrainFactoryHelperWithGuidKey<IBotGrain> _botGrainFactory;
     private readonly IGrainFactoryHelperWithStringKey<IProcessingGrain> _processingGrainFactory;
+
     private readonly IPersistentState<ArenaState> _state;
     private readonly IConfiguration _configuration;
     private readonly ILogger<IArenaGrain> _logger;
@@ -46,7 +47,7 @@ public class ArenaGrain : GrainBase<IArenaGrain>, IArenaGrain
     public async Task<List<BotDto>> GetAllActiveBots()
     {
         var activeBots = await GetBots(false);
-
+        
         return activeBots;
     }
 
@@ -96,7 +97,12 @@ public class ArenaGrain : GrainBase<IArenaGrain>, IArenaGrain
             await _state.WriteStateAsync();
         }
 
-        return new ArenaDto(_state.State.Name, _state.State.Width, _state.State.Height);
+        return new ArenaDto
+        {
+            Name = _state.State.Name,
+            Width = _state.State.Width,
+            Height = _state.State.Height
+        };
     }
 
     public async Task<BotDto> CreateBot(string playerName, BotToCreateDto bot)

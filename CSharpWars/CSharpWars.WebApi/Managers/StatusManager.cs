@@ -12,11 +12,11 @@ public interface IStatusManager
 
 public class StatusManager : IStatusManager
 {
-    private readonly IClusterClientHelper<IStatusGrain> _statusGrainClient;
+    private readonly IGrainFactoryHelper<IStatusGrain> _statusGrainClient;
     private readonly IMapper _mapper;
 
     public StatusManager(
-        IClusterClientHelper<IStatusGrain> statusGrainClient,
+        IGrainFactoryHelper<IStatusGrain> statusGrainClient,
         IMapper mapper)
     {
         _statusGrainClient = statusGrainClient;

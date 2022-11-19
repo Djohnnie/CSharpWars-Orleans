@@ -12,11 +12,11 @@ public interface IMessagesManager
 
 public class MessagesManager : IMessagesManager
 {
-    private readonly IClusterClientHelperWithStringKey<IMessagesGrain> _messagesGrainClient;
+    private readonly IGrainFactoryHelperWithStringKey<IMessagesGrain> _messagesGrainClient;
     private readonly IMapper _mapper;
 
     public MessagesManager(
-        IClusterClientHelperWithStringKey<IMessagesGrain> messagesGrainClient,
+        IGrainFactoryHelperWithStringKey<IMessagesGrain> messagesGrainClient,
         IMapper mapper)
     {
         _messagesGrainClient = messagesGrainClient;

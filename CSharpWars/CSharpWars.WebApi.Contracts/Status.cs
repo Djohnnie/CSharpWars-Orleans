@@ -1,3 +1,6 @@
 ﻿namespace CSharpWars.WebApi.Contracts;
 
-public record GetStatusResponse(string Message);
+public class GetStatusResponse
+{
+    public string Message { get; set; }
+}

@@ -1,26 +1,19 @@
-<Project Sdk="Microsoft.NET.Sdk.Worker">
+﻿<Project Sdk="Microsoft.NET.Sdk.Worker">
 
 	<PropertyGroup>
-		<TargetFramework>net6.0</TargetFramework>
+		<TargetFramework>net7.0</TargetFramework>
 		<Nullable>enable</Nullable>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<UserSecretsId>dotnet-CSharpWars.Orleans.Validation.Host-A8137BB4-939C-4E2C-A4E2-2E380DB10F61</UserSecretsId>
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Microsoft.Extensions.Hosting" Version="6.0.1" />
+		<PackageReference Include="Microsoft.Extensions.Hosting" Version="7.0.0" />
 		<PackageReference Include="Microsoft.Extensions.Logging.ApplicationInsights" Version="2.21.0" />
-		<PackageReference Include="Microsoft.Orleans.Clustering.AzureStorage" Version="3.6.5" />
-		<PackageReference Include="Microsoft.Orleans.CodeGenerator.MSBuild" Version="3.6.5">
-			<PrivateAssets>all</PrivateAssets>
-			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-		</PackageReference>
-		<PackageReference Include="Microsoft.Orleans.Hosting.Kubernetes" Version="3.6.5" />
-		<PackageReference Include="Microsoft.Orleans.OrleansTelemetryConsumers.AI" Version="3.6.5" />
-		<PackageReference Include="Microsoft.Orleans.OrleansTelemetryConsumers.Counters" Version="3.6.5" />
-		<PackageReference Include="Microsoft.Orleans.OrleansTelemetryConsumers.Linux" Version="3.6.5" />
-		<PackageReference Include="Microsoft.Orleans.Persistence.AzureStorage" Version="3.6.5" />
-		<PackageReference Include="Microsoft.Orleans.Server" Version="3.6.5" />
+		<PackageReference Include="Microsoft.Orleans.Clustering.AzureStorage" Version="7.0.0" />
+		<PackageReference Include="Microsoft.Orleans.Hosting.Kubernetes" Version="7.0.0" />
+		<PackageReference Include="Microsoft.Orleans.Persistence.AzureStorage" Version="7.0.0" />
+		<PackageReference Include="Microsoft.Orleans.Server" Version="7.0.0" />
 	</ItemGroup>
 
 	<ItemGroup>

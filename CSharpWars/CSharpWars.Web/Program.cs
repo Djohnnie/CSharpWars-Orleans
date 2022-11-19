@@ -1,5 +1,7 @@
 using CSharpWars.Orleans.Common;
 using CSharpWars.Web.Client;
+using Orleans.Configuration;
+using System.Net;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Configuration.AddEnvironmentVariables();
@@ -14,12 +16,41 @@ builder.Services.AddSession(options =>
     options.Cookie.IsEssential = true;
 });
 
-builder.Services.AddSingleton<ClusterClientHostedService>();
-builder.Services.AddSingleton<IHostedService>(sp => sp.GetRequiredService<ClusterClientHostedService>());
-builder.Services.AddSingleton(sp => sp.GetRequiredService<ClusterClientHostedService>().Client);
 builder.Services.AddOrleansHelpers();
 
 builder.Services.AddClients();
+
+builder.Host.UseOrleans((hostBuilder, siloBuilder) =>
+{
+    var azureStorageConnectionString = hostBuilder.Configuration.GetValue<string>("AZURE_STORAGE_CONNECTION_STRING");
+
+#if DEBUG
+    //siloBuilder.UsePerfCounterEnvironmentStatistics();
+    siloBuilder.UseLocalhostClustering(siloPort: 11114, gatewayPort: 30003, primarySiloEndpoint: new IPEndPoint(IPAddress.Loopback, 11112), serviceId: "csharpwars-orleans-host", clusterId: "csharpwars-orleans-host");
+#else
+    siloBuilder.UseKubernetesHosting();
+    //siloBuilder.UseLinuxEnvironmentStatistics();
+#endif
+
+    siloBuilder.Configure<ClusterOptions>(options =>
+    {
+        options.ClusterId = "csharpwars-orleans-host";
+        options.ServiceId = "csharpwars-orleans-host";
+    });
+
+    siloBuilder.UseAzureStorageClustering(options =>
+    {
+        options.ConfigureTableServiceClient(azureStorageConnectionString);
+    });
+
+    siloBuilder.AddAzureBlobGrainStorage("arenaStore", config => config.ConfigureBlobServiceClient(azureStorageConnectionString));
+    siloBuilder.AddAzureBlobGrainStorage("playersStore", config => config.ConfigureBlobServiceClient(azureStorageConnectionString));
+    siloBuilder.AddAzureBlobGrainStorage("playerStore", config => config.ConfigureBlobServiceClient(azureStorageConnectionString));
+    siloBuilder.AddAzureBlobGrainStorage("botStore", config => config.ConfigureBlobServiceClient(azureStorageConnectionString));
+    siloBuilder.AddAzureBlobGrainStorage("scriptStore", config => config.ConfigureBlobServiceClient(azureStorageConnectionString));
+    siloBuilder.AddAzureBlobGrainStorage("messagesStore", config => config.ConfigureBlobServiceClient(azureStorageConnectionString));
+    siloBuilder.AddAzureBlobGrainStorage("movesStore", config => config.ConfigureBlobServiceClient(azureStorageConnectionString));
+});
 
 var app = builder.Build();
 

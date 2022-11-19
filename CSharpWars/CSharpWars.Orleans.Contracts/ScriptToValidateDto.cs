@@ -1,6 +1,10 @@
-﻿namespace CSharpWars.Orleans.Contracts;
+﻿using Orleans;
 
-public record ScriptToValidateDto
+namespace CSharpWars.Orleans.Contracts;
+
+[GenerateSerializer]
+public class ScriptToValidateDto
 {
+    [Id(0)]
     public string Script { get; init; }
 }

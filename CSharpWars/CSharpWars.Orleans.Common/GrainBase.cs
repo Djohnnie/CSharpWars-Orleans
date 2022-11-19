@@ -13,17 +13,17 @@ public class GrainBase<TGrainInterface> : Grain
         _logger = logger;
     }
 
-    public override Task OnActivateAsync()
+    public override Task OnActivateAsync(CancellationToken cancellationToken)
     {
         _logger.AutoLogInformation("Activating Grain...");
 
-        return base.OnActivateAsync();
+        return base.OnActivateAsync(cancellationToken);
     }
 
-    public override Task OnDeactivateAsync()
+    public override Task OnDeactivateAsync(DeactivationReason reason, CancellationToken cancellationToken)
     {
         _logger.AutoLogInformation("Deactivating Grain...");
 
-        return base.OnDeactivateAsync();
+        return base.OnDeactivateAsync(reason, cancellationToken);
     }
 }

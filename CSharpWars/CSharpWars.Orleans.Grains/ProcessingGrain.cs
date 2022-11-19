@@ -22,18 +22,18 @@ public class ProcessingGrain : GrainBase<IProcessingGrain>, IProcessingGrain
         _processorLogic = processorLogic;
     }
 
-    public override Task OnActivateAsync()
+    public override Task OnActivateAsync(CancellationToken cancellationToken)
     {
         _timer = RegisterTimer(OnTimer, null, TimeSpan.FromSeconds(30), TimeSpan.FromSeconds(2));
 
-        return base.OnActivateAsync();
+        return base.OnActivateAsync(cancellationToken);
     }
 
-    public override Task OnDeactivateAsync()
+    public override Task OnDeactivateAsync(DeactivationReason reason, CancellationToken cancellationToken)
     {
         _timer?.Dispose();
 
-        return base.OnDeactivateAsync();
+        return base.OnDeactivateAsync(reason, cancellationToken);
     }
 
     private async Task OnTimer(object state)

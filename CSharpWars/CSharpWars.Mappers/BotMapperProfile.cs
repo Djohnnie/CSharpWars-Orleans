@@ -11,7 +11,7 @@ public class BotMapperProfile : Profile
         CreateMap<CreateBotRequest, BotToCreateDto>();
         CreateMap<BotDto, CreateBotResponse>();
         CreateMap<List<BotDto>, GetAllActiveBotsResponse>()
-            .ConstructUsing((src, ctx) => new GetAllActiveBotsResponse(ctx.Mapper.Map<List<Bot>>(src)));
+            .ConstructUsing((src, ctx) => new GetAllActiveBotsResponse { Bots = ctx.Mapper.Map<List<Bot>>(src) });
         CreateMap<BotDto, Bot>();
     }
 }

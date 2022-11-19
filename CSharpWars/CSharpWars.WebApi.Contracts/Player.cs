@@ -1,4 +1,13 @@
 ﻿namespace CSharpWars.WebApi.Contracts;
 
-public record LoginRequest(string Username, string Password);
-public record LoginResponse(string Username, string Token);
+public class LoginRequest
+{
+    public string Username { get; set; }
+    public string Password { get; set; }
+}
+
+public class LoginResponse
+{
+    public string Username { get; set; }
+    public string Token { get; set; }
+}

@@ -34,14 +34,14 @@ public class ScriptGrain : GrainBase<IScriptGrain>, IScriptGrain
         _state = state;
     }
 
-    public override async Task OnActivateAsync()
+    public override async Task OnActivateAsync(CancellationToken cancellationToken)
     {
         if (_state.State.Exists)
         {
             _compiledScript = await _scriptCompiler.CompileForExecution(_state.State.Script);
         }
 
-        await base.OnActivateAsync();
+        await base.OnActivateAsync(cancellationToken);
     }
 
     public async Task SetScript(string script)

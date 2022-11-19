@@ -15,18 +15,18 @@ public interface IOrleansClient
 
 public class OrleansClient : IOrleansClient
 {
-    private readonly IClusterClientHelper<IPlayersGrain> _playersGrainClient;
-    private readonly IClusterClientHelperWithGuidKey<IValidationGrain> _validationGrainClient;
-    private readonly IClusterClientHelperWithStringKey<IArenaGrain> _arenaGrainClient;
-    private readonly IClusterClientHelperWithStringKey<IMovesGrain> _movesGrainClient;
-    private readonly IClusterClientHelperWithStringKey<IMessagesGrain> _messagesGrainClient;
+    private readonly IGrainFactoryHelper<IPlayersGrain> _playersGrainClient;
+    private readonly IGrainFactoryHelperWithGuidKey<IValidationGrain> _validationGrainClient;
+    private readonly IGrainFactoryHelperWithStringKey<IArenaGrain> _arenaGrainClient;
+    private readonly IGrainFactoryHelperWithStringKey<IMovesGrain> _movesGrainClient;
+    private readonly IGrainFactoryHelperWithStringKey<IMessagesGrain> _messagesGrainClient;
 
     public OrleansClient(
-        IClusterClientHelper<IPlayersGrain> playersGrainClient,
-        IClusterClientHelperWithGuidKey<IValidationGrain> validationGrainClient,
-        IClusterClientHelperWithStringKey<IArenaGrain> arenaGrainClient,
-        IClusterClientHelperWithStringKey<IMovesGrain> movesGrainClient,
-        IClusterClientHelperWithStringKey<IMessagesGrain> messagesGrainClient)
+        IGrainFactoryHelper<IPlayersGrain> playersGrainClient,
+        IGrainFactoryHelperWithGuidKey<IValidationGrain> validationGrainClient,
+        IGrainFactoryHelperWithStringKey<IArenaGrain> arenaGrainClient,
+        IGrainFactoryHelperWithStringKey<IMovesGrain> movesGrainClient,
+        IGrainFactoryHelperWithStringKey<IMessagesGrain> messagesGrainClient)
     {
         _playersGrainClient = playersGrainClient;
         _validationGrainClient = validationGrainClient;

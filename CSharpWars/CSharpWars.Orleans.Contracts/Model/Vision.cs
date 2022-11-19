@@ -1,11 +1,16 @@
 ﻿using CSharpWars.Enums;
+using Orleans;
 
 namespace CSharpWars.Orleans.Contracts.Model;
 
+[GenerateSerializer]
 public class Vision
 {
+    [Id(0)]
     public IList<Bot> Bots { get; set; } = new List<Bot>();
+    [Id(1)]
     public IList<Bot> FriendlyBots { get; set; } = new List<Bot>();
+    [Id(2)]
     public IList<Bot> EnemyBots { get; set; } = new List<Bot>();
 
     private Vision() { }

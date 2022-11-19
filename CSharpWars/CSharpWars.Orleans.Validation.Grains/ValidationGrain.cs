@@ -35,7 +35,13 @@ public class ValidationGrain : Grain, IValidationGrain
         {
             var task = Task.Run(() =>
             {
-                var arena = new ArenaDto("validation", 10, 10);
+                var arena = new ArenaDto
+                {
+                    Name = "validation",
+                    Width = 10,
+                    Height = 10
+                };
+
                 var bot = new BotDto
                 {
                     BotId = Guid.NewGuid(),

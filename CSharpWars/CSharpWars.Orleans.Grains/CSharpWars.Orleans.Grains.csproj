@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net7.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
   </PropertyGroup>
@@ -16,16 +16,12 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.Orleans.CodeGenerator.MSBuild" Version="3.6.5">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
-    <PackageReference Include="Microsoft.Orleans.Core.Abstractions" Version="3.6.5" />
-    <PackageReference Include="Microsoft.Orleans.Runtime.Abstractions" Version="3.6.5" />
+    <Orleans_CodeGenInputs Remove="PlayerGrain.cs" />
   </ItemGroup>
 
   <ItemGroup>
-    <Orleans_CodeGenInputs Remove="PlayerGrain.cs" />
+    <PackageReference Include="Microsoft.Orleans.Runtime" Version="7.0.0" />
+    <PackageReference Include="Microsoft.Orleans.Sdk" Version="7.0.0" />
   </ItemGroup>
 
   <ItemGroup>
