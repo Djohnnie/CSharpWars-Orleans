@@ -46,6 +46,7 @@ public class ValidationGrain : Grain, IValidationGrain
                 {
                     BotId = Guid.NewGuid(),
                     BotName = "Bot",
+                    PlayerName = "PlayerA",
                     MaximumHealth = 100,
                     CurrentHealth = 100,
                     MaximumStamina = 100,
@@ -59,6 +60,7 @@ public class ValidationGrain : Grain, IValidationGrain
                 {
                     BotId = Guid.NewGuid(),
                     BotName = "Friend",
+                    PlayerName = "PlayerA",
                     MaximumHealth = 100,
                     CurrentHealth = 100,
                     MaximumStamina = 100,
@@ -71,6 +73,7 @@ public class ValidationGrain : Grain, IValidationGrain
                 {
                     BotId = Guid.NewGuid(),
                     BotName = "Enemy",
+                    PlayerName = "PlayerB",
                     MaximumHealth = 100,
                     CurrentHealth = 100,
                     MaximumStamina = 100,
