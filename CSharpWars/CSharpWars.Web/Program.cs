@@ -23,13 +23,15 @@ builder.Services.AddClients();
 builder.Host.UseOrleans((hostBuilder, siloBuilder) =>
 {
     var azureStorageConnectionString = hostBuilder.Configuration.GetValue<string>("AZURE_STORAGE_CONNECTION_STRING");
-
+    var shouldUseKubernetes = hostBuilder.Configuration.GetValue<bool>("USE_KUBERNETES");
+    
 #if DEBUG
-    //siloBuilder.UsePerfCounterEnvironmentStatistics();
     siloBuilder.UseLocalhostClustering(siloPort: 11114, gatewayPort: 30003, primarySiloEndpoint: new IPEndPoint(IPAddress.Loopback, 11112), serviceId: "csharpwars-orleans-host", clusterId: "csharpwars-orleans-host");
 #else
-    siloBuilder.UseKubernetesHosting();
-    //siloBuilder.UseLinuxEnvironmentStatistics();
+    if( shouldUseKubernetes)
+    {
+        siloBuilder.UseKubernetesHosting();
+    }
 #endif
 
     siloBuilder.Configure<ClusterOptions>(options =>
