@@ -6,7 +6,7 @@ public interface IBotGrain : IGrainWithGuidKey
 {
     Task<BotDto> GetState();
 
-    Task<BotDto> CreateBot(BotToCreateDto bot);
+    Task<BotDto> CreateBot(BotToCreateDto bot, ArenaDto arena, List<BotDto> activeBots);
 
     Task DeleteBot(bool clearArena);
 

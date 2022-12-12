@@ -1,9 +1,9 @@
-﻿using CSharpWars.Common.Exceptions;
-using CSharpWars.Common.Extensions;
+﻿using CSharpWars.Common.Extensions;
 using CSharpWars.Common.Helpers;
 using CSharpWars.Enums;
 using CSharpWars.Orleans.Common;
 using CSharpWars.Orleans.Contracts;
+using CSharpWars.Orleans.Contracts.Exceptions;
 using CSharpWars.Orleans.Contracts.Grains;
 using Microsoft.Extensions.Logging;
 using Orleans;
@@ -83,7 +83,7 @@ public class BotGrain : GrainBase<IBotGrain>, IBotGrain
         });
     }
 
-    public async Task<BotDto> CreateBot(BotToCreateDto bot)
+    public async Task<BotDto> CreateBot(BotToCreateDto bot, ArenaDto arena, List<BotDto> activeBots)
     {
         if (_state.State.Exists)
         {
@@ -98,7 +98,7 @@ public class BotGrain : GrainBase<IBotGrain>, IBotGrain
         _state.State.CurrentStamina = bot.MaximumStamina;
         _state.State.MaximumStamina = bot.MaximumStamina;
         _state.State.Orientation = _randomHelper.Get<Orientation>();
-        (_state.State.X, _state.State.Y) = await FindFreeLocation();
+        (_state.State.X, _state.State.Y) = await FindFreeLocation(arena, activeBots);
         (_state.State.FromX, _state.State.FromY) = (_state.State.X, _state.State.Y);
         _state.State.Memory = new Dictionary<string, string>().Serialize();
         _state.State.TimeOfDeath = DateTime.MaxValue;
@@ -113,22 +113,15 @@ public class BotGrain : GrainBase<IBotGrain>, IBotGrain
         return await GetState();
     }
 
-    private async Task<(int X, int Y)> FindFreeLocation()
+    private async Task<(int X, int Y)> FindFreeLocation(ArenaDto arena, List<BotDto> activeBots)
     {
-        var (arena, bots) = await _arenaGrainFactory.FromGrain(_state.State.ArenaName, async arenaGrain =>
-        {
-            var arenaDetails = await arenaGrain.GetArenaDetails();
-            var activeBots = await arenaGrain.GetAllActiveBots();
-            return (arenaDetails, activeBots);
-        });
-
         var freeLocations = new List<(int X, int Y)>();
 
         for (int y = 0; y < arena.Width; y++)
         {
             for (int x = 0; x < arena.Width; x++)
             {
-                if (!bots.Any(b => b.X == x && b.Y == y))
+                if (!activeBots.Any(b => b.X == x && b.Y == y))
                 {
                     freeLocations.Add((x, y));
                 }

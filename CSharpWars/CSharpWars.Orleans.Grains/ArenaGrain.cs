@@ -5,7 +5,6 @@ using CSharpWars.Orleans.Contracts;
 using CSharpWars.Orleans.Contracts.Grains;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using Orleans;
 using Orleans.Runtime;
 
 namespace CSharpWars.Orleans.Grains;
@@ -47,7 +46,7 @@ public class ArenaGrain : GrainBase<IArenaGrain>, IArenaGrain
     public async Task<List<BotDto>> GetAllActiveBots()
     {
         var activeBots = await GetBots(false);
-        
+
         return activeBots;
     }
 
@@ -114,8 +113,11 @@ public class ArenaGrain : GrainBase<IArenaGrain>, IArenaGrain
 
         var botId = Guid.NewGuid();
 
+        var arenaDetails = await GetArenaDetails();
+        var activeBots = await GetAllActiveBots();
+
         await _playerGrainFactory.FromGrain(playerName, g => g.ValidateBotDeploymentLimit());
-        var createdBot = await _botGrainFactory.FromGrain(botId, g => g.CreateBot(bot));
+        var createdBot = await _botGrainFactory.FromGrain(botId, g => g.CreateBot(bot, arenaDetails, activeBots));
         await _playerGrainFactory.FromGrain(playerName, g => g.BotCreated(botId));
 
         _state.State.BotIds.Add(botId);
