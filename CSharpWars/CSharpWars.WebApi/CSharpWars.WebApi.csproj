@@ -14,6 +14,7 @@
     <PackageReference Include="Microsoft.Orleans.Hosting.Kubernetes" Version="7.0.0" />
     <PackageReference Include="Microsoft.Orleans.Persistence.AzureStorage" Version="7.0.0" />
     <PackageReference Include="Microsoft.Orleans.Server" Version="7.0.0" />
+    <PackageReference Include="OrleansDashboard" Version="7.0.2" />
   </ItemGroup>
 
   <ItemGroup>

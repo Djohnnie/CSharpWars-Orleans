@@ -52,6 +52,8 @@ builder.Host.UseOrleans((hostBuilder, siloBuilder) =>
     siloBuilder.AddAzureBlobGrainStorage("scriptStore", config => config.ConfigureBlobServiceClient(azureStorageConnectionString));
     siloBuilder.AddAzureBlobGrainStorage("messagesStore", config => config.ConfigureBlobServiceClient(azureStorageConnectionString));
     siloBuilder.AddAzureBlobGrainStorage("movesStore", config => config.ConfigureBlobServiceClient(azureStorageConnectionString));
+
+    siloBuilder.UseDashboard();
 });
 
 var app = builder.Build();

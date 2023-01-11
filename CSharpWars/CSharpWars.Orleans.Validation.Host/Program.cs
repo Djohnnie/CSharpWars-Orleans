@@ -56,6 +56,8 @@ IHost host = Host.CreateDefaultBuilder(args)
             loggingBuilder.AddApplicationInsights(c => c.ConnectionString = applicationInsightsConnectionString, _ => { });
         });
 
+        siloBuilder.UseDashboard();
+
         siloBuilder.Configure<GrainCollectionOptions>(o =>
         {
             o.CollectionAge = TimeSpan.FromMinutes(10);
