@@ -44,16 +44,16 @@ public class Vision
         switch (botProperties.Orientation)
         {
             case Orientation.North:
-                result = bot.Y <= botProperties.Y;
+                result = bot.Y < botProperties.Y;
                 break;
             case Orientation.East:
-                result = bot.X >= botProperties.X;
+                result = bot.X > botProperties.X;
                 break;
             case Orientation.South:
-                result = bot.Y >= botProperties.Y;
+                result = bot.Y > botProperties.Y;
                 break;
             case Orientation.West:
-                result = bot.X <= botProperties.X;
+                result = bot.X < botProperties.X;
                 break;
         }
 
