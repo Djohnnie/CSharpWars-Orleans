@@ -22,9 +22,9 @@ public class ValidationGrain : Grain, IValidationGrain
 
     public async Task<ValidatedScriptDto> Validate(ScriptToValidateDto scriptToValidate)
     {
-        var compilationStopwatch = Stopwatch.StartNew();
+        var compilationStartingTime = Stopwatch.GetTimestamp();
         var diagnostics = await _scriptCompiler.CompileForDiagnostics(scriptToValidate.Script);
-        compilationStopwatch.Stop();
+        var compilationElapsedTime = Stopwatch.GetElapsedTime(compilationStartingTime);
 
         var botScript = await _scriptCompiler.CompileForExecution(scriptToValidate.Script);
 
@@ -85,7 +85,7 @@ public class ValidationGrain : Grain, IValidationGrain
                 var botProperties = BotProperties.Build(bot, arena, new[] { bot, friendBot, enemyBot }.ToList());
                 var scriptGlobals = ScriptGlobals.Build(botProperties);
 
-                var runtimeStopwatch = Stopwatch.StartNew();
+                var runtimeStartingTime = Stopwatch.GetTimestamp();
 
                 try
                 {
@@ -99,8 +99,8 @@ public class ValidationGrain : Grain, IValidationGrain
                     });
                 }
 
-                runtimeStopwatch.Stop();
-                runtimeInMilliseconds = runtimeStopwatch.ElapsedMilliseconds;
+                var runtimeElapsedTime = Stopwatch.GetElapsedTime(runtimeStartingTime);
+                runtimeInMilliseconds = runtimeElapsedTime.Milliseconds;
             });
 
             if (!task.Wait(TimeSpan.FromSeconds(1)))
@@ -129,7 +129,7 @@ public class ValidationGrain : Grain, IValidationGrain
 
         return new ValidatedScriptDto
         {
-            CompilationTimeInMilliseconds = compilationStopwatch.ElapsedMilliseconds,
+            CompilationTimeInMilliseconds = compilationElapsedTime.Milliseconds,
             RunTimeInMilliseconds = runtimeInMilliseconds,
             ValidationMessages = validationMessages
         };

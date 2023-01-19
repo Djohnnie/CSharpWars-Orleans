@@ -24,8 +24,9 @@ public class ProcessingLogic : IProcessingLogic
     {
         var tasks = new Dictionary<Guid, Task<BotProperties>>();
 
-        foreach (var bot in context.Bots)
+        for (int i = 0; i < context.Bots.Count; i++)
         {
+            Contracts.BotDto? bot = context.Bots[i];
             var botProperties = context.GetBotProperties(bot.BotId);
             var task = _scriptGrainFactory.FromGrain(bot.BotId, g => g.Process(botProperties));
             tasks.Add(bot.BotId, task);

@@ -50,7 +50,7 @@ public class BotResult
 
     public int GetInflictedDamage(Guid botId)
     {
-        return _damageInflicted.ContainsKey(botId) ? _damageInflicted[botId] : 0;
+        return _damageInflicted.TryGetValue(botId, out int value) ? value : 0;
     }
 
     public void Teleport(Guid botId, int destinationX, int destinationY)
@@ -65,6 +65,6 @@ public class BotResult
 
     public (int X, int Y) GetTeleportation(Guid botId)
     {
-        return _teleportations.ContainsKey(botId) ? _teleportations[botId] : (-1, -1);
+        return _teleportations.TryGetValue(botId, out (int X, int Y) value) ? value : (-1, -1);
     }
 }

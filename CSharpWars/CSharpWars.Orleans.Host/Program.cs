@@ -5,7 +5,7 @@ using CSharpWars.Scripting;
 using Orleans.Configuration;
 using System.Net;
 
-IHost host = Host.CreateDefaultBuilder(args)
+using IHost host = Host.CreateDefaultBuilder(args)
 
     .ConfigureAppConfiguration(config =>
     {
@@ -29,7 +29,7 @@ IHost host = Host.CreateDefaultBuilder(args)
 #if DEBUG
         siloBuilder.UseLocalhostClustering(siloPort: 11112, gatewayPort: 30001, primarySiloEndpoint: new IPEndPoint(IPAddress.Loopback, 11112), serviceId: "csharpwars-orleans-host", clusterId: "csharpwars-orleans-host");
 #else
-        if( shouldUseKubernetes)
+        if (shouldUseKubernetes)
         {
             siloBuilder.UseKubernetesHosting();
         }

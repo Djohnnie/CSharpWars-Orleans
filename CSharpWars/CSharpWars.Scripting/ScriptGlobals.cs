@@ -169,9 +169,10 @@ public class ScriptGlobals
     /// <returns></returns>
     public T? LoadFromMemory<T>(string key)
     {
-        if (_50437079C366407D978Fe4Afd60C535F.Memory.ContainsKey(key))
+        if (_50437079C366407D978Fe4Afd60C535F.Memory.TryGetValue(key, out string? value) 
+            && value is not null)
         {
-            return _50437079C366407D978Fe4Afd60C535F.Memory[key].Deserialize<T>();
+            return value.Deserialize<T>();
         }
 
         return default;
@@ -183,10 +184,7 @@ public class ScriptGlobals
     /// <param name="key"></param>
     public void RemoveFromMemory(string key)
     {
-        if (_50437079C366407D978Fe4Afd60C535F.Memory.ContainsKey(key))
-        {
-            _50437079C366407D978Fe4Afd60C535F.Memory.Remove(key);
-        }
+        _50437079C366407D978Fe4Afd60C535F.Memory.Remove(key);
     }
 
     /// <summary>
