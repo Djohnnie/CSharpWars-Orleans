@@ -1,6 +1,4 @@
-﻿using Orleans;
-
-namespace CSharpWars.Orleans.Contracts;
+﻿namespace CSharpWars.Orleans.Contracts;
 
 [GenerateSerializer]
 public class ValidatedScriptDto

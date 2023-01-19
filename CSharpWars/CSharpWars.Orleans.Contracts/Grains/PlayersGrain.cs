@@ -1,6 +1,4 @@
-﻿using Orleans;
-
-namespace CSharpWars.Orleans.Contracts.Grains;
+﻿namespace CSharpWars.Orleans.Contracts.Grains;
 
 public interface IPlayersGrain : IGrainWithGuidKey
 {

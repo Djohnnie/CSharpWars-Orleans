@@ -6,7 +6,6 @@ using CSharpWars.Orleans.Contracts;
 using CSharpWars.Orleans.Contracts.Exceptions;
 using CSharpWars.Orleans.Contracts.Grains;
 using Microsoft.Extensions.Logging;
-using Orleans;
 using Orleans.Runtime;
 
 namespace CSharpWars.Orleans.Grains;

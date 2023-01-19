@@ -6,7 +6,6 @@ using CSharpWars.Orleans.Contracts.Grains;
 using CSharpWars.Orleans.Contracts.Model;
 using CSharpWars.Scripting;
 using Microsoft.CodeAnalysis;
-using Orleans;
 
 namespace CSharpWars.Orleans.Validation.Grains;
 

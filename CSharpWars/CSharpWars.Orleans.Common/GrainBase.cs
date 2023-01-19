@@ -1,6 +1,5 @@
 ﻿using CSharpWars.Common.Extensions;
 using Microsoft.Extensions.Logging;
-using Orleans;
 
 namespace CSharpWars.Orleans.Common;
 

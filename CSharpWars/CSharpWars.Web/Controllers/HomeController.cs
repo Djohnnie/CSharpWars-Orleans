@@ -2,7 +2,6 @@
 using CSharpWars.Web.Client;
 using CSharpWars.Web.Extensions;
 using CSharpWars.Web.Models;
-using CSharpWars.WebApi.Contracts;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CSharpWars.Web.Controllers;

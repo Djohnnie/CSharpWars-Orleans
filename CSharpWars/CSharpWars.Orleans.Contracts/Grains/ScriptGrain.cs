@@ -1,5 +1,4 @@
 ﻿using CSharpWars.Orleans.Contracts.Model;
-using Orleans;
 
 namespace CSharpWars.Orleans.Contracts.Grains;
 

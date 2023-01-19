@@ -1,6 +1,4 @@
-﻿using Orleans;
-
-namespace CSharpWars.Orleans.Common;
+﻿namespace CSharpWars.Orleans.Common;
 
 public interface IGrainFactoryHelper<TGrainInterface> where TGrainInterface : IGrainWithGuidKey
 {

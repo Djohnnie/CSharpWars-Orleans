@@ -1,6 +1,5 @@
 ﻿using CSharpWars.Common.Extensions;
 using CSharpWars.Enums;
-using Orleans;
 
 namespace CSharpWars.Orleans.Contracts.Model;
 
