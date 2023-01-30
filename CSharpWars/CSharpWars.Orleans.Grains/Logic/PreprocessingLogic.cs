@@ -12,8 +12,9 @@ public class PreprocessingLogic : IPreprocessingLogic
 {
     public Task Go(ProcessingContext context)
     {
-        foreach (var bot in context.Bots)
+        for (int i = 0; i < context.Bots.Count; i++)
         {
+            Contracts.BotDto bot = context.Bots[i];
             var botProperties = BotProperties.Build(bot, context.Arena, context.Bots);
             context.AddBotProperties(bot.BotId, botProperties);
         }

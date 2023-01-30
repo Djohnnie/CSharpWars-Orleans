@@ -1,6 +1,4 @@
-﻿using Orleans;
-
-namespace CSharpWars.Orleans.Common;
+﻿namespace CSharpWars.Orleans.Common;
 
 public static class GrainFactoryExtensions
 {

@@ -55,11 +55,12 @@ public class ApiHelper<TManager> : IApiHelper<TManager>
     {
         try
         {
-            var stopwatch = Stopwatch.StartNew();
+            var startingTimestamp = Stopwatch.GetTimestamp();
 
             var result = await action();
 
-            _logger.LogTrace($"REQUEST: {stopwatch.ElapsedMilliseconds}ms");
+            var elapsedTime = Stopwatch.GetElapsedTime(startingTimestamp);
+            _logger.LogTrace("REQUEST: {Milliseconds}ms", elapsedTime.Milliseconds);
 
             return result;
         }

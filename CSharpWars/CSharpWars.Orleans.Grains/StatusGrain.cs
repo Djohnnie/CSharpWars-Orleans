@@ -15,14 +15,14 @@ public class StatusGrain : GrainBase<IStatusGrain>, IStatusGrain
         _logger = logger;
     }
 
-    public async Task<StatusDto> GetStatus()
+    public Task<StatusDto> GetStatus()
     {
         var message = "Hi from the <StatusGrain>";
         _logger.AutoLogInformation(message);
 
-        return new StatusDto
+        return Task.FromResult(new StatusDto
         {
             Message = message
-        };
+        });
     }
 }

@@ -61,8 +61,9 @@ public class PlayersGrain : GrainBase<IPlayersGrain>, IPlayersGrain
         {
             _logger.AutoLogInformation("All players will be deleted");
 
-            foreach (var playerName in _state.State.PlayerNames)
+            for (int i = 0; i < _state.State.PlayerNames.Count; i++)
             {
+                string? playerName = _state.State.PlayerNames[i];
                 await _playerGrainFactoryHelper.FromGrain(playerName, g => g.DeletePlayer());
             }
 

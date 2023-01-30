@@ -1,5 +1,4 @@
-﻿using CSharpWars.Enums;
-using CSharpWars.Orleans.Common;
+﻿using CSharpWars.Orleans.Common;
 using CSharpWars.Orleans.Contracts.Grains;
 using CSharpWars.Scripting;
 
@@ -50,16 +49,18 @@ public class ProcessorLogic : IProcessorLogic
 
         await _postprocessingLogic.Go(context);
 
-        foreach (var bot in allBots)
+        for (int i = 0; i < allBots.Count; i++)
         {
+            Contracts.BotDto? bot = allBots[i];
             if (bot.TimeOfDeath < DateTime.UtcNow.AddSeconds(-10))
             {
                 await _botGrainFactory.FromGrain(bot.BotId, g => g.DeleteBot(false));
             }
         }
 
-        foreach (var bot in context.Bots)
+        for (int i = 0; i < context.Bots.Count; i++)
         {
+            Contracts.BotDto? bot = context.Bots[i];
             await _botGrainFactory.FromGrain(bot.BotId, g => g.UpdateState(bot));
         }
     }

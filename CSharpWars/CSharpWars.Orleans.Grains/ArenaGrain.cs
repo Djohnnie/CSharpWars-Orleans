@@ -66,8 +66,9 @@ public class ArenaGrain : GrainBase<IArenaGrain>, IArenaGrain
 
         if (_state.State.BotIds != null)
         {
-            foreach (var botId in _state.State.BotIds)
+            for (int i = 0; i < _state.State.BotIds.Count; i++)
             {
+                Guid botId = _state.State.BotIds[i];
                 var botState = await _botGrainFactory.FromGrain(botId, g => g.GetState());
 
                 if (!onlyLive || botState.Move != Move.Died)
@@ -134,8 +135,9 @@ public class ArenaGrain : GrainBase<IArenaGrain>, IArenaGrain
 
             await Task.Delay(2000);
 
-            foreach (var botId in _state.State.BotIds)
+            for (int i = 0; i < _state.State.BotIds.Count; i++)
             {
+                Guid botId = _state.State.BotIds[i];
                 await _botGrainFactory.FromGrain(botId, g => g.DeleteBot(true));
             }
 

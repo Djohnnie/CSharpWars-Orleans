@@ -22,7 +22,7 @@ public class PlayController : Controller
         _orleansClient = orleansClient;
     }
 
-    public async Task<IActionResult> Template()
+    public IActionResult Template()
     {
         if (HttpContext.Session.Keys.Contains("PLAYER"))
         {

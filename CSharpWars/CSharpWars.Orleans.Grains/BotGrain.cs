@@ -6,7 +6,6 @@ using CSharpWars.Orleans.Contracts;
 using CSharpWars.Orleans.Contracts.Exceptions;
 using CSharpWars.Orleans.Contracts.Grains;
 using Microsoft.Extensions.Logging;
-using Orleans;
 using Orleans.Runtime;
 
 namespace CSharpWars.Orleans.Grains;
@@ -98,7 +97,7 @@ public class BotGrain : GrainBase<IBotGrain>, IBotGrain
         _state.State.CurrentStamina = bot.MaximumStamina;
         _state.State.MaximumStamina = bot.MaximumStamina;
         _state.State.Orientation = _randomHelper.Get<Orientation>();
-        (_state.State.X, _state.State.Y) = await FindFreeLocation(arena, activeBots);
+        (_state.State.X, _state.State.Y) = FindFreeLocation(arena, activeBots);
         (_state.State.FromX, _state.State.FromY) = (_state.State.X, _state.State.Y);
         _state.State.Memory = new Dictionary<string, string>().Serialize();
         _state.State.TimeOfDeath = DateTime.MaxValue;
@@ -113,7 +112,7 @@ public class BotGrain : GrainBase<IBotGrain>, IBotGrain
         return await GetState();
     }
 
-    private async Task<(int X, int Y)> FindFreeLocation(ArenaDto arena, List<BotDto> activeBots)
+    private (int X, int Y) FindFreeLocation(ArenaDto arena, List<BotDto> activeBots)
     {
         var freeLocations = new List<(int X, int Y)>();
 

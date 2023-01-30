@@ -64,7 +64,7 @@ public class ScriptGrain : GrainBase<IScriptGrain>, IScriptGrain
 
                 _ = await _compiledScript.Invoke(scriptGlobals);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 botProperties.CurrentMove = Move.ScriptError;
                 botProperties.Message = ex.Message;

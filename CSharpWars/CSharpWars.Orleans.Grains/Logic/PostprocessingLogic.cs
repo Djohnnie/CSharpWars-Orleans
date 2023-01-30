@@ -44,8 +44,9 @@ public class PostprocessingLogic : IPostprocessingLogic
         var botProperties = context.GetOrderedBotProperties();
         var botLog = new List<BotLog>();
 
-        foreach (var botProperty in botProperties)
+        for (int i = 0; i < botProperties.Count; i++)
         {
+            Contracts.Model.BotProperties? botProperty = botProperties[i];
             var bot = context.Bots.Single(x => x.BotId == botProperty.BotId);
             var botResult = BaseMove.Build(botProperty, _randomHelper).Go();
             bot.Orientation = botResult.Orientation;
@@ -80,8 +81,9 @@ public class PostprocessingLogic : IPostprocessingLogic
             await LogMove(context.Arena.Name, bot.BotName, bot.PlayerName, botResult.Move);
         }
 
-        foreach (var bot in context.Bots)
+        for (int i = 0; i < context.Bots.Count; i++)
         {
+            BotDto bot = context.Bots[i];
             if (bot.CurrentHealth <= 0)
             {
                 bot.CurrentHealth = 0;

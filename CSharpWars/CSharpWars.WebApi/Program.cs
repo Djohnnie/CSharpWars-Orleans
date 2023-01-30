@@ -32,7 +32,7 @@ builder.Host.UseOrleans((hostBuilder, siloBuilder) =>
 #if DEBUG
     siloBuilder.UseLocalhostClustering(siloPort: 11113, gatewayPort: 30002, primarySiloEndpoint: new IPEndPoint(IPAddress.Loopback, 11112), serviceId: "csharpwars-orleans-host", clusterId: "csharpwars-orleans-host");
 #else
-    if( shouldUseKubernetes)
+    if (shouldUseKubernetes)
     {
         siloBuilder.UseKubernetesHosting();
     }

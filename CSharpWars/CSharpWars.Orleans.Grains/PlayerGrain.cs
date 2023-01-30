@@ -124,8 +124,9 @@ public class PlayerGrain : GrainBase<IPlayerGrain>, IPlayerGrain
         {
             _logger.AutoLogInformation($"Deleting player '{_state.State.Username}' and all of its bots");
 
-            foreach (var botId in _state.State.BotIds)
+            for (int i = 0; i < _state.State.BotIds.Count; i++)
             {
+                Guid botId = _state.State.BotIds[i];
                 await _botGrainHelper.FromGrain(botId, g => g.DeleteBot(false));
             }
 
