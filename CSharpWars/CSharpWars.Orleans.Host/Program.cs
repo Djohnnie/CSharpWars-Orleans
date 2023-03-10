@@ -25,7 +25,7 @@ using IHost host = Host.CreateDefaultBuilder(args)
         var azureStorageConnectionString = hostBuilder.Configuration.GetValue<string>("AZURE_STORAGE_CONNECTION_STRING");
         var applicationInsightsConnectionString = hostBuilder.Configuration.GetValue<string>("APPLICATION_INSIGHTS_CONNECTION_STRING");
         var shouldUseKubernetes = hostBuilder.Configuration.GetValue<bool>("USE_KUBERNETES");
-        
+
 #if DEBUG
         siloBuilder.UseLocalhostClustering(siloPort: 11112, gatewayPort: 30001, primarySiloEndpoint: new IPEndPoint(IPAddress.Loopback, 11112), serviceId: "csharpwars-orleans-host", clusterId: "csharpwars-orleans-host");
 #else
@@ -52,7 +52,7 @@ using IHost host = Host.CreateDefaultBuilder(args)
         siloBuilder.AddAzureBlobGrainStorage("scriptStore", config => config.ConfigureBlobServiceClient(azureStorageConnectionString));
         siloBuilder.AddAzureBlobGrainStorage("messagesStore", config => config.ConfigureBlobServiceClient(azureStorageConnectionString));
         siloBuilder.AddAzureBlobGrainStorage("movesStore", config => config.ConfigureBlobServiceClient(azureStorageConnectionString));
-        
+
         siloBuilder.ConfigureLogging(loggingBuilder =>
         {
             loggingBuilder.AddConsole();

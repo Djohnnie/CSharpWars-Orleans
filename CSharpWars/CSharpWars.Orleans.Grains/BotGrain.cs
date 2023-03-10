@@ -135,17 +135,12 @@ public class BotGrain : GrainBase<IBotGrain>, IBotGrain
         return _randomHelper.GetItem(freeLocations);
     }
 
-    public async Task DeleteBot(bool clearArena)
+    public async Task DeleteBot()
     {
         if (_state.State.Exists)
         {
             var botId = this.GetPrimaryKey();
             await _scriptGrainFactory.FromGrain(botId, g => g.DeleteScript());
-
-            if (!clearArena)
-            {
-                await _arenaGrainFactory.FromGrain(_state.State.ArenaName, g => g.DeleteBot(botId));
-            }
 
             await _state.ClearStateAsync();
         }

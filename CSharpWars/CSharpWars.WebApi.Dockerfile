@@ -4,6 +4,7 @@ EXPOSE 80
 
 FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
 WORKDIR /src
+
 COPY ["CSharpWars.WebApi/CSharpWars.WebApi.csproj", "CSharpWars.WebApi/"]
 COPY ["CSharpWars.Orleans.Grains/CSharpWars.Orleans.Grains.csproj", "CSharpWars.Orleans.Grains/"]
 RUN dotnet restore "CSharpWars.WebApi/CSharpWars.WebApi.csproj"

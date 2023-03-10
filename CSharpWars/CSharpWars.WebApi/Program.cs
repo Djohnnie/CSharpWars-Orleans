@@ -57,6 +57,11 @@ builder.Host.UseOrleans((hostBuilder, siloBuilder) =>
     siloBuilder.AddAzureBlobGrainStorage("messagesStore", config => config.ConfigureBlobServiceClient(azureStorageConnectionString));
     siloBuilder.AddAzureBlobGrainStorage("movesStore", config => config.ConfigureBlobServiceClient(azureStorageConnectionString));
 
+    siloBuilder.ConfigureLogging(loggingBuilder =>
+    {
+        loggingBuilder.AddConsole();
+    });
+
     siloBuilder.UseDashboard();
 });
 

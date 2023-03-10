@@ -77,8 +77,8 @@ public class PostprocessingLogic : IPostprocessingLogic
                 otherBotProperties.Update(otherBot);
             }
 
-            await SendMessage(context.Arena.Name, botProperty.Name, botProperty.PlayerName, botResult.Message);
-            await LogMove(context.Arena.Name, bot.BotName, bot.PlayerName, botResult.Move);
+            //await SendMessage(context.Arena.Name, botProperty.Name, botProperty.PlayerName, botResult.Message);
+            //await LogMove(context.Arena.Name, bot.BotName, bot.PlayerName, botResult.Move);
         }
 
         for (int i = 0; i < context.Bots.Count; i++)

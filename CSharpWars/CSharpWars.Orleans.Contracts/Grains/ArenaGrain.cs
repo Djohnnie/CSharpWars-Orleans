@@ -8,4 +8,5 @@ public interface IArenaGrain : IGrainWithStringKey
     Task<BotDto> CreateBot(string playerName, BotToCreateDto bot);
     Task DeleteArena();
     Task DeleteBot(Guid botId);
+    Task DeleteBots(Guid[] botIds);
 }

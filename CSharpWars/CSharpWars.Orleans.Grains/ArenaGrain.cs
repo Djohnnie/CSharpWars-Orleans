@@ -6,6 +6,7 @@ using CSharpWars.Orleans.Contracts.Grains;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Orleans.Runtime;
+using System.Diagnostics;
 
 namespace CSharpWars.Orleans.Grains;
 
@@ -66,6 +67,8 @@ public class ArenaGrain : GrainBase<IArenaGrain>, IArenaGrain
 
         if (_state.State.BotIds != null)
         {
+            var botStates = new List<Task<BotDto>>();
+
             for (int i = 0; i < _state.State.BotIds.Count; i++)
             {
                 Guid botId = _state.State.BotIds[i];
@@ -112,6 +115,8 @@ public class ArenaGrain : GrainBase<IArenaGrain>, IArenaGrain
             throw new ArgumentNullException();
         }
 
+        var startTime = Stopwatch.GetTimestamp();
+
         var botId = Guid.NewGuid();
 
         var arenaDetails = await GetArenaDetails();
@@ -124,6 +129,8 @@ public class ArenaGrain : GrainBase<IArenaGrain>, IArenaGrain
         _state.State.BotIds.Add(botId);
         await _state.WriteStateAsync();
 
+        _logger.LogInformation($"CreateBot: {Stopwatch.GetElapsedTime(startTime).TotalSeconds:F0}ms");
+
         return createdBot;
     }
 
@@ -135,11 +142,7 @@ public class ArenaGrain : GrainBase<IArenaGrain>, IArenaGrain
 
             await Task.Delay(2000);
 
-            for (int i = 0; i < _state.State.BotIds.Count; i++)
-            {
-                Guid botId = _state.State.BotIds[i];
-                await _botGrainFactory.FromGrain(botId, g => g.DeleteBot(true));
-            }
+            await DeleteBots(_state.State.BotIds.ToArray());
 
             await _state.ClearStateAsync();
         }
@@ -152,6 +155,23 @@ public class ArenaGrain : GrainBase<IArenaGrain>, IArenaGrain
         if (_state.State.Exists && _state.State.BotIds != null)
         {
             _state.State.BotIds.Remove(botId);
+            await _state.WriteStateAsync();
+        }
+    }
+
+    public async Task DeleteBots(Guid[] botIds)
+    {
+        if (_state.State.Exists && _state.State.BotIds != null)
+        {
+            var deleteBotTasks = new List<Task>();
+
+            foreach (var botId in botIds)
+            {
+                deleteBotTasks.Add(_botGrainFactory.FromGrain(botId, g => g.DeleteBot()));
+                _state.State.BotIds.Remove(botId);
+            }
+
+            await Task.WhenAll(deleteBotTasks);
             await _state.WriteStateAsync();
         }
     }

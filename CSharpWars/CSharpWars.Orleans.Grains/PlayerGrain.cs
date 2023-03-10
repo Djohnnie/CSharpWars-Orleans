@@ -127,7 +127,7 @@ public class PlayerGrain : GrainBase<IPlayerGrain>, IPlayerGrain
             for (int i = 0; i < _state.State.BotIds.Count; i++)
             {
                 Guid botId = _state.State.BotIds[i];
-                await _botGrainHelper.FromGrain(botId, g => g.DeleteBot(false));
+                await _botGrainHelper.FromGrain(botId, g => g.DeleteBot());
             }
 
             await _state.ClearStateAsync();

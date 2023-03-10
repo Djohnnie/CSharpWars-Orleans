@@ -33,9 +33,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CSharpWars.Orleans.Validati
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "4. Web", "4. Web", "{F8C20651-C3A2-45A3-AD80-48962768D0C1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CSharpWars.Web", "CSharpWars.Web\CSharpWars.Web.csproj", "{30F9A39F-A57E-4510-9AA8-D7CC58202675}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CSharpWars.Web", "CSharpWars.Web\CSharpWars.Web.csproj", "{30F9A39F-A57E-4510-9AA8-D7CC58202675}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CSharpWars.Orleans.Common", "CSharpWars.Orleans.Common\CSharpWars.Orleans.Common.csproj", "{197A8714-6AFA-46C5-9AC7-57CC98E6E6A3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CSharpWars.Orleans.Common", "CSharpWars.Orleans.Common\CSharpWars.Orleans.Common.csproj", "{197A8714-6AFA-46C5-9AC7-57CC98E6E6A3}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "5. Tests", "5. Tests", "{97F9E954-001B-4728-AECB-1E8968F4E0DC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CSharpWars.Tests.BotGenerator", "CSharpWars.Tests.BotGenerator\CSharpWars.Tests.BotGenerator.csproj", "{2D9CBE5F-A6B9-4A10-BE65-7E771A74E57B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -95,6 +99,10 @@ Global
 		{197A8714-6AFA-46C5-9AC7-57CC98E6E6A3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{197A8714-6AFA-46C5-9AC7-57CC98E6E6A3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{197A8714-6AFA-46C5-9AC7-57CC98E6E6A3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2D9CBE5F-A6B9-4A10-BE65-7E771A74E57B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2D9CBE5F-A6B9-4A10-BE65-7E771A74E57B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2D9CBE5F-A6B9-4A10-BE65-7E771A74E57B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2D9CBE5F-A6B9-4A10-BE65-7E771A74E57B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -113,6 +121,7 @@ Global
 		{C9A45067-4819-459C-A828-394A49F5C814} = {0626C636-685C-4368-A23E-AC35AF4A03BE}
 		{30F9A39F-A57E-4510-9AA8-D7CC58202675} = {F8C20651-C3A2-45A3-AD80-48962768D0C1}
 		{197A8714-6AFA-46C5-9AC7-57CC98E6E6A3} = {0626C636-685C-4368-A23E-AC35AF4A03BE}
+		{2D9CBE5F-A6B9-4A10-BE65-7E771A74E57B} = {97F9E954-001B-4728-AECB-1E8968F4E0DC}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {05E77F45-867D-46A1-8612-6BDC4F1EAAB3}
