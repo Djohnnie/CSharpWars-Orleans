@@ -1,6 +1,10 @@
-﻿using System.Threading.Tasks;
+﻿using Newtonsoft.Json;
+using System.Threading.Tasks;
 using Assets.Scripts.Model;
 using RestSharp;
+using UnityEngine;
+using UnityEngine.Networking;
+using System.Runtime.CompilerServices;
 
 namespace Assets.Scripts.Networking
 {
@@ -15,8 +19,8 @@ namespace Assets.Scripts.Networking
 
     public class ApiClient : IApiClient
     {
-        //private readonly string _baseUrl = "http://localhost:5133";
-        private readonly string _baseUrl = "http://api.csharpwars.com";
+        private readonly string _baseUrl = "https://api.csharpwars.com";
+        private Arena _arena;
 
         public Task<Arena> GetArena()
         {
@@ -35,10 +39,37 @@ namespace Assets.Scripts.Networking
 
         private async Task<TResult> Get<TResult>(string resource) where TResult : new()
         {
-            var client = new RestClient(_baseUrl);
-            var request = new RestRequest(resource, Method.GET);
-            var response = await client.ExecuteTaskAsync<TResult>(request);
-            return response.Data;
+            UnityWebRequest web = UnityWebRequest.Get($"{_baseUrl}/{resource}");
+            web.method = "GET";
+            await web.SendWebRequest();
+
+            if (web.result == UnityWebRequest.Result.ConnectionError || web.responseCode != 200)
+            {
+                Debug.LogError(web.error);
+                web.Dispose();
+                return default;
+            }
+            else
+            {
+                Debug.Log(web.downloadHandler.text);
+                var arena = JsonConvert.DeserializeObject<TResult>(web.downloadHandler.text);
+                web.Dispose();
+                return arena;
+            }
+        }
+    }
+
+    public static class UnityWebRequestExtension
+    {
+        public static TaskAwaiter<UnityWebRequest.Result> GetAwaiter(this UnityWebRequestAsyncOperation reqOp)
+        {
+            TaskCompletionSource<UnityWebRequest.Result> tsc = new();
+            reqOp.completed += asyncOp => tsc.TrySetResult(reqOp.webRequest.result);
+
+            if (reqOp.isDone)
+                tsc.TrySetResult(reqOp.webRequest.result);
+
+            return tsc.Task.GetAwaiter();
         }
     }
 }
