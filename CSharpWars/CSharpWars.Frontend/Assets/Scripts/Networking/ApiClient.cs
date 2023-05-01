@@ -1,7 +1,6 @@
 ﻿using Newtonsoft.Json;
 using System.Threading.Tasks;
 using Assets.Scripts.Model;
-using RestSharp;
 using UnityEngine;
 using UnityEngine.Networking;
 using System.Runtime.CompilerServices;
@@ -49,13 +48,10 @@ namespace Assets.Scripts.Networking
                 web.Dispose();
                 return default;
             }
-            else
-            {
-                Debug.Log(web.downloadHandler.text);
-                var arena = JsonConvert.DeserializeObject<TResult>(web.downloadHandler.text);
-                web.Dispose();
-                return arena;
-            }
+            
+            var arena = JsonConvert.DeserializeObject<TResult>(web.downloadHandler.text);
+            web.Dispose();
+            return arena;
         }
     }
 

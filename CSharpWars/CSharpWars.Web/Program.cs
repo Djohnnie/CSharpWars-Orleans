@@ -2,6 +2,7 @@ using CSharpWars.Orleans.Common;
 using CSharpWars.Web.Client;
 using Orleans.Configuration;
 using System.Net;
+using Microsoft.AspNetCore.StaticFiles;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Configuration.AddEnvironmentVariables();
@@ -16,6 +17,11 @@ builder.Services.AddSession(options =>
     options.Cookie.IsEssential = true;
 });
 
+builder.Services.AddResponseCompression(options =>
+{
+    options.EnableForHttps = true;
+});
+
 builder.Services.AddOrleansHelpers();
 
 builder.Services.AddClients();
@@ -24,7 +30,7 @@ builder.Host.UseOrleans((hostBuilder, siloBuilder) =>
 {
     var azureStorageConnectionString = hostBuilder.Configuration.GetValue<string>("AZURE_STORAGE_CONNECTION_STRING");
     var shouldUseKubernetes = hostBuilder.Configuration.GetValue<bool>("USE_KUBERNETES");
-    
+
 #if DEBUG
     siloBuilder.UseLocalhostClustering(siloPort: 11114, gatewayPort: 30003, primarySiloEndpoint: new IPEndPoint(IPAddress.Loopback, 11112), serviceId: "csharpwars-orleans-host", clusterId: "csharpwars-orleans-host");
 #else
@@ -63,7 +69,35 @@ if (!app.Environment.IsDevelopment())
     app.UseExceptionHandler("/Home/Error");
 }
 
-app.UseStaticFiles();
+app.UseStaticFiles(new StaticFileOptions
+{
+    //ContentTypeProvider = contentTypeProvider,
+    OnPrepareResponse = context =>
+    {
+        IHeaderDictionary headers = context.Context.Response.Headers;
+        string contentType = headers["Content-Type"];
+        if (contentType == "application/x-gzip")
+        {
+            if (context.File.Name.EndsWith("js.gz"))
+            {
+                contentType = "application/javascript";
+            }
+            else if (context.File.Name.EndsWith("css.gz"))
+            {
+                contentType = "text/css";
+            }
+            headers.Add("Content-Encoding", "gzip");
+            headers["Content-Type"] = contentType;
+        }
+
+        if (context.Context.Request.Path.Value.EndsWith("wasm.gz"))
+        {
+            headers["Content-Type"] = "application/wasm";
+        }
+    }
+});
+
+app.UseResponseCompression();
 app.UseSession();
 app.UseRouting();
 app.UseCookiePolicy();
