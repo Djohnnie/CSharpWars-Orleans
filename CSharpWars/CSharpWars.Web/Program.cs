@@ -2,7 +2,6 @@ using CSharpWars.Orleans.Common;
 using CSharpWars.Web.Client;
 using Orleans.Configuration;
 using System.Net;
-using Microsoft.AspNetCore.StaticFiles;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Configuration.AddEnvironmentVariables();
@@ -71,7 +70,6 @@ if (!app.Environment.IsDevelopment())
 
 app.UseStaticFiles(new StaticFileOptions
 {
-    //ContentTypeProvider = contentTypeProvider,
     OnPrepareResponse = context =>
     {
         IHeaderDictionary headers = context.Context.Response.Headers;

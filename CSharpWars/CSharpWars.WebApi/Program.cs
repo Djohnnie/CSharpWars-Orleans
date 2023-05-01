@@ -24,11 +24,21 @@ builder.Services.AddCommonHelpers();
 builder.Services.AddHelpers();
 builder.Services.AddManagers();
 
+var myAllowSpecificOrigins = "_myAllowSpecificOrigins";
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(name: myAllowSpecificOrigins,
+        policy =>
+        {
+            policy.WithOrigins("https://web.csharpwars.com");
+        });
+});
+
 builder.Host.UseOrleans((hostBuilder, siloBuilder) =>
 {
     var azureStorageConnectionString = hostBuilder.Configuration.GetValue<string>("AZURE_STORAGE_CONNECTION_STRING");
     var shouldUseKubernetes = hostBuilder.Configuration.GetValue<bool>("USE_KUBERNETES");
-    
+
 #if DEBUG
     siloBuilder.UseLocalhostClustering(siloPort: 11113, gatewayPort: 30002, primarySiloEndpoint: new IPEndPoint(IPAddress.Loopback, 11112), serviceId: "csharpwars-orleans-host", clusterId: "csharpwars-orleans-host");
 #else
@@ -68,6 +78,8 @@ builder.Host.UseOrleans((hostBuilder, siloBuilder) =>
 var app = builder.Build();
 
 app.UseMiddleware<JwtMiddleware>();
+
+app.UseCors(myAllowSpecificOrigins);
 
 app.UsePathBase("/api");
 
