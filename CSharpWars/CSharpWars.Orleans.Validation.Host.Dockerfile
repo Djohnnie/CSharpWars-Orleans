@@ -1,7 +1,7 @@
-FROM mcr.microsoft.com/dotnet/aspnet:8.0-preview AS base
+FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
 WORKDIR /app
 
-FROM mcr.microsoft.com/dotnet/sdk:8.0-preview AS build
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
 COPY ["./CSharpWars.Orleans.Validation.Host/CSharpWars.Orleans.Validation.Host.csproj", "CSharpWars.Orleans.Validation.Host/"]
 COPY ["./CSharpWars.Orleans.Validation.Grains/CSharpWars.Orleans.Validation.Grains.csproj", "CSharpWars.Orleans.Validation.Grains/"]

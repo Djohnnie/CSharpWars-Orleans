@@ -27,7 +27,7 @@ using IHost host = Host.CreateDefaultBuilder(args)
         var shouldUseKubernetes = hostBuilder.Configuration.GetValue<bool>("USE_KUBERNETES");
 
 #if DEBUG
-        siloBuilder.UseLocalhostClustering(siloPort: 11112, gatewayPort: 30001, primarySiloEndpoint: new IPEndPoint(IPAddress.Loopback, 11112), serviceId: "csharpwars-orleans-host", clusterId: "csharpwars-orleans-host");
+        siloBuilder.UseLocalhostClustering(siloPort: 11112, gatewayPort: 30001, primarySiloEndpoint: new IPEndPoint(IPAddress.Loopback, 11112), serviceId: "csharpwars-orleans", clusterId: "csharpwars-orleans");
 #else
         if (shouldUseKubernetes)
         {
@@ -36,8 +36,8 @@ using IHost host = Host.CreateDefaultBuilder(args)
 #endif
         siloBuilder.Configure<ClusterOptions>(options =>
         {
-            options.ClusterId = "csharpwars-orleans-host";
-            options.ServiceId = "csharpwars-orleans-host";
+            options.ClusterId = "csharpwars-orleans";
+            options.ServiceId = "csharpwars-orleans";
         });
 
         siloBuilder.UseAzureStorageClustering(options =>
@@ -56,7 +56,7 @@ using IHost host = Host.CreateDefaultBuilder(args)
         siloBuilder.ConfigureLogging(loggingBuilder =>
         {
             loggingBuilder.AddConsole();
-            loggingBuilder.AddApplicationInsights(c => c.ConnectionString = applicationInsightsConnectionString, _ => { });
+            //loggingBuilder.AddApplicationInsights(c => c.ConnectionString = applicationInsightsConnectionString, _ => { });
         });
 
         siloBuilder.UseDashboard();
