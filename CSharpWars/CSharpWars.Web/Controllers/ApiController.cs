@@ -1,4 +1,5 @@
 ﻿using CSharpWars.Scripting;
+using CSharpWars.Web.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.SemanticKernel;
 using Microsoft.SemanticKernel.PromptTemplates.Handlebars;
@@ -30,7 +31,14 @@ public class ApiController : ControllerBase
         var result = await kernel.InvokeAsync("csharpwarsScript", "csharpwarsScript", new() { { "request", prompt },
                                                                          { "csharpwarsFunctions", GetCSharpWarsFunctions()},
                                                                          { "csharpwarsProperties", GetCSharpWarsProperties()},
-                                                                         { "arenaDimensions", "(10, 10)"} });
+                                                                         { "arenaDimensions", "(10, 10)"},
+                                                                         { "walkAroundTemplate", Templates.WalkAround},
+                                                                         { "walkBackAndForthTemplate", Templates.WalkBackAndForth},
+                                                                         { "lookAroundAndRangeAttackTemplate", Templates.LookAroundAndRangeAttack},
+                                                                         { "lookAroundAndSelfDestructTemplate", Templates.LookAroundAndSelfDestruct},
+                                                                         { "huntDownTemplate", Templates.HuntDown} });
+        // Templates.All
+
         var script = result.GetValue<string>();
 
         return Ok(script);

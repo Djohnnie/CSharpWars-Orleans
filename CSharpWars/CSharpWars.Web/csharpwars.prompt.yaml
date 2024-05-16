@@ -18,12 +18,24 @@ template: |
   </message>
 
   <message role="user">Create a robot that walks around in circles by doing two steps forward and a turn to the left.</message>
-  <message role="system">C# script:</message>
-  <message role="assistant">var step = LoadFromMemory<int>("STEP");if( step % 3 == 0 ){TurnLeft();}else{WalkForward();}step++;StoreInMemory<int>("STEP", step);</message>
+  <message role="system">CSharpWars C# script:</message>
+  <message role="assistant">{{walkAroundTemplate}}</message>
+
+  <message role="user">Create a robot that walks back and forth.</message>
+  <message role="system">CSharpWars C# script:</message>
+  <message role="assistant">{{walkBackAndForthTemplate}}</message>
+
+  <message role="user">Create a robot that looks around for an enemy and does a ranged attack when it finds one.</message>
+  <message role="system">CSharpWars C# script:</message>
+  <message role="assistant">{{lookAroundAndRangeAttackTemplate}}</message>
+
+  <message role="user">Create a robot that looks around for a close enemy and self destructs when it finds one.</message>
+  <message role="system">CSharpWars C# script:</message>
+  <message role="assistant">{{lookAroundAndSelfDestructTemplate}}</message>
 
   <message role="user">Create a robot that finds enemy robots and moves towards them to melee attack them.</message>
-  <message role="system">C# script:</message>
-  <message role="assistant">bool inMyFace = false; foreach (var enemyBot in Vision.EnemyBots) { if (IsInMyFace(X, Y, enemyBot)) { MeleeAttack(); inMyFace = true; break; } } if (!inMyFace) { Bot targetBot = null; foreach (var enemyBot in Vision.EnemyBots) { if (targetBot == null || CalculateDistance(X, Y, enemyBot) < CalculateDistance(X, Y, targetBot)) { targetBot = enemyBot; } }if (targetBot == null) { TurnLeft(); StoreInMemory("DISTANCE", 0); } else { double distance = LoadFromMemory<double>("DISTANCE"); if (distance == 0) { WalkForward(); } else if (CalculateDistance(X, Y, targetBot) < distance) { WalkForward(); StoreInMemory("DISTANCE", CalculateDistance(X, Y, targetBot)); } else { TurnRight(); } } } public bool IsInMyFace(int myX, int myY, Bot target) { switch (Orientation) { case NORTH: return myX == target.X && myY == target.Y + 1; case EAST: return myY == target.Y && myX == target.X - 1; case SOUTH: return myX == target.X && myY == target.Y - 1; case WEST: return myY == target.Y && myX == target.X + 1; } return false; } public double CalculateDistance(int myX, int myY, Bot target) { return Math.Sqrt(Math.Pow(myX - target.X, 2) + Math.Pow(myY - target.Y, 2)); }</message>
+  <message role="system">CSharpWars C# script:</message>
+  <message role="assistant">{{huntDownTemplate}}</message>
 
   <message role="user">{{request}}</message>
   <message role="system">CSharpWars C# script:</message>
