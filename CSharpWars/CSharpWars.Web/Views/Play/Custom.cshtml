@@ -39,7 +39,26 @@
     <div class="row">
         <div class="col-12">
             <div class="form-group">
-                <label asp-for="Script" class="control-label">Your custom script (copy/paste from Visual Studio)</label>
+                <label for="prompt" class="control-label">Write your AI prompt to generate a custom robot script</label>
+                <input id="prompt" class="form-control" />
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-12">
+            <div class="text-center">
+                <div class="form-group">
+                    <input id="generate" type="button" value="Generate your custom script" class="btn btn-primary" />
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-12">
+            <div class="form-group">
+                <label asp-for="Script" class="control-label">Your custom script (copy/paste from Visual Studio or generate using Azure OpenAI)</label>
                 <textarea class="form-control" id="cs-script" asp-for="Script" rows="10" style="font-family: consolas; background-color: black; color: white;"></textarea>
             </div>
         </div>
@@ -56,3 +75,15 @@
     </div>
 
 </form>
+
+@section Scripts {
+
+    <script>
+        $('#generate').click(function () {
+
+            var prompt = $('#prompt').val();
+            alert(prompt);
+        });
+    </script>
+
+}
