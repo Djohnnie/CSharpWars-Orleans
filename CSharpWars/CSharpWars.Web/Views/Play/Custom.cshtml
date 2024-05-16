@@ -79,10 +79,24 @@
 @section Scripts {
 
     <script>
-        $('#generate').click(function () {
+        $(document).ready(function () {
+            $('#generate').click(function () {
 
-            var prompt = $('#prompt').val();
-            alert(prompt);
+                $('#cs-script').val('Azure OpenAI is generating a script for you...');
+                var prompt = $('#prompt').val();
+
+                $.ajax({
+                    url: 'https://web.csharpwars.com/api/script?prompt=' + prompt,
+                    method: 'GET',
+                    success: function (response) {
+                        $('#cs-script').val(response);
+                    },
+                    error: function (xhr, status, error) {
+                        console.error(status, error);
+                        $('#cs-script').val('');
+                    }
+                });
+            });
         });
     </script>
 
