@@ -1,6 +1,7 @@
 ﻿using CSharpWars.Common.Extensions;
 using CSharpWars.Enums;
 using CSharpWars.Orleans.Contracts.Model;
+using System.ComponentModel;
 
 namespace CSharpWars.Scripting;
 
@@ -15,17 +16,37 @@ public class ScriptGlobals
 
     #region <| Public Properties |>
 
+    [Description("Gets the width of the current arena.")]
     public int Width => _50437079C366407D978Fe4Afd60C535F.Width;
+   
+    [Description("Gets the height of the current arena.")]
     public int Height => _50437079C366407D978Fe4Afd60C535F.Height;
+
+    [Description("Gets the current robot X-location on the arena.")]
     public int X => _50437079C366407D978Fe4Afd60C535F.X;
+
+    [Description("Gets the current robot Y-location on the arena.")]
     public int Y => _50437079C366407D978Fe4Afd60C535F.Y;
+
+    [Description("Gets the current robot orientation.")]
     public Orientation Orientation => _50437079C366407D978Fe4Afd60C535F.Orientation;
+
+    [Description("Gets the last move that was executed by the robot.")]
     public Move LastMove => _50437079C366407D978Fe4Afd60C535F.LastMove;
+
+    [Description("Gets the maximum available health for the robot.")]
     public int MaximumHealth => _50437079C366407D978Fe4Afd60C535F.MaximumHealth;
+
+    [Description("Gets the remaining health for the robot.")]
     public int CurrentHealth => _50437079C366407D978Fe4Afd60C535F.CurrentHealth;
+
+    [Description("Gets the maximum available stamina for the robot.")]
     public int MaximumStamina => _50437079C366407D978Fe4Afd60C535F.MaximumStamina;
+
+    [Description("Gets the remaining stamina for the robot.")]
     public int CurrentStamina => _50437079C366407D978Fe4Afd60C535F.CurrentStamina;
 
+    [Description("Gets the vision for the robot.")]
     public Vision Vision => _vision;
 
     #endregion
@@ -82,6 +103,7 @@ public class ScriptGlobals
     /// <summary>
     /// Calling this method will move the player one position forward.
     /// </summary>
+    [Description("Calling this method will move the player one position forward.")]
     public void WalkForward()
     {
         SetCurrentMove(Move.WalkForward);
@@ -90,6 +112,7 @@ public class ScriptGlobals
     /// <summary>
     /// Calling this method will turn the player 90 degrees to the left.
     /// </summary>
+    [Description("Calling this method will turn the player 90 degrees to the left.")]
     public void TurnLeft()
     {
         SetCurrentMove(Move.TurningLeft);
@@ -98,6 +121,7 @@ public class ScriptGlobals
     /// <summary>
     /// Calling this method will turn the player 90 degrees to the right.
     /// </summary>
+    [Description("Calling this method will turn the player 90 degrees to the right.")]
     public void TurnRight()
     {
         SetCurrentMove(Move.TurningRight);
@@ -106,6 +130,7 @@ public class ScriptGlobals
     /// <summary>
     /// Calling this method will turn the player 180 degrees around.
     /// </summary>
+    [Description("Calling this method will turn the player 180 degrees around.")]
     public void TurnAround()
     {
         SetCurrentMove(Move.TurningAround);
@@ -114,6 +139,7 @@ public class ScriptGlobals
     /// <summary>
     /// Calling this method will self destruct the player resulting in its death.
     /// </summary>
+    [Description("Calling this method will self destruct the player resulting in its death.")]
     public void SelfDestruct()
     {
         SetCurrentMove(Move.SelfDestruct);
@@ -122,6 +148,7 @@ public class ScriptGlobals
     /// <summary>
     /// Calling this method will execute a melee attack.
     /// </summary>
+    [Description("Calling this method will execute a melee attack.")]
     public void MeleeAttack()
     {
         SetCurrentMove(Move.MeleeAttack);
@@ -130,6 +157,7 @@ public class ScriptGlobals
     /// <summary>
     /// Calling this method will execute a ranged attack to the specified location.
     /// </summary>
+    [Description("Calling this method will execute a ranged attack to the specified location.")]
     public void RangedAttack(int x, int y)
     {
         SetCurrentMove(Move.RangedAttack, x, y);
@@ -138,6 +166,7 @@ public class ScriptGlobals
     /// <summary>
     /// Calling this method will teleport the player to the specified location.
     /// </summary>
+    [Description("Calling this method will teleport the player to the specified location.")]
     public void Teleport(int x, int y)
     {
         SetCurrentMove(Move.Teleport, x, y);
@@ -149,6 +178,7 @@ public class ScriptGlobals
     /// <typeparam name="T"></typeparam>
     /// <param name="key"></param>
     /// <param name="value"></param>
+    [Description("Calling this method will store information into the players memory.")]
     public void StoreInMemory<T>(string key, T value)
     {
         if (_50437079C366407D978Fe4Afd60C535F.Memory.ContainsKey(key))
@@ -167,6 +197,7 @@ public class ScriptGlobals
     /// <typeparam name="T"></typeparam>
     /// <param name="key"></param>
     /// <returns></returns>
+    [Description("Calling this method will load information from the players memory.")]
     public T? LoadFromMemory<T>(string key)
     {
         if (_50437079C366407D978Fe4Afd60C535F.Memory.TryGetValue(key, out string? value) 
@@ -182,6 +213,7 @@ public class ScriptGlobals
     /// Calling this method will remove information from the players memory.
     /// </summary>
     /// <param name="key"></param>
+    [Description("Calling this method will remove information from the players memory.")]
     public void RemoveFromMemory(string key)
     {
         _50437079C366407D978Fe4Afd60C535F.Memory.Remove(key);

@@ -7,6 +7,17 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+	  <None Remove="csharpwars.prompt.yaml" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <EmbeddedResource Include="csharpwars.prompt.yaml" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Microsoft.SemanticKernel" Version="1.11.1" />
+		<PackageReference Include="Microsoft.SemanticKernel.PromptTemplates.Handlebars" Version="1.11.1" />
+		<PackageReference Include="Microsoft.SemanticKernel.Yaml" Version="1.11.1" />
 		<PackageReference Include="Microsoft.Orleans.Clustering.AzureStorage" Version="8.1.0" />
 		<PackageReference Include="Microsoft.Orleans.Hosting.Kubernetes" Version="8.1.0" />
 		<PackageReference Include="Microsoft.Orleans.Persistence.AzureStorage" Version="8.1.0" />
@@ -18,6 +29,7 @@
 		<ProjectReference Include="..\CSharpWars.Common\CSharpWars.Common.csproj" />
 		<ProjectReference Include="..\CSharpWars.Orleans.Common\CSharpWars.Orleans.Common.csproj" />
 		<ProjectReference Include="..\CSharpWars.Orleans.Contracts\CSharpWars.Orleans.Contracts.csproj" />
+		<ProjectReference Include="..\CSharpWars.Scripting\CSharpWars.Scripting.csproj" />
 		<ProjectReference Include="..\CSharpWars.WebApi.Contracts\CSharpWars.WebApi.Contracts.csproj" />
 	</ItemGroup>
 

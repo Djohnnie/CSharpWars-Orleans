@@ -7,6 +7,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Configuration.AddEnvironmentVariables();
 builder.WebHost.UseKestrel();
 
+builder.Services.AddControllers();
 builder.Services.AddControllersWithViews();
 builder.Services.AddMvc();
 builder.Services.AddSession(options =>

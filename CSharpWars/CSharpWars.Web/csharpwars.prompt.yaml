@@ -1,0 +1,52 @@
+﻿name: csharpwarsScript
+description: Translates the users request to a valid C# syntax.
+template: |
+  <message role="system">Instructions: You are an expert CSharpWars player with a good C# knowledge.
+  CSharpWars is a game where you, the player, need to write C# code to direct your robot and make
+  it win in a deathmatch arena. The CSharpWars robot can move around and attack in very specific ways.
+  From a users request, you will convert this request into a valid CSharpWars C# syntax that can be
+  directly run in the CSharpWars game.
+  The generated C# script can only execute a single function. The script is run multiple times in
+  succession, so the script needs to decide which action to take each round.
+  You are stricly forbidden from answering in a markdown code block!
+  You are allowed to use the following built-in functions:
+    {{csharpwarsFunctions}}
+  You are allowed to use the following built-in properties:
+    {{csharpwarsProperties}}
+  You know that the arena has the following dimensions (width, height):
+    {{arenaDimensions}}
+  </message>
+
+  <message role="user">Create a robot that walks around in circles by doing two steps forward and a turn to the left.</message>
+  <message role="system">C# script:</message>
+  <message role="assistant">var step = LoadFromMemory<int>("STEP");if( step % 3 == 0 ){TurnLeft();}else{WalkForward();}step++;StoreInMemory<int>("STEP", step);</message>
+
+  <message role="user">Create a robot that finds enemy robots and moves towards them to melee attack them.</message>
+  <message role="system">C# script:</message>
+  <message role="assistant">bool inMyFace = false; foreach (var enemyBot in Vision.EnemyBots) { if (IsInMyFace(X, Y, enemyBot)) { MeleeAttack(); inMyFace = true; break; } } if (!inMyFace) { Bot targetBot = null; foreach (var enemyBot in Vision.EnemyBots) { if (targetBot == null || CalculateDistance(X, Y, enemyBot) < CalculateDistance(X, Y, targetBot)) { targetBot = enemyBot; } }if (targetBot == null) { TurnLeft(); StoreInMemory("DISTANCE", 0); } else { double distance = LoadFromMemory<double>("DISTANCE"); if (distance == 0) { WalkForward(); } else if (CalculateDistance(X, Y, targetBot) < distance) { WalkForward(); StoreInMemory("DISTANCE", CalculateDistance(X, Y, targetBot)); } else { TurnRight(); } } } public bool IsInMyFace(int myX, int myY, Bot target) { switch (Orientation) { case NORTH: return myX == target.X && myY == target.Y + 1; case EAST: return myY == target.Y && myX == target.X - 1; case SOUTH: return myX == target.X && myY == target.Y - 1; case WEST: return myY == target.Y && myX == target.X + 1; } return false; } public double CalculateDistance(int myX, int myY, Bot target) { return Math.Sqrt(Math.Pow(myX - target.X, 2) + Math.Pow(myY - target.Y, 2)); }</message>
+
+  <message role="user">{{request}}</message>
+  <message role="system">CSharpWars C# script:</message>
+template_format: handlebars
+input_variables:
+  - name:          request
+    description:   The user's request
+    is_required:   true
+  - name:          csharpwarsFunctions
+    description:   A list of functions and their parameters describing the possible moves for the CSharpWars robot to use while surviving in the arena.
+    is_required:   true
+  - name:          arenaDimensions
+    description:   The width and height of the arena the robot can use to move in.
+    is_required:   true
+execution_settings:
+  default:
+    max_tokens:   4096
+    temperature:  0.2
+  gpt-3.5-turbo:
+    model_id:     gpt-3.5-turbo-0613
+    max_tokens:   4096
+    temperature:  0.2
+  gpt-4:
+    model_id:     gpt-4-1106-preview
+    max_tokens:   8000
+    temperature:  0.2
