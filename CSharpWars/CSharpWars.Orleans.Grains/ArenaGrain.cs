@@ -29,12 +29,16 @@ public class ArenaGrain : GrainBase<IArenaGrain>, IArenaGrain
     private readonly IConfiguration _configuration;
     private readonly ILogger<IArenaGrain> _logger;
 
-    public ArenaGrain(
+    public ArenaGrain
+    (
         IGrainFactoryHelperWithStringKey<IPlayerGrain> playerGrainFactory,
         IGrainFactoryHelperWithGuidKey<IBotGrain> botGrainFactory,
         IGrainFactoryHelperWithStringKey<IProcessingGrain> processingGrainFactory,
-        [PersistentState("arena", "arenaStore")] IPersistentState<ArenaState> state,
-        IConfiguration configuration, ILogger<IArenaGrain> logger) : base(logger)
+        [PersistentState("arena", "arenaStore")]
+        IPersistentState<ArenaState> state,
+        IConfiguration configuration,
+        ILogger<IArenaGrain> logger
+    ) : base(logger)
     {
         _playerGrainFactory = playerGrainFactory;
         _botGrainFactory = botGrainFactory;
@@ -63,27 +67,18 @@ public class ArenaGrain : GrainBase<IArenaGrain>, IArenaGrain
             _ = await GetArenaDetails();
         }
 
-        var activeBots = new List<BotDto>();
-
-        if (_state.State.BotIds != null)
+        if (_state.State.BotIds == null)
         {
-            var botStates = new List<Task<BotDto>>();
-
-            for (int i = 0; i < _state.State.BotIds.Count; i++)
-            {
-                Guid botId = _state.State.BotIds[i];
-                var botState = await _botGrainFactory.FromGrain(botId, g => g.GetState());
-
-                if (!onlyLive || botState.Move != Move.Died)
-                {
-                    activeBots.Add(botState);
-                }
-            }
+            return new List<BotDto>();
         }
 
+        var botStates = await Task.WhenAll(_state.State.BotIds.Select(GetBotState));
+        var activeBots = botStates.Where(botState => !onlyLive || botState.Move != Move.Died).ToList();
         return activeBots;
     }
 
+    private Task<BotDto> GetBotState(Guid botId) => _botGrainFactory.FromGrain(botId, g => g.GetState());
+    
     public async Task<ArenaDto> GetArenaDetails()
     {
         _logger.AutoLogInformation($"Getting arena details for '{this.GetPrimaryKeyString()}'");
