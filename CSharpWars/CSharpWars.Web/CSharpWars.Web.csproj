@@ -1,28 +1,28 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
 
 	<PropertyGroup>
-		<TargetFramework>net8.0</TargetFramework>
+		<TargetFramework>net9.0</TargetFramework>
 		<Nullable>enable</Nullable>
 		<ImplicitUsings>enable</ImplicitUsings>
 	</PropertyGroup>
 
 	<ItemGroup>
-	  <None Remove="csharpwars.prompt.yaml" />
+		<None Remove="csharpwars.prompt.yaml" />
 	</ItemGroup>
 
 	<ItemGroup>
-	  <EmbeddedResource Include="csharpwars.prompt.yaml" />
+		<EmbeddedResource Include="csharpwars.prompt.yaml" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Microsoft.SemanticKernel" Version="1.11.1" />
-		<PackageReference Include="Microsoft.SemanticKernel.PromptTemplates.Handlebars" Version="1.11.1" />
-		<PackageReference Include="Microsoft.SemanticKernel.Yaml" Version="1.11.1" />
-		<PackageReference Include="Microsoft.Orleans.Clustering.AzureStorage" Version="8.1.0" />
-		<PackageReference Include="Microsoft.Orleans.Hosting.Kubernetes" Version="8.1.0" />
-		<PackageReference Include="Microsoft.Orleans.Persistence.AzureStorage" Version="8.1.0" />
-		<PackageReference Include="Microsoft.Orleans.Server" Version="8.1.0" />
-		<PackageReference Include="OrleansDashboard" Version="8.0.0" />
+		<PackageReference Include="Microsoft.SemanticKernel" Version="1.30.0" />
+		<PackageReference Include="Microsoft.SemanticKernel.PromptTemplates.Handlebars" Version="1.30.0" />
+		<PackageReference Include="Microsoft.SemanticKernel.Yaml" Version="1.30.0" />
+		<PackageReference Include="Microsoft.Orleans.Clustering.AzureStorage" Version="9.0.0" />
+		<PackageReference Include="Microsoft.Orleans.Hosting.Kubernetes" Version="9.0.0" />
+		<PackageReference Include="Microsoft.Orleans.Persistence.AzureStorage" Version="9.0.0" />
+		<PackageReference Include="Microsoft.Orleans.Server" Version="9.0.0" />
+		<PackageReference Include="OrleansDashboard" Version="8.2.0" />
 	</ItemGroup>
 
 	<ItemGroup>
