@@ -22,13 +22,15 @@ public class ApiController : ControllerBase
     [HttpGet("script")]
     public async Task<IActionResult> GenerateScript([FromQuery] string prompt)
     {
-        if (string.IsNullOrWhiteSpace(prompt))
+        try
         {
-            return BadRequest();
-        }
+            if (string.IsNullOrWhiteSpace(prompt))
+            {
+                return BadRequest();
+            }
 
-        var kernel = InitializeSemanticKernel();
-        var result = await kernel.InvokeAsync("csharpwarsScript", "csharpwarsScript", new() { { "request", prompt },
+            var kernel = InitializeSemanticKernel();
+            var result = await kernel.InvokeAsync("csharpwarsScript", "csharpwarsScript", new() { { "request", prompt },
                                                                          { "csharpwarsFunctions", GetCSharpWarsFunctions()},
                                                                          { "csharpwarsProperties", GetCSharpWarsProperties()},
                                                                          { "arenaDimensions", "(10, 10)"},
@@ -37,11 +39,15 @@ public class ApiController : ControllerBase
                                                                          { "lookAroundAndRangeAttackTemplate", Templates.LookAroundAndRangeAttack},
                                                                          { "lookAroundAndSelfDestructTemplate", Templates.LookAroundAndSelfDestruct},
                                                                          { "huntDownTemplate", Templates.HuntDown} });
-        // Templates.All
 
-        var script = result.GetValue<string>();
+            var script = result.GetValue<string>();
 
-        return Ok(script);
+            return Ok(script);
+        }
+        catch (Exception ex)
+        {
+            return Ok($"{ex}");
+        }
     }
 
     private Kernel InitializeSemanticKernel()
