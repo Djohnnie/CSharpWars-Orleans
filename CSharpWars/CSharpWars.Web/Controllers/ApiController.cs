@@ -96,7 +96,11 @@ public class ApiController : ControllerBase
                 functionsOverview.Add(publicMethod.ToString());
                 functionsOverview.Add(string.Empty);
             }
-
+            else
+            {
+                functionsOverview.Add(publicMethod.ToString());
+                functionsOverview.Add(string.Empty);
+            }
         }
 
         return functionsOverview;
@@ -117,6 +121,11 @@ public class ApiController : ControllerBase
                 propertiesOverview.Add("/// <summary>");
                 propertiesOverview.Add($"/// {descriptionAttribute.Description}");
                 propertiesOverview.Add("/// </summary>");
+                propertiesOverview.Add($"{publicProperty} {{get;}}");
+                propertiesOverview.Add(string.Empty);
+            }
+            else
+            {
                 propertiesOverview.Add($"{publicProperty} {{get;}}");
                 propertiesOverview.Add(string.Empty);
             }
@@ -142,6 +151,11 @@ public class ApiController : ControllerBase
                     propertiesOverview.Add("/// <summary>");
                     propertiesOverview.Add($"/// {descriptionAttribute.Description}");
                     propertiesOverview.Add("/// </summary>");
+                    propertiesOverview.Add($"{publicConstant}");
+                    propertiesOverview.Add(string.Empty);
+                }
+                else
+                {
                     propertiesOverview.Add($"{publicConstant}");
                     propertiesOverview.Add(string.Empty);
                 }
