@@ -29,11 +29,13 @@ public class ApiController : ControllerBase
                 return BadRequest();
             }
 
+            var (arenaWidth, arenaHeight) = (_configuration.GetValue<int>("ARENA_WIDTH"), _configuration.GetValue<int>("ARENA_HEIGHT"));
+
             var kernel = InitializeSemanticKernel();
             var result = await kernel.InvokeAsync("csharpwarsScript", "csharpwarsScript", new() { { "request", prompt },
                                                                          { "csharpwarsFunctions", GetCSharpWarsFunctions()},
                                                                          { "csharpwarsProperties", GetCSharpWarsProperties()},
-                                                                         { "arenaDimensions", "(10, 10)"},
+                                                                         { "arenaDimensions", $"({arenaWidth}, {arenaHeight})"},
                                                                          { "walkAroundTemplate", Templates.WalkAround},
                                                                          { "walkBackAndForthTemplate", Templates.WalkBackAndForth},
                                                                          { "lookAroundAndRangeAttackTemplate", Templates.LookAroundAndRangeAttack},
