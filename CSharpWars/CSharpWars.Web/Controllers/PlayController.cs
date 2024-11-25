@@ -150,51 +150,6 @@ public class PlayController : Controller
         {
             var player = HttpContext.Session.GetObject<LoginResponse>("PLAYER");
 
-            var (valid, sadMessage) = IsValid(vm);
-
-            if (valid)
-            {
-                var script = vm.Script.Base64Encode();
-
-                var validatedScript = await _orleansClient.Validate(new ScriptToValidateDto { Script = script });
-
-                if (validatedScript != null && validatedScript.ValidationMessages.Count == 0)
-                {
-                    var botToCreate = new BotToCreateDto
-                    {
-                        PlayerName = player.Username,
-                        BotName = vm.BotName,
-                        ArenaName = "default",
-                        MaximumHealth = vm.BotHealth,
-                        MaximumStamina = vm.BotStamina,
-                        Script = script
-                    };
-
-                    try
-                    {
-                        await _orleansClient.CreateBot(player.Username, botToCreate);
-                    }
-                    catch (Exception ex)
-                    {
-                        valid = false;
-                        sadMessage = ex.Message;
-                    }
-                }
-                else
-                {
-                    valid = false;
-                    if (validatedScript == null)
-                    {
-                        sadMessage = "Your script could not be validated for an unknown reason.";
-                    }
-                    else
-                    {
-                        var scriptErrors = string.Join(", ", validatedScript.ValidationMessages.Select(x => x.Message));
-                        sadMessage = $"Your script contains some compile errors: {scriptErrors}";
-                    }
-                }
-            }
-
             vm = new PlayViewModel
             {
                 PlayerName = player.Username,
@@ -204,13 +159,65 @@ public class PlayController : Controller
                 Script = vm.Script
             };
 
-            if (valid)
+            try
             {
-                vm.HappyMessage = $"{vm.BotName} for player {vm.PlayerName} has been created successfully!";
+                var (valid, sadMessage) = IsValid(vm);
+
+                if (valid)
+                {
+                    var script = vm.Script.Base64Encode();
+
+                    var validatedScript = await _orleansClient.Validate(new ScriptToValidateDto { Script = script });
+
+                    if (validatedScript != null && validatedScript.ValidationMessages.Count == 0)
+                    {
+                        var botToCreate = new BotToCreateDto
+                        {
+                            PlayerName = player.Username,
+                            BotName = vm.BotName,
+                            ArenaName = "default",
+                            MaximumHealth = vm.BotHealth,
+                            MaximumStamina = vm.BotStamina,
+                            Script = script
+                        };
+
+                        try
+                        {
+                            await _orleansClient.CreateBot(player.Username, botToCreate);
+                        }
+                        catch (Exception ex)
+                        {
+                            valid = false;
+                            sadMessage = ex.Message;
+                        }
+                    }
+                    else
+                    {
+                        valid = false;
+                        if (validatedScript == null)
+                        {
+                            sadMessage = "Your script could not be validated for an unknown reason.";
+                        }
+                        else
+                        {
+                            var scriptErrors = string.Join(", ", validatedScript.ValidationMessages.Select(x => x.Message));
+                            sadMessage = $"Your script contains some compile errors: {scriptErrors}";
+                        }
+                    }
+                }
+
+                if (valid)
+                {
+                    vm.HappyMessage = $"{vm.BotName} for player {vm.PlayerName} has been created successfully!";
+                }
+                else
+                {
+                    vm.SadMessage = sadMessage;
+                }
             }
-            else
+            catch (Exception ex)
             {
-                vm.SadMessage = sadMessage;
+                vm.SadMessage = $"{ex}";
             }
 
             ViewData["ArenaUrl"] = _configuration.GetValue<string>("ARENA_URL");

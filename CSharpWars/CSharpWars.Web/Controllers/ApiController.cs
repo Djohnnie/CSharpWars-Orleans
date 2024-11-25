@@ -35,6 +35,7 @@ public class ApiController : ControllerBase
             var result = await kernel.InvokeAsync("csharpwarsScript", "csharpwarsScript", new() { { "request", prompt },
                                                                          { "csharpwarsFunctions", GetCSharpWarsFunctions()},
                                                                          { "csharpwarsProperties", GetCSharpWarsProperties()},
+                                                                         { "csharpwarsConstants", GetCSharpWarsConstants()},
                                                                          { "arenaDimensions", $"({arenaWidth}, {arenaHeight})"},
                                                                          { "walkAroundTemplate", Templates.WalkAround},
                                                                          { "walkBackAndForthTemplate", Templates.WalkBackAndForth},
@@ -118,6 +119,32 @@ public class ApiController : ControllerBase
                 propertiesOverview.Add("/// </summary>");
                 propertiesOverview.Add($"{publicProperty} {{get;}}");
                 propertiesOverview.Add(string.Empty);
+            }
+        }
+
+        return propertiesOverview;
+    }
+
+    private List<string> GetCSharpWarsConstants()
+    {
+        var scriptGlobalsType = typeof(ScriptGlobals);
+        var publicConstants = scriptGlobalsType.GetFields(BindingFlags.Public | BindingFlags.Static);
+
+        var propertiesOverview = new List<string>();
+
+        foreach (var publicConstant in publicConstants)
+        {
+            if (publicConstant.IsLiteral && !publicConstant.IsInitOnly)
+            {
+                var descriptionAttribute = publicConstant.GetCustomAttribute<DescriptionAttribute>();
+                if (descriptionAttribute != null)
+                {
+                    propertiesOverview.Add("/// <summary>");
+                    propertiesOverview.Add($"/// {descriptionAttribute.Description}");
+                    propertiesOverview.Add("/// </summary>");
+                    propertiesOverview.Add($"{publicConstant}");
+                    propertiesOverview.Add(string.Empty);
+                }
             }
         }
 

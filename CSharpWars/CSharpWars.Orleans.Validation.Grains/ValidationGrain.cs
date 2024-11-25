@@ -21,13 +21,39 @@ public class ValidationGrain : Grain, IValidationGrain
 
     public async Task<ValidatedScriptDto> Validate(ScriptToValidateDto scriptToValidate)
     {
+        var validationMessages = new List<ValidatedScriptMessageDto>();
+
         var compilationStartingTime = Stopwatch.GetTimestamp();
         var diagnostics = await _scriptCompiler.CompileForDiagnostics(scriptToValidate.Script);
         var compilationElapsedTime = Stopwatch.GetElapsedTime(compilationStartingTime);
 
+        if(diagnostics.Any(x => x.Severity == DiagnosticSeverity.Error))
+        {
+            foreach (var diagnostic in diagnostics)
+            {
+                if (diagnostic.Severity == DiagnosticSeverity.Error)
+                {
+                    validationMessages.Add(new ValidatedScriptMessageDto
+                    {
+                        Message = diagnostic.GetMessage(),
+                        LocationStart = diagnostic.Location.SourceSpan.Start,
+                        LocationEnd = diagnostic.Location.SourceSpan.End
+                    });
+                }
+            }
+
+            DeactivateOnIdle();
+
+            return new ValidatedScriptDto
+            {
+                CompilationTimeInMilliseconds = compilationElapsedTime.Milliseconds,
+                RunTimeInMilliseconds = 0,
+                ValidationMessages = validationMessages
+            };
+        }
+
         var botScript = await _scriptCompiler.CompileForExecution(scriptToValidate.Script);
 
-        var validationMessages = new List<ValidatedScriptMessageDto>();
         var runtimeInMilliseconds = long.MaxValue;
 
         if (!diagnostics.Any(x => x.Severity == DiagnosticSeverity.Error))
@@ -107,19 +133,6 @@ public class ValidationGrain : Grain, IValidationGrain
                 validationMessages.Add(new ValidatedScriptMessageDto
                 {
                     Message = "Your script did not finish in a timely fashion!"
-                });
-            }
-        }
-
-        foreach (var diagnostic in diagnostics)
-        {
-            if (diagnostic.Severity == DiagnosticSeverity.Error)
-            {
-                validationMessages.Add(new ValidatedScriptMessageDto
-                {
-                    Message = diagnostic.GetMessage(),
-                    LocationStart = diagnostic.Location.SourceSpan.Start,
-                    LocationEnd = diagnostic.Location.SourceSpan.End
                 });
             }
         }

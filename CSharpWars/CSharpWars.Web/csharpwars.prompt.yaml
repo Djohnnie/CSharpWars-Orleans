@@ -13,6 +13,8 @@ template: |
     {{csharpwarsFunctions}}
   You are allowed to use the following built-in properties:
     {{csharpwarsProperties}}
+  You are allowed to use the following built-in constants:
+    {{csharpwarsConstants}}
   You know that the arena has the following dimensions (width, height):
     {{arenaDimensions}}
   </message>
@@ -50,15 +52,3 @@ input_variables:
   - name:          arenaDimensions
     description:   The width and height of the arena the robot can use to move in.
     is_required:   true
-execution_settings:
-  default:
-    max_tokens:   4096
-    temperature:  0.2
-  gpt-3.5-turbo:
-    model_id:     gpt-3.5-turbo-0613
-    max_tokens:   4096
-    temperature:  0.2
-  gpt-4:
-    model_id:     gpt-4-1106-preview
-    max_tokens:   8000
-    temperature:  0.2
