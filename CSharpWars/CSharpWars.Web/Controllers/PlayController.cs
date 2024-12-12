@@ -22,6 +22,113 @@ public class PlayController : Controller
         _orleansClient = orleansClient;
     }
 
+    public IActionResult Quick()
+    {
+        if (_configuration.GetValue<bool>("QUICK_PLAY"))
+        {
+            var vm = new QuickPlayViewModel
+            {
+                PlayerName = $"p{Guid.NewGuid()}".Replace("-", ""),
+                BotName = $"b{Guid.NewGuid()}".Replace("-", ""),
+                BotHealth = 100,
+                BotStamina = 100,
+                Scripts = Templates.All
+            };
+
+            ViewData["ArenaUrl"] = _configuration.GetValue<string>("ARENA_URL");
+            ViewData["ScriptTemplateUrl"] = _configuration.GetValue<string>("SCRIPT_TEMPLATE_URL");
+            return View(vm);
+        }
+
+        return RedirectToAction("Index", "Home");
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> Quick(QuickPlayViewModel vm)
+    {
+        if (_configuration.GetValue<bool>("QUICK_PLAY"))
+        {
+            var (valid, sadMessage) = IsValid(vm);
+
+            vm = new QuickPlayViewModel
+            {
+                PlayerName = vm.PlayerName,
+                BotName = vm.BotName,
+                BotHealth = vm.BotHealth,
+                BotStamina = vm.BotStamina,
+                SelectedScript = vm.SelectedScript,
+                Scripts = Templates.All
+            };
+
+            if (valid)
+            {
+                var player = await _orleansClient.Login(vm.PlayerName, vm.PlayerName);
+                if (player != null)
+                {
+                    var script = Templates.All.Single(x => x.Id == vm.SelectedScript).Script.Base64Encode();
+
+                    var validatedScript = await _orleansClient.Validate(new ScriptToValidateDto { Script = script });
+
+                    if (validatedScript != null && validatedScript.ValidationMessages.Count == 0)
+                    {
+                        var botToCreate = new BotToCreateDto
+                        {
+                            PlayerName = vm.PlayerName,
+                            BotName = vm.BotName,
+                            ArenaName = "default",
+                            MaximumHealth = vm.BotHealth,
+                            MaximumStamina = vm.BotStamina,
+                            Script = script
+                        };
+
+                        try
+                        {
+                            await _orleansClient.CreateBot(player.Username, botToCreate);
+                        }
+                        catch (Exception ex)
+                        {
+                            valid = false;
+                            sadMessage = ex.Message;
+                        }
+                    }
+                    else
+                    {
+                        valid = false;
+                        if (validatedScript == null)
+                        {
+                            sadMessage = "Your script could not be validated for an unknown reason.";
+                        }
+                        else
+                        {
+                            var scriptErrors = string.Join(", ", validatedScript.ValidationMessages.Select(x => x.Message));
+                            sadMessage = $"Your script contains some compile errors: {scriptErrors}";
+                        }
+                    }
+                }
+            }
+            else
+            {
+                sadMessage = "Something went wrong creating your player :(";
+                valid = false;
+            }
+
+            if (valid)
+            {
+                vm.HappyMessage = $"{vm.BotName} for player {vm.PlayerName} has been created successfully!";
+            }
+            else
+            {
+                vm.SadMessage = sadMessage;
+            }
+
+            ViewData["ArenaUrl"] = _configuration.GetValue<string>("ARENA_URL");
+            ViewData["ScriptTemplateUrl"] = _configuration.GetValue<string>("SCRIPT_TEMPLATE_URL");
+            return View(vm);
+        }
+
+        return RedirectToAction("Index", "Home");
+    }
+
     public IActionResult Template()
     {
         if (HttpContext.Session.Keys.Contains("PLAYER"))
