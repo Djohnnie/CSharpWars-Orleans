@@ -23,7 +23,7 @@ public class ProcessingGrain : GrainBase<IProcessingGrain>, IProcessingGrain
 
     public override Task OnActivateAsync(CancellationToken cancellationToken)
     {
-        _timer = RegisterTimer(OnTimer, null, TimeSpan.FromSeconds(30), TimeSpan.FromSeconds(2));
+        _timer = this.RegisterGrainTimer(OnTimer, new() { DueTime = TimeSpan.FromSeconds(5), Period = TimeSpan.FromSeconds(2) });
 
         return base.OnActivateAsync(cancellationToken);
     }
@@ -35,7 +35,7 @@ public class ProcessingGrain : GrainBase<IProcessingGrain>, IProcessingGrain
         return base.OnDeactivateAsync(reason, cancellationToken);
     }
 
-    private async Task OnTimer(object state)
+    private async Task OnTimer(CancellationToken cancellationToken)
     {
         try
         {
