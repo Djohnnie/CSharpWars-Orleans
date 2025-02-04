@@ -37,10 +37,17 @@ public class ProcessingGrain : GrainBase<IProcessingGrain>, IProcessingGrain
 
     private async Task OnTimer(object state)
     {
-        var arenaName = this.GetPrimaryKeyString();
-        _logger.AutoLogInformation($"{nameof(ProcessingGrain)} timer for '{this.GetPrimaryKeyString()}' has ticked");
+        try
+        {
+            var arenaName = this.GetPrimaryKeyString();
+            _logger.AutoLogInformation($"{nameof(ProcessingGrain)} timer for '{this.GetPrimaryKeyString()}' has ticked");
 
-        await _processorLogic.Go(arenaName);
+            await _processorLogic.Go(arenaName);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, $"{nameof(ProcessingGrain)} timer for '{this.GetPrimaryKeyString()}' has failed");
+        }
     }
 
     public Task Ping()
