@@ -11,9 +11,9 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Grpc.AspNetCore" Version="2.64.0" />
-		<PackageReference Include="Microsoft.Orleans.Clustering.AzureStorage" Version="9.0.1" />
-		<PackageReference Include="Microsoft.Orleans.Server" Version="9.0.1" />
+		<PackageReference Include="Grpc.AspNetCore" Version="2.71.0" />
+		<PackageReference Include="Microsoft.Orleans.Clustering.AzureStorage" Version="9.1.2" />
+		<PackageReference Include="Microsoft.Orleans.Server" Version="9.1.2" />
 	</ItemGroup>
 
 </Project>

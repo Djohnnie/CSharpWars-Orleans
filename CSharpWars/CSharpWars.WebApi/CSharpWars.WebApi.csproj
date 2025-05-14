@@ -7,11 +7,11 @@
 		<DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
 	</PropertyGroup>
 	<ItemGroup>
-		<PackageReference Include="AutoMapper" Version="13.0.1" />
-		<PackageReference Include="Microsoft.Orleans.Clustering.AzureStorage" Version="9.0.1" />
-		<PackageReference Include="Microsoft.Orleans.Hosting.Kubernetes" Version="9.0.1" />
-		<PackageReference Include="Microsoft.Orleans.Persistence.AzureStorage" Version="9.0.1" />
-		<PackageReference Include="Microsoft.Orleans.Server" Version="9.0.1" />
+		<PackageReference Include="AutoMapper" Version="14.0.0" />
+		<PackageReference Include="Microsoft.Orleans.Clustering.AzureStorage" Version="9.1.2" />
+		<PackageReference Include="Microsoft.Orleans.Hosting.Kubernetes" Version="9.1.2" />
+		<PackageReference Include="Microsoft.Orleans.Persistence.AzureStorage" Version="9.1.2" />
+		<PackageReference Include="Microsoft.Orleans.Server" Version="9.1.2" />
 		<PackageReference Include="OrleansDashboard" Version="8.2.0" />
 	</ItemGroup>
 	<ItemGroup>
