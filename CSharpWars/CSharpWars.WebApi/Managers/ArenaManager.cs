@@ -32,14 +32,22 @@ public class ArenaManager : IArenaManager
 
     public async Task<GetArenaResponse> GetArena(GetArenaRequest request)
     {
-        var startTime = Stopwatch.GetTimestamp();
+        try
+        {
+            var startTime = Stopwatch.GetTimestamp();
 
-        var arena = await _arenaGrainClient.FromGrain(request.Name, g => g.GetArenaDetails());
-        await _processingGrainClient.FromGrain(request.Name, g => g.Ping());
+            var arena = await _arenaGrainClient.FromGrain(request.Name, g => g.GetArenaDetails());
+            await _processingGrainClient.FromGrain(request.Name, g => g.Ping());
 
-        _logger.LogInformation($"GetArena: {Stopwatch.GetElapsedTime(startTime)} ms");
+            _logger.LogInformation($"GetArena: {Stopwatch.GetElapsedTime(startTime)} ms");
 
-        return _mapper.Map<GetArenaResponse>(arena);
+            return _mapper.Map<GetArenaResponse>(arena);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "ERROR: error getting arena details");
+            throw;
+        }
     }
 
     public async Task DeleteArena(string arenaName)

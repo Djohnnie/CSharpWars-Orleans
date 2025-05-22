@@ -85,6 +85,6 @@ public class ProcessorLogic : IProcessorLogic
 
         await Task.WhenAll(updateStateTasks);
 
-        _logger.LogInformation($"UPDATE: {Stopwatch.GetElapsedTime(startTime).TotalMilliseconds}ms");
+        _logger.LogInformation($"UPDATE: {Stopwatch.GetElapsedTime(startTime).TotalMilliseconds:F0}ms");
     }
 }

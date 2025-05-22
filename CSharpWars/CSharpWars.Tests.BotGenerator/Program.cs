@@ -153,7 +153,7 @@ WriteLine();
 
 
 
-for (int count = 1; count <= 25; count++)
+for (int count = 1; count <= 50; count++)
 {
     var scriptIndex = count % Scripts.Length;
 
@@ -176,6 +176,8 @@ for (int count = 1; count <= 25; count++)
     using var response2 = await client.PostAsJsonAsync("https://api.csharpwars.com/arena/default/bots", createBotRequest);
     var debug = await response2.Content.ReadAsStringAsync();
     var createBotResponse = await response2.Content.ReadFromJsonAsync<CreateBotResponse>();
+
+    await Task.Delay(1000);
 
     WriteLine($"Player {count:D2} created!");
 }

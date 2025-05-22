@@ -34,26 +34,42 @@ public class BotManager : IBotManager
 
     public async Task<GetAllActiveBotsResponse> GetAllActiveBots(GetAllActiveBotsRequest request)
     {
-        var startTime = Stopwatch.GetTimestamp();
+        try
+        {
+            var startTime = Stopwatch.GetTimestamp();
 
-        var bots = await _arenaGrainClient.FromGrain(request.ArenaName, g => g.GetAllActiveBots());
-        await _processingGrainClient.FromGrain(request.ArenaName, g => g.Ping());
+            var bots = await _arenaGrainClient.FromGrain(request.ArenaName, g => g.GetAllActiveBots());
+            await _processingGrainClient.FromGrain(request.ArenaName, g => g.Ping());
 
-        _logger.LogInformation($"GetAllActiveBots: {Stopwatch.GetElapsedTime(startTime).TotalMilliseconds:F0}ms");
+            _logger.LogInformation($"GetAllActiveBots: {Stopwatch.GetElapsedTime(startTime).TotalMilliseconds:F0}ms");
 
-        return _mapper.Map<GetAllActiveBotsResponse>(bots);
+            return _mapper.Map<GetAllActiveBotsResponse>(bots);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "ERROR: error getting all active bots");
+            throw;
+        }
     }
 
     public async Task<CreateBotResponse> CreateBot(CreateBotRequest request)
     {
-        if (string.IsNullOrWhiteSpace(request.PlayerName))
+        try
         {
-            throw new ArgumentNullException(nameof(request.PlayerName));
+            if (string.IsNullOrWhiteSpace(request.PlayerName))
+            {
+                throw new ArgumentNullException(nameof(request.PlayerName));
+            }
+
+            var botToCreate = _mapper.Map<BotToCreateDto>(request);
+
+            var bot = await _arenaGrainClient.FromGrain(request.ArenaName, g => g.CreateBot(request.PlayerName, botToCreate));
+            return _mapper.Map<CreateBotResponse>(bot);
         }
-
-        var botToCreate = _mapper.Map<BotToCreateDto>(request);
-
-        var bot = await _arenaGrainClient.FromGrain(request.ArenaName, g => g.CreateBot(request.PlayerName, botToCreate));
-        return _mapper.Map<CreateBotResponse>(bot);
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "ERROR: error creating bot");
+            throw;
+        }
     }
 }

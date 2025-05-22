@@ -40,19 +40,19 @@ public class ProcessingGrain : GrainBase<IProcessingGrain>, IProcessingGrain
         try
         {
             var arenaName = this.GetPrimaryKeyString();
-            _logger.AutoLogInformation($"{nameof(ProcessingGrain)} timer for '{this.GetPrimaryKeyString()}' has ticked");
+            _logger.AutoLogInformation($"INFO: {nameof(ProcessingGrain)} timer for '{this.GetPrimaryKeyString()}' has ticked");
 
             await _processorLogic.Go(arenaName);
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, $"{nameof(ProcessingGrain)} timer for '{this.GetPrimaryKeyString()}' has failed");
+            _logger.LogError(ex, $"ERROR: {nameof(ProcessingGrain)} timer for '{this.GetPrimaryKeyString()}' has failed");
         }
     }
 
     public Task Ping()
     {
-        _logger.AutoLogInformation($"{nameof(ProcessingGrain)} for '{this.GetPrimaryKeyString()}' was pinged");
+        _logger.AutoLogInformation($"INFO: {nameof(ProcessingGrain)} for '{this.GetPrimaryKeyString()}' was pinged");
 
         return Task.CompletedTask;
     }
