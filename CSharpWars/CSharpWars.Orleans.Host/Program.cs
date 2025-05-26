@@ -1,3 +1,5 @@
+﻿using Azure.Data.Tables;
+using Azure.Storage.Blobs;
 using CSharpWars.Common.Helpers;
 using CSharpWars.Orleans.Common;
 using CSharpWars.Orleans.Grains.Logic;
@@ -42,23 +44,18 @@ using IHost host = Host.CreateDefaultBuilder(args)
 
         siloBuilder.UseAzureStorageClustering(options =>
         {
-            options.ConfigureTableServiceClient(azureStorageConnectionString);
+            options.TableServiceClient = new TableServiceClient(azureStorageConnectionString);
         });
 
-        siloBuilder.AddAzureBlobGrainStorage("arenaStore", config => config.ConfigureBlobServiceClient(azureStorageConnectionString));
-        siloBuilder.AddAzureBlobGrainStorage("playersStore", config => config.ConfigureBlobServiceClient(azureStorageConnectionString));
-        siloBuilder.AddAzureBlobGrainStorage("playerStore", config => config.ConfigureBlobServiceClient(azureStorageConnectionString));
-        siloBuilder.AddAzureBlobGrainStorage("botStore", config => config.ConfigureBlobServiceClient(azureStorageConnectionString));
-        siloBuilder.AddAzureBlobGrainStorage("scriptStore", config => config.ConfigureBlobServiceClient(azureStorageConnectionString));
-        siloBuilder.AddAzureBlobGrainStorage("messagesStore", config => config.ConfigureBlobServiceClient(azureStorageConnectionString));
-        siloBuilder.AddAzureBlobGrainStorage("movesStore", config => config.ConfigureBlobServiceClient(azureStorageConnectionString));
+        siloBuilder.AddAzureBlobGrainStorage("arenaStore", config => config.BlobServiceClient = new BlobServiceClient(azureStorageConnectionString));
+        siloBuilder.AddAzureBlobGrainStorage("playersStore", config => config.BlobServiceClient = new BlobServiceClient(azureStorageConnectionString));
+        siloBuilder.AddAzureBlobGrainStorage("playerStore", config => config.BlobServiceClient = new BlobServiceClient(azureStorageConnectionString));
+        siloBuilder.AddAzureBlobGrainStorage("botStore", config => config.BlobServiceClient = new BlobServiceClient(azureStorageConnectionString));
+        siloBuilder.AddAzureBlobGrainStorage("scriptStore", config => config.BlobServiceClient = new BlobServiceClient(azureStorageConnectionString));
+        siloBuilder.AddAzureBlobGrainStorage("messagesStore", config => config.BlobServiceClient = new BlobServiceClient(azureStorageConnectionString));
+        siloBuilder.AddAzureBlobGrainStorage("movesStore", config => config.BlobServiceClient = new BlobServiceClient(azureStorageConnectionString));
 
-        siloBuilder.ConfigureLogging(loggingBuilder =>
-        {
-            loggingBuilder.AddConsole();
-            //loggingBuilder.AddApplicationInsights(c => c.ConnectionString = applicationInsightsConnectionString, _ => { });
-        });
-
+        siloBuilder.UseTransactions();
         siloBuilder.UseDashboard();
 
         siloBuilder.Configure<GrainCollectionOptions>(o =>

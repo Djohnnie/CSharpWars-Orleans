@@ -163,11 +163,13 @@ for (int count = 1; count <= 50; count++)
     using var response1 = await client.PostAsJsonAsync("https://api.csharpwars.com/players", loginRequest);
     var loginResponse = await response1.Content.ReadFromJsonAsync<LoginResponse>();
 
+    var botName = $"Bot {Guid.NewGuid()}";
+
     client.DefaultRequestHeaders.Add("Authorization", loginResponse.Token);
     var createBotRequest = new CreateBotRequest
     {
         ArenaName = "default",
-        BotName = $"Bot {count:D2}",
+        BotName = botName,
         MaximumHealth = 100,
         MaximumStamina = 100,
         PlayerName = $"Player {count:D2}",
@@ -177,7 +179,7 @@ for (int count = 1; count <= 50; count++)
     var debug = await response2.Content.ReadAsStringAsync();
     var createBotResponse = await response2.Content.ReadFromJsonAsync<CreateBotResponse>();
 
-    await Task.Delay(1000);
+    await Task.Delay(500);
 
-    WriteLine($"Player {count:D2} created!");
+    WriteLine($"Player {count:D2} with {botName} created!");
 }

@@ -5,7 +5,10 @@ using CSharpWars.Orleans.Contracts;
 using CSharpWars.Orleans.Contracts.Grains;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using Orleans.Concurrency;
 using Orleans.Runtime;
+using Orleans.Transactions;
+using Orleans.Transactions.Abstractions;
 using System.Diagnostics;
 
 namespace CSharpWars.Orleans.Grains;
@@ -19,6 +22,7 @@ public class ArenaState
     public IList<Guid>? BotIds { get; set; }
 }
 
+[Reentrant]
 public class ArenaGrain : GrainBase<IArenaGrain>, IArenaGrain
 {
     private readonly IGrainFactoryHelperWithStringKey<IPlayerGrain> _playerGrainFactory;
