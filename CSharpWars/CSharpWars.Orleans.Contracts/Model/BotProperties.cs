@@ -9,9 +9,9 @@ public class BotProperties
     [Id(0)]
     public Guid BotId { get; private set; }
     [Id(1)]
-    public string Name { get; private set; }
+    public string Name { get; private set; } = string.Empty;
     [Id(2)]
-    public string PlayerName { get; private set; }
+    public string PlayerName { get; private set; } = string.Empty;
     [Id(3)]
     public int Width { get; private set; }
     [Id(4)]
@@ -33,9 +33,9 @@ public class BotProperties
     [Id(12)]
     public int CurrentStamina { get; private set; }
     [Id(13)]
-    public Dictionary<string, string> Memory { get; private set; }
+    public Dictionary<string, string> Memory { get; private set; } = [];
     [Id(14)]
-    public List<Bot> Bots { get; set; }
+    public List<Bot> Bots { get; set; } = [];
     [Id(15)]
     public Move CurrentMove { get; set; }
     [Id(16)]
@@ -43,7 +43,7 @@ public class BotProperties
     [Id(17)]
     public int MoveDestinationY { get; set; }
     [Id(18)]
-    public string Message { get; set; }
+    public string Message { get; set; } = string.Empty;
 
     private BotProperties() { }
 

@@ -4,7 +4,7 @@
 public class ArenaDto
 {
     [Id(0)]
-    public string Name { get; set; }
+    public string Name { get; set; } = string.Empty;
     [Id(1)]
     public int Width { get; set; }
     [Id(2)]

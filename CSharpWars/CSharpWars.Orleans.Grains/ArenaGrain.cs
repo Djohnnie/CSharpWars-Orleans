@@ -13,7 +13,7 @@ namespace CSharpWars.Orleans.Grains;
 public class ArenaState
 {
     public bool Exists { get; set; }
-    public string Name { get; set; }
+    public string Name { get; set; } = string.Empty;
     public int Width { get; set; }
     public int Height { get; set; }
     public IList<Guid>? BotIds { get; set; }

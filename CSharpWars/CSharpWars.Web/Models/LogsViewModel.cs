@@ -2,6 +2,6 @@
 
 public class LogsViewModel
 {
-    public MoveLogsViewModel Moves { get; set; }
-    public MessageLogsViewModel Messages { get; set; }
+    public MoveLogsViewModel Moves { get; set; } = new();
+    public MessageLogsViewModel Messages { get; set; } = new();
 }

@@ -9,5 +9,5 @@ public class ValidatedScriptDto
     public long RunTimeInMilliseconds { get; init; }
 
     [Id(2)]
-    public List<ValidatedScriptMessageDto> ValidationMessages { get; init; }
+    public List<ValidatedScriptMessageDto> ValidationMessages { get; init; } = [];
 }

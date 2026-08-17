@@ -8,6 +8,7 @@
 
 	<ItemGroup>
 		<PackageReference Include="Microsoft.CodeAnalysis.CSharp.Scripting" Version="5.6.0" />
+		<PackageReference Include="Microsoft.CodeAnalysis.Workspaces.Common" Version="5.6.0" />
 	</ItemGroup>
 
 	<ItemGroup>

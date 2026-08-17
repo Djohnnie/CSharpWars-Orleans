@@ -51,7 +51,7 @@ public class Teleport : BaseMove
         }
     }
 
-    private Bot FindVictimizedBot()
+    private Bot? FindVictimizedBot()
     {
         return BotProperties.Bots.FirstOrDefault(bot => bot.X == BotProperties.MoveDestinationX && bot.Y == BotProperties.MoveDestinationY);
     }

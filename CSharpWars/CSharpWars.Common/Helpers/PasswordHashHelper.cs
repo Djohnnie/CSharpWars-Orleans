@@ -4,14 +4,14 @@ namespace CSharpWars.Helpers;
 
 public interface IPasswordHashHelper
 {
-    (string salt, string hashed) CalculateHash(string password, string salt = null);
+    (string salt, string hashed) CalculateHash(string password, string? salt = null);
 }
 
 public class PasswordHashHelper : IPasswordHashHelper
 {
     private readonly Random _random = new Random();
 
-    public (string salt, string hashed) CalculateHash(string password, string salt = null)
+    public (string salt, string hashed) CalculateHash(string password, string? salt = null)
     {
         if (salt == null)
         {

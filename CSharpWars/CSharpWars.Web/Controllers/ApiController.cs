@@ -57,9 +57,12 @@ public class ApiController : ControllerBase
     {
         var builder = Kernel.CreateBuilder();
 
-        var deploymentName = _configuration.GetValue<string>("AZURE_OPEN_AI_DEPLOYMENT_NAME");
-        var endpoint = _configuration.GetValue<string>("AZURE_OPEN_AI_ENDPOINT");
-        var apiKey = _configuration.GetValue<string>("AZURE_OPEN_AI_APIKEY");
+        var deploymentName = _configuration.GetValue<string>("AZURE_OPEN_AI_DEPLOYMENT_NAME")
+            ?? throw new InvalidOperationException("AZURE_OPEN_AI_DEPLOYMENT_NAME is required.");
+        var endpoint = _configuration.GetValue<string>("AZURE_OPEN_AI_ENDPOINT")
+            ?? throw new InvalidOperationException("AZURE_OPEN_AI_ENDPOINT is required.");
+        var apiKey = _configuration.GetValue<string>("AZURE_OPEN_AI_APIKEY")
+            ?? throw new InvalidOperationException("AZURE_OPEN_AI_APIKEY is required.");
 
         builder.AddAzureOpenAIChatCompletion(deploymentName, endpoint, apiKey);
 
@@ -93,12 +96,12 @@ public class ApiController : ControllerBase
                 functionsOverview.Add("/// <summary>");
                 functionsOverview.Add($"/// {descriptionAttribute.Description}");
                 functionsOverview.Add("/// </summary>");
-                functionsOverview.Add(publicMethod.ToString());
+                functionsOverview.Add(publicMethod.ToString()!);
                 functionsOverview.Add(string.Empty);
             }
             else
             {
-                functionsOverview.Add(publicMethod.ToString());
+                functionsOverview.Add(publicMethod.ToString()!);
                 functionsOverview.Add(string.Empty);
             }
         }

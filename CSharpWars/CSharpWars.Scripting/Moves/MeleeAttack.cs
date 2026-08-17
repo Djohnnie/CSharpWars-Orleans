@@ -24,7 +24,7 @@ public class MeleeAttack : BaseMove
         return botResult;
     }
 
-    private Bot FindVictimizedBot()
+    private Bot? FindVictimizedBot()
     {
         var neighbourLocation = GetNeighbourLocation();
         return BotProperties.Bots.FirstOrDefault(bot => bot.X == neighbourLocation.X && bot.Y == neighbourLocation.Y);

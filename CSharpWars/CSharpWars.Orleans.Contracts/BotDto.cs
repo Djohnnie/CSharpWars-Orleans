@@ -8,9 +8,9 @@ public class BotDto
     [Id(0)]
     public Guid BotId { get; set; }
     [Id(1)]
-    public string BotName { get; set; }
+    public string BotName { get; set; } = string.Empty;
     [Id(2)]
-    public string PlayerName { get; set; }
+    public string PlayerName { get; set; } = string.Empty;
     [Id(3)]
     public int CurrentHealth { get; set; }
     [Id(4)]
@@ -38,5 +38,5 @@ public class BotDto
     [Id(15)]
     public DateTime? TimeOfDeath { get; set; }
     [Id(16)]
-    public string Memory { get; set; }
+    public string Memory { get; set; } = string.Empty;
 }

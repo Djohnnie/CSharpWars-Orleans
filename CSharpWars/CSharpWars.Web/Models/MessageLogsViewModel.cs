@@ -2,5 +2,5 @@
 
 public class MessageLogsViewModel
 {
-    public List<string> Items { get; set; }
+    public List<string> Items { get; set; } = [];
 }

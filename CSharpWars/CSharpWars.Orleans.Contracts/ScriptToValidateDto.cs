@@ -4,5 +4,5 @@
 public class ScriptToValidateDto
 {
     [Id(0)]
-    public string Script { get; init; }
+    public string Script { get; init; } = string.Empty;
 }

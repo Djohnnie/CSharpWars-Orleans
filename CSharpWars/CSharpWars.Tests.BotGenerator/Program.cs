@@ -161,7 +161,8 @@ for (int count = 1; count <= 200; count++)
 
     var loginRequest = new LoginRequest { Username = $"Player {count:D2}", Password = $"Player {count:D2}" };
     using var response1 = await client.PostAsJsonAsync("https://api.csharpwars.com/players", loginRequest);
-    var loginResponse = await response1.Content.ReadFromJsonAsync<LoginResponse>();
+    var loginResponse = await response1.Content.ReadFromJsonAsync<LoginResponse>()
+        ?? throw new InvalidOperationException("Login response was empty.");
 
     var botName = $"Bot {Guid.NewGuid()}";
 
@@ -173,7 +174,7 @@ for (int count = 1; count <= 200; count++)
         MaximumHealth = 100,
         MaximumStamina = 100,
         PlayerName = $"Player {count:D2}",
-        Script = Scripts[scriptIndex].Base64Encode()
+        Script = Scripts[scriptIndex].Base64Encode() ?? string.Empty
     };
     using var response2 = await client.PostAsJsonAsync("https://api.csharpwars.com/arena/default/bots", createBotRequest);
     var debug = await response2.Content.ReadAsStringAsync();

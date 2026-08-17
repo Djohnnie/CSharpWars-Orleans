@@ -25,7 +25,8 @@ public class JwtHelper : IJwtHelper
     public string GenerateToken(string username)
     {
         var tokenHandler = new JwtSecurityTokenHandler();
-        var jwtSecret = _configuration.GetValue<string>(JwtSecret);
+        var jwtSecret = _configuration.GetValue<string>(JwtSecret)
+            ?? throw new InvalidOperationException("JWT_SECRET is required.");
         var key = Encoding.ASCII.GetBytes(jwtSecret);
         var tokenDescriptor = new SecurityTokenDescriptor
         {
@@ -44,7 +45,8 @@ public class JwtHelper : IJwtHelper
             return null;
 
         var tokenHandler = new JwtSecurityTokenHandler();
-        var jwtSecret = _configuration.GetValue<string>(JwtSecret);
+        var jwtSecret = _configuration.GetValue<string>(JwtSecret)
+            ?? throw new InvalidOperationException("JWT_SECRET is required.");
         var key = Encoding.ASCII.GetBytes(jwtSecret);
         try
         {

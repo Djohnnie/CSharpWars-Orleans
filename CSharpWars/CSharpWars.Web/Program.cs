@@ -58,7 +58,7 @@ app.UseStaticFiles(new StaticFileOptions
     OnPrepareResponse = context =>
     {
         IHeaderDictionary headers = context.Context.Response.Headers;
-        string contentType = headers["Content-Type"];
+        string contentType = headers["Content-Type"].ToString();
         if (contentType == "application/x-gzip")
         {
             if (context.File.Name.EndsWith("js.gz"))
@@ -69,11 +69,11 @@ app.UseStaticFiles(new StaticFileOptions
             {
                 contentType = "text/css";
             }
-            headers.Add("Content-Encoding", "gzip");
+            headers.Append("Content-Encoding", "gzip");
             headers["Content-Type"] = contentType;
         }
 
-        if (context.Context.Request.Path.Value.EndsWith("wasm.gz"))
+        if (context.Context.Request.Path.Value?.EndsWith("wasm.gz") == true)
         {
             headers["Content-Type"] = "application/wasm";
         }

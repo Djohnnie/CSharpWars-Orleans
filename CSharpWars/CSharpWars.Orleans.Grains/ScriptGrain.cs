@@ -12,7 +12,7 @@ namespace CSharpWars.Orleans.Grains;
 public class ScriptState
 {
     public bool Exists { get; set; }
-    public string Script { get; set; }
+    public string Script { get; set; } = string.Empty;
 }
 
 [PreferLocalPlacement]
@@ -22,7 +22,7 @@ public class ScriptGrain : GrainBase<IScriptGrain>, IScriptGrain
     private readonly ILogger<IScriptGrain> _logger;
     private readonly IPersistentState<ScriptState> _state;
 
-    private ScriptRunner<object?> _compiledScript;
+    private ScriptRunner<object?>? _compiledScript;
 
     public ScriptGrain(
         IScriptCompiler scriptCompiler, ILogger<IScriptGrain> logger,

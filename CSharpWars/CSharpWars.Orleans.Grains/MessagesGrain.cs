@@ -9,7 +9,7 @@ namespace CSharpWars.Orleans.Grains;
 public class MessagesState
 {
     public bool Exists { get; set; }
-    public List<MessageDto> Messages { get; set; }
+    public List<MessageDto> Messages { get; set; } = [];
 }
 
 public class MessagesGrain : GrainBase<IMessagesGrain>, IMessagesGrain

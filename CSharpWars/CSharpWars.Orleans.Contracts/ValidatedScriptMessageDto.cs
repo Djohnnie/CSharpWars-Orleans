@@ -8,5 +8,5 @@ public class ValidatedScriptMessageDto
     [Id(1)]
     public int LocationEnd { get; init; }
     [Id(2)]
-    public string Message { get; init; }
+    public string Message { get; init; } = string.Empty;
 }

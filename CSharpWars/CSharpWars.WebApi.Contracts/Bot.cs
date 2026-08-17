@@ -5,19 +5,19 @@ namespace CSharpWars.WebApi.Contracts;
 
 public class GetAllActiveBotsRequest
 {
-    public string ArenaName { get; set; }
+    public string ArenaName { get; set; } = string.Empty;
 }
 
 public class GetAllActiveBotsResponse
 {
-    public List<Bot> Bots { get; set; }
+    public List<Bot> Bots { get; set; } = [];
 }
 
 public class Bot
 {
     public Guid BotId { get; init; }
-    public string BotName { get; init; }
-    public string PlayerName { get; init; }
+    public string BotName { get; init; } = string.Empty;
+    public string PlayerName { get; init; } = string.Empty;
     public int CurrentHealth { get; init; }
     public int MaximumHealth { get; init; }
     public int CurrentStamina { get; init; }
@@ -35,17 +35,17 @@ public class Bot
 public class CreateBotRequest
 {
     public string? PlayerName { get; set; }
-    public string BotName { get; set; }
-    public string ArenaName { get; set; }
+    public string BotName { get; set; } = string.Empty;
+    public string ArenaName { get; set; } = string.Empty;
     public int MaximumHealth { get; set; }
     public int MaximumStamina { get; set; }
-    public string Script { get; set; }
+    public string Script { get; set; } = string.Empty;
 }
 
 public class CreateBotResponse
 {
     public Guid BotId { get; set; }
-    public string BotName { get; set; }
+    public string BotName { get; set; } = string.Empty;
     public int MaximumHealth { get; set; }
     public int MaximumStamina { get; set; }
 }

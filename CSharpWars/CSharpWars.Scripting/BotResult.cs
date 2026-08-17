@@ -13,11 +13,11 @@ public class BotResult
     public Orientation Orientation { get; set; }
     public int CurrentHealth { get; set; }
     public int CurrentStamina { get; set; }
-    public Dictionary<string, string> Memory { get; set; }
+    public Dictionary<string, string> Memory { get; set; } = [];
     public Move Move { get; set; }
     public int LastAttackX { get; set; }
     public int LastAttackY { get; set; }
-    public string Message { get; set; }
+    public string Message { get; set; } = string.Empty;
 
     private BotResult() { }
 

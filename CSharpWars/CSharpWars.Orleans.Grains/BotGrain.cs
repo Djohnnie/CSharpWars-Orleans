@@ -13,9 +13,9 @@ namespace CSharpWars.Orleans.Grains;
 public class BotState
 {
     public bool Exists { get; set; }
-    public string BotName { get; set; }
-    public string ArenaName { get; set; }
-    public string PlayerName { get; set; }
+    public string BotName { get; set; } = string.Empty;
+    public string ArenaName { get; set; } = string.Empty;
+    public string PlayerName { get; set; } = string.Empty;
     public Orientation Orientation { get; set; }
     public Move Move { get; set; }
     public int MaximumHealth { get; set; }
@@ -29,7 +29,7 @@ public class BotState
     public int LastAttackX { get; set; }
     public int LastAttackY { get; set; }
     public DateTime? TimeOfDeath { get; set; }
-    public string Memory { get; set; }
+    public string Memory { get; set; } = string.Empty;
 }
 
 public class BotGrain : GrainBase<IBotGrain>, IBotGrain

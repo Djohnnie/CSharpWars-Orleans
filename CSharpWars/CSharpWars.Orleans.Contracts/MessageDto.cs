@@ -6,7 +6,7 @@ public class MessageDto
     [Id(0)]
     public DateTime TimeStamp { get; init; }
     [Id(1)]
-    public string Owner { get; init; }
+    public string Owner { get; init; } = string.Empty;
     [Id(2)]
-    public string Message { get; init; }
+    public string Message { get; init; } = string.Empty;
 }

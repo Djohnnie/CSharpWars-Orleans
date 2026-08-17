@@ -2,5 +2,5 @@
 
 public class MoveLogsViewModel
 {
-    public List<string> Items { get; set; }
+    public List<string> Items { get; set; } = [];
 }

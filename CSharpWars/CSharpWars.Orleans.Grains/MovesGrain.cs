@@ -9,7 +9,7 @@ namespace CSharpWars.Orleans.Grains;
 public class MovesState
 {
     public bool Exists { get; set; }
-    public List<MoveDto> Moves { get; set; }
+    public List<MoveDto> Moves { get; set; } = [];
 }
 
 public class MovesGrain : GrainBase<IMovesGrain>, IMovesGrain

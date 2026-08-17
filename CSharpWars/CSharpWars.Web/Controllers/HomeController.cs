@@ -55,6 +55,11 @@ public class HomeController : Controller
         if (HttpContext.Session.Keys.Contains("PLAYER"))
         {
             var player = HttpContext.Session.GetObject<PlayerDto>("PLAYER");
+            if (player is null)
+            {
+                return RedirectToAction(nameof(Index));
+            }
+
             var vm = new GameViewModel
             {
                 PlayerName = player.Username,

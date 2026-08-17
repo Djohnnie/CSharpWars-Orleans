@@ -35,8 +35,8 @@ public class PlayController : Controller
                 Scripts = Templates.All
             };
 
-            ViewData["ArenaUrl"] = _configuration.GetValue<string>("ARENA_URL");
-            ViewData["ScriptTemplateUrl"] = _configuration.GetValue<string>("SCRIPT_TEMPLATE_URL");
+            ViewData["ArenaUrl"] = _configuration.GetValue<string>("ARENA_URL") ?? string.Empty;
+            ViewData["ScriptTemplateUrl"] = _configuration.GetValue<string>("SCRIPT_TEMPLATE_URL") ?? string.Empty;
             return View(vm);
         }
 
@@ -63,9 +63,14 @@ public class PlayController : Controller
             if (valid)
             {
                 var player = await _orleansClient.Login(vm.PlayerName, vm.PlayerName);
-                if (player != null)
+                if (player is null)
                 {
-                    var script = Templates.All.Single(x => x.Id == vm.SelectedScript).Script.Base64Encode();
+                    valid = false;
+                    sadMessage = "Something went wrong creating your player :(";
+                }
+                else
+                {
+                    var script = Templates.All.Single(x => x.Id == vm.SelectedScript).Script.Base64Encode() ?? string.Empty;
 
                     var validatedScript = await _orleansClient.Validate(new ScriptToValidateDto { Script = script });
 
@@ -73,8 +78,8 @@ public class PlayController : Controller
                     {
                         var botToCreate = new BotToCreateDto
                         {
-                            PlayerName = vm.PlayerName,
-                            BotName = vm.BotName,
+                            PlayerName = vm.PlayerName ?? string.Empty,
+                            BotName = vm.BotName ?? string.Empty,
                             ArenaName = "default",
                             MaximumHealth = vm.BotHealth,
                             MaximumStamina = vm.BotStamina,
@@ -83,7 +88,7 @@ public class PlayController : Controller
 
                         try
                         {
-                            await _orleansClient.CreateBot(player.Username, botToCreate);
+                            await _orleansClient.CreateBot(player.Username ?? string.Empty, botToCreate);
                         }
                         catch (Exception ex)
                         {
@@ -114,15 +119,15 @@ public class PlayController : Controller
 
             if (valid)
             {
-                vm.HappyMessage = $"{vm.BotName} for player {vm.PlayerName} has been created successfully!";
+                vm.HappyMessage = $"{vm.BotName ?? string.Empty} for player {vm.PlayerName ?? string.Empty} has been created successfully!";
             }
             else
             {
-                vm.SadMessage = sadMessage;
+                vm.SadMessage = sadMessage ?? string.Empty;
             }
 
-            ViewData["ArenaUrl"] = _configuration.GetValue<string>("ARENA_URL");
-            ViewData["ScriptTemplateUrl"] = _configuration.GetValue<string>("SCRIPT_TEMPLATE_URL");
+            ViewData["ArenaUrl"] = _configuration.GetValue<string>("ARENA_URL") ?? string.Empty;
+            ViewData["ScriptTemplateUrl"] = _configuration.GetValue<string>("SCRIPT_TEMPLATE_URL") ?? string.Empty;
             return View(vm);
         }
 
@@ -134,16 +139,21 @@ public class PlayController : Controller
         if (HttpContext.Session.Keys.Contains("PLAYER"))
         {
             var player = HttpContext.Session.GetObject<LoginResponse>("PLAYER");
+            if (player is null)
+            {
+                return RedirectToAction("Index", "Home");
+            }
+
             var vm = new PlayViewModel
             {
-                PlayerName = player.Username,
+                PlayerName = player.Username ?? string.Empty,
                 BotName = "<name your bot>",
                 BotHealth = 100,
                 BotStamina = 100,
                 Scripts = Templates.All
             };
-            ViewData["ArenaUrl"] = _configuration.GetValue<string>("ARENA_URL");
-            ViewData["ScriptTemplateUrl"] = _configuration.GetValue<string>("SCRIPT_TEMPLATE_URL");
+            ViewData["ArenaUrl"] = _configuration.GetValue<string>("ARENA_URL") ?? string.Empty;
+            ViewData["ScriptTemplateUrl"] = _configuration.GetValue<string>("SCRIPT_TEMPLATE_URL") ?? string.Empty;
             return View(vm);
         }
 
@@ -156,12 +166,16 @@ public class PlayController : Controller
         if (HttpContext.Session.Keys.Contains("PLAYER"))
         {
             var player = HttpContext.Session.GetObject<LoginResponse>("PLAYER");
+            if (player is null)
+            {
+                return RedirectToAction("Index", "Home");
+            }
 
             var (valid, sadMessage) = IsValid(vm);
 
             if (valid)
             {
-                var script = Templates.All.Single(x => x.Id == vm.SelectedScript).Script.Base64Encode();
+                var script = Templates.All.Single(x => x.Id == vm.SelectedScript).Script.Base64Encode() ?? string.Empty;
 
                 var validatedScript = await _orleansClient.Validate(new ScriptToValidateDto { Script = script });
 
@@ -169,8 +183,8 @@ public class PlayController : Controller
                 {
                     var botToCreate = new BotToCreateDto
                     {
-                        PlayerName = player.Username,
-                        BotName = vm.BotName,
+                        PlayerName = player.Username ?? string.Empty,
+                        BotName = vm.BotName ?? string.Empty,
                         ArenaName = "default",
                         MaximumHealth = vm.BotHealth,
                         MaximumStamina = vm.BotStamina,
@@ -179,7 +193,7 @@ public class PlayController : Controller
 
                     try
                     {
-                        await _orleansClient.CreateBot(player.Username, botToCreate);
+                        await _orleansClient.CreateBot(player.Username ?? string.Empty, botToCreate);
                     }
                     catch (Exception ex)
                     {
@@ -204,8 +218,8 @@ public class PlayController : Controller
 
             vm = new PlayViewModel
             {
-                PlayerName = player.Username,
-                BotName = vm.BotName,
+                PlayerName = player.Username ?? string.Empty,
+                BotName = vm.BotName ?? string.Empty,
                 BotHealth = vm.BotHealth,
                 BotStamina = vm.BotStamina,
                 SelectedScript = vm.SelectedScript,
@@ -214,15 +228,15 @@ public class PlayController : Controller
 
             if (valid)
             {
-                vm.HappyMessage = $"{vm.BotName} for player {vm.PlayerName} has been created successfully!";
+                vm.HappyMessage = $"{vm.BotName ?? string.Empty} for player {vm.PlayerName ?? string.Empty} has been created successfully!";
             }
             else
             {
-                vm.SadMessage = sadMessage;
+                vm.SadMessage = sadMessage ?? string.Empty;
             }
 
-            ViewData["ArenaUrl"] = _configuration.GetValue<string>("ARENA_URL");
-            ViewData["ScriptTemplateUrl"] = _configuration.GetValue<string>("SCRIPT_TEMPLATE_URL");
+            ViewData["ArenaUrl"] = _configuration.GetValue<string>("ARENA_URL") ?? string.Empty;
+            ViewData["ScriptTemplateUrl"] = _configuration.GetValue<string>("SCRIPT_TEMPLATE_URL") ?? string.Empty;
             return View(vm);
         }
 
@@ -234,16 +248,21 @@ public class PlayController : Controller
         if (HttpContext.Session.Keys.Contains("PLAYER"))
         {
             var player = HttpContext.Session.GetObject<LoginResponse>("PLAYER");
+            if (player is null)
+            {
+                return RedirectToAction("Index", "Home");
+            }
+
             var vm = new PlayViewModel
             {
-                PlayerName = player.Username,
+                PlayerName = player.Username ?? string.Empty,
                 BotName = "<name your bot>",
                 BotHealth = 100,
                 BotStamina = 100,
                 Script = Templates.WalkAround
             };
-            ViewData["ArenaUrl"] = _configuration.GetValue<string>("ARENA_URL");
-            ViewData["ScriptTemplateUrl"] = _configuration.GetValue<string>("SCRIPT_TEMPLATE_URL");
+            ViewData["ArenaUrl"] = _configuration.GetValue<string>("ARENA_URL") ?? string.Empty;
+            ViewData["ScriptTemplateUrl"] = _configuration.GetValue<string>("SCRIPT_TEMPLATE_URL") ?? string.Empty;
             return View(vm);
         }
 
@@ -256,11 +275,15 @@ public class PlayController : Controller
         if (HttpContext.Session.Keys.Contains("PLAYER"))
         {
             var player = HttpContext.Session.GetObject<LoginResponse>("PLAYER");
+            if (player is null)
+            {
+                return RedirectToAction("Index", "Home");
+            }
 
             vm = new PlayViewModel
             {
-                PlayerName = player.Username,
-                BotName = vm.BotName,
+                PlayerName = player.Username ?? string.Empty,
+                BotName = vm.BotName ?? string.Empty,
                 BotHealth = vm.BotHealth,
                 BotStamina = vm.BotStamina,
                 Script = vm.Script
@@ -272,7 +295,7 @@ public class PlayController : Controller
 
                 if (valid)
                 {
-                    var script = vm.Script.Base64Encode();
+                    var script = vm.Script.Base64Encode() ?? string.Empty;
 
                     var validatedScript = await _orleansClient.Validate(new ScriptToValidateDto { Script = script });
 
@@ -280,8 +303,8 @@ public class PlayController : Controller
                     {
                         var botToCreate = new BotToCreateDto
                         {
-                            PlayerName = player.Username,
-                            BotName = vm.BotName,
+                            PlayerName = player.Username ?? string.Empty,
+                            BotName = vm.BotName ?? string.Empty,
                             ArenaName = "default",
                             MaximumHealth = vm.BotHealth,
                             MaximumStamina = vm.BotStamina,
@@ -290,7 +313,7 @@ public class PlayController : Controller
 
                         try
                         {
-                            await _orleansClient.CreateBot(player.Username, botToCreate);
+                            await _orleansClient.CreateBot(player.Username ?? string.Empty, botToCreate);
                         }
                         catch (Exception ex)
                         {
@@ -315,11 +338,11 @@ public class PlayController : Controller
 
                 if (valid)
                 {
-                    vm.HappyMessage = $"{vm.BotName} for player {vm.PlayerName} has been created successfully!";
+                    vm.HappyMessage = $"{vm.BotName ?? string.Empty} for player {vm.PlayerName ?? string.Empty} has been created successfully!";
                 }
                 else
                 {
-                    vm.SadMessage = sadMessage;
+                    vm.SadMessage = sadMessage ?? string.Empty;
                 }
             }
             catch (Exception ex)
@@ -327,8 +350,8 @@ public class PlayController : Controller
                 vm.SadMessage = $"{ex}";
             }
 
-            ViewData["ArenaUrl"] = _configuration.GetValue<string>("ARENA_URL");
-            ViewData["ScriptTemplateUrl"] = _configuration.GetValue<string>("SCRIPT_TEMPLATE_URL");
+            ViewData["ArenaUrl"] = _configuration.GetValue<string>("ARENA_URL") ?? string.Empty;
+            ViewData["ScriptTemplateUrl"] = _configuration.GetValue<string>("SCRIPT_TEMPLATE_URL") ?? string.Empty;
             return View(vm);
         }
 

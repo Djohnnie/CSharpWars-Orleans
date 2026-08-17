@@ -14,11 +14,11 @@ namespace CSharpWars.Orleans.Grains;
 public class PlayerState
 {
     public bool Exists { get; set; }
-    public string Username { get; set; }
-    public string PasswordHash { get; set; }
-    public string PasswordSalt { get; set; }
+    public string Username { get; set; } = string.Empty;
+    public string PasswordHash { get; set; } = string.Empty;
+    public string PasswordSalt { get; set; } = string.Empty;
     public DateTime? LastDeployment { get; set; }
-    public List<Guid> BotIds { get; set; }
+    public List<Guid> BotIds { get; set; } = [];
 }
 
 public class PlayerGrain : GrainBase<IPlayerGrain>, IPlayerGrain
