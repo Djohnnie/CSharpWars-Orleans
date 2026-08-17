@@ -8,8 +8,10 @@
 </div>
 
 <canvas id="unity-canvas" style="width: 100%; background: #231F20"></canvas>
-<script src="lib/unity/bin.loader.js"></script>
+<script src="~/lib/unity/bin.loader.js"></script>
 <script>
+      const unityBaseUrl = '@Url.Content("~/lib/unity")';
+
       if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
         // Mobile device style: fill the whole browser client area with the game canvas:
         var meta = document.createElement('meta');
@@ -26,10 +28,10 @@
       }
 
       createUnityInstance(document.querySelector("#unity-canvas"), {
-        dataUrl: "lib/unity/bin.data.gz",
-        frameworkUrl: "lib/unity/bin.framework.js.gz",
-        codeUrl: "lib/unity/bin.wasm.gz",
-        streamingAssetsUrl: "StreamingAssets",
+        dataUrl: `${unityBaseUrl}/bin.data.gz`,
+        frameworkUrl: `${unityBaseUrl}/bin.framework.js.gz`,
+        codeUrl: `${unityBaseUrl}/bin.wasm.gz`,
+        streamingAssetsUrl: `${unityBaseUrl}/StreamingAssets`,
         companyName: "Johnny Hooyberghs",
         productName: "CSharpWars",
         productVersion: "0.1",

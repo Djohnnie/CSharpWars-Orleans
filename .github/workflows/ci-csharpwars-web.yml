@@ -16,6 +16,49 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Cache Unity Library
+        uses: actions/cache@v4
+        with:
+          path: CSharpWars/CSharpWars.Frontend/Library
+          key: unity-library-${{ runner.os }}-webgl-${{ hashFiles('CSharpWars/CSharpWars.Frontend/Packages/packages-lock.json', 'CSharpWars/CSharpWars.Frontend/ProjectSettings/ProjectVersion.txt') }}-${{ github.sha }}
+          restore-keys: |
+            unity-library-${{ runner.os }}-webgl-${{ hashFiles('CSharpWars/CSharpWars.Frontend/Packages/packages-lock.json', 'CSharpWars/CSharpWars.Frontend/ProjectSettings/ProjectVersion.txt') }}-
+            unity-library-${{ runner.os }}-webgl-
+
+      - name: Build Unity WebGL frontend
+        uses: game-ci/unity-builder@v4
+        env:
+          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+          UNITY_SERIAL: ${{ secrets.UNITY_SERIAL }}
+        with:
+          projectPath: CSharpWars/CSharpWars.Frontend
+          targetPlatform: WebGL
+          buildsPath: build
+          buildName: bin
+          versioning: None
+
+      - name: Stage Unity WebGL frontend
+        shell: bash
+        run: |
+          UNITY_BUILD="build/WebGL/bin"
+          UNITY_WEB="CSharpWars/CSharpWars.Web/wwwroot/lib/unity"
+
+          test -d "${UNITY_BUILD}/Build"
+          rm -rf "${UNITY_WEB}"
+          mkdir -p "${UNITY_WEB}"
+          cp -a "${UNITY_BUILD}/Build/." "${UNITY_WEB}/"
+
+          if [ -d "${UNITY_BUILD}/StreamingAssets" ]; then
+            cp -a "${UNITY_BUILD}/StreamingAssets" "${UNITY_WEB}/"
+          fi
+
+          test -f "${UNITY_WEB}/bin.loader.js"
+          test -f "${UNITY_WEB}/bin.data.gz"
+          test -f "${UNITY_WEB}/bin.framework.js.gz"
+          test -f "${UNITY_WEB}/bin.wasm.gz"
+
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
