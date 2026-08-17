@@ -13,6 +13,13 @@ jobs:
     if: ${{ github.event.workflow_run.conclusion == 'success' }}
 
     steps:
+      - name: Determine build version
+        id: version
+        run: |
+          DATE=$(date -d "${{ github.event.workflow_run.created_at }}" +'%Y.%m.%d')
+          REVISION=${{ github.event.workflow_run.run_number }}
+          echo "version=${DATE}-${REVISION}" >> $GITHUB_OUTPUT
+
       - name: Log in to Azure
         uses: azure/login@v2
         with:
@@ -23,4 +30,4 @@ jobs:
         with:
           resourceGroup: ${{ secrets.AZURE_RESOURCE_GROUP }}
           containerAppName: ${{ secrets.ACA_NAME_WEB }}
-          imageToDeploy: ${{ secrets.DOCKER_REGISTRY }}/csharpwars.web:latest
+          imageToDeploy: ${{ secrets.DOCKER_REGISTRY }}/csharpwars.web:${{ steps.version.outputs.version }}
