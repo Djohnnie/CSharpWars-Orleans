@@ -1,0 +1,26 @@
+name: CD - CSharpWars.Orleans.Scaler
+
+on:
+  workflow_run:
+    workflows: [ "CI - CSharpWars.Orleans.Scaler" ]
+    types: [ completed ]
+    branches: [ main ]
+
+jobs:
+  deploy:
+    name: Deploy CSharpWars.Orleans.Scaler to Azure Container Apps
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+
+    steps:
+      - name: Log in to Azure
+        uses: azure/login@v2
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Deploy to Azure Container Apps
+        uses: azure/container-apps-deploy-action@v2
+        with:
+          resourceGroup: ${{ secrets.AZURE_RESOURCE_GROUP }}
+          containerAppName: ${{ secrets.ACA_NAME_ORLEANS_SCALER }}
+          imageToDeploy: ${{ secrets.DOCKER_REGISTRY }}/csharpwars.orleans.scaler:latest
