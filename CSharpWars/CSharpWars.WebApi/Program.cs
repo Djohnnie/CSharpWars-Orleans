@@ -13,7 +13,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Configuration.AddEnvironmentVariables();
 
-builder.Services.AddAutoMapper(typeof(StatusMapperProfile));
+builder.Services.AddAutoMapper(cfg => cfg.AddMaps(typeof(StatusMapperProfile).Assembly));
 
 builder.Services.AddOrleansHelpers();
 

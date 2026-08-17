@@ -4,6 +4,7 @@ using CSharpWars.Common.Helpers;
 using CSharpWars.Orleans.Common;
 using CSharpWars.Orleans.Grains.Logic;
 using CSharpWars.Scripting;
+using Orleans.Dashboard;
 using Orleans.Configuration;
 using System.Net;
 
@@ -56,7 +57,7 @@ using IHost host = Host.CreateDefaultBuilder(args)
         siloBuilder.AddAzureBlobGrainStorage("movesStore", config => config.BlobServiceClient = new BlobServiceClient(azureStorageConnectionString));
 
         siloBuilder.UseTransactions();
-        siloBuilder.UseDashboard();
+        siloBuilder.AddDashboard();
 
         siloBuilder.Configure<GrainCollectionOptions>(o =>
         {

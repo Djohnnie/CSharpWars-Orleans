@@ -15,14 +15,13 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Microsoft.SemanticKernel" Version="1.67.1" />
-		<PackageReference Include="Microsoft.SemanticKernel.PromptTemplates.Handlebars" Version="1.67.1" />
-		<PackageReference Include="Microsoft.SemanticKernel.Yaml" Version="1.67.1" />
-		<PackageReference Include="YamlDotNet" Version="16.3.0" />
-		<PackageReference Include="Microsoft.Orleans.Clustering.AzureStorage" Version="9.2.1" />
-		<PackageReference Include="Microsoft.Orleans.Persistence.AzureStorage" Version="9.2.1" />
-		<PackageReference Include="Microsoft.Orleans.Server" Version="9.2.1" />
-		<PackageReference Include="OrleansDashboard" Version="8.2.0" />
+		<PackageReference Include="Microsoft.SemanticKernel" Version="1.79.0" />
+		<PackageReference Include="Microsoft.SemanticKernel.PromptTemplates.Handlebars" Version="1.79.0" />
+		<PackageReference Include="Microsoft.SemanticKernel.Yaml" Version="1.79.0" />
+		<PackageReference Include="YamlDotNet" Version="18.1.0" />
+		<PackageReference Include="Microsoft.Orleans.Clustering.AzureStorage" Version="10.2.2" />
+		<PackageReference Include="Microsoft.Orleans.Persistence.AzureStorage" Version="10.2.2" />
+		<PackageReference Include="Microsoft.Orleans.Server" Version="10.2.2" />
 	</ItemGroup>
 
 	<ItemGroup>

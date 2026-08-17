@@ -2,6 +2,7 @@
 using Azure.Storage.Blobs;
 using CSharpWars.Orleans.Common;
 using CSharpWars.Scripting;
+using Orleans.Dashboard;
 using Orleans.Configuration;
 using System.Net;
 
@@ -50,7 +51,7 @@ using IHost host = Host.CreateDefaultBuilder(args)
             //loggingBuilder.AddApplicationInsights(c => c.ConnectionString = applicationInsightsConnectionString, _ => { });
         });
 
-        siloBuilder.UseDashboard();
+        siloBuilder.AddDashboard();
 
         siloBuilder.Configure<GrainCollectionOptions>(o =>
         {
