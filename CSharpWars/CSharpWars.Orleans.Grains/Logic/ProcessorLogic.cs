@@ -14,6 +14,7 @@ public interface IProcessorLogic
 public class ProcessorLogic : IProcessorLogic
 {
     private readonly IGrainFactoryHelperWithStringKey<IArenaGrain> _arenaGrainFactory;
+    private readonly IGrainFactoryHelperWithStringKey<ITickGrain> _tickGrainFactory;
     private readonly IGrainFactoryHelperWithGuidKey<IBotGrain> _botGrainFactory;
     private readonly IPreprocessingLogic _preprocessingLogic;
     private readonly IProcessingLogic _processingLogic;
@@ -22,6 +23,7 @@ public class ProcessorLogic : IProcessorLogic
 
     public ProcessorLogic(
         IGrainFactoryHelperWithStringKey<IArenaGrain> arenaGrainFactory,
+        IGrainFactoryHelperWithStringKey<ITickGrain> tickGrainFactory,
         IGrainFactoryHelperWithGuidKey<IBotGrain> botGrainFactory,
         IPreprocessingLogic preprocessingLogic,
         IProcessingLogic processingLogic,
@@ -29,6 +31,7 @@ public class ProcessorLogic : IProcessorLogic
         ILogger<ProcessorLogic> logger)
     {
         _arenaGrainFactory = arenaGrainFactory;
+        _tickGrainFactory = tickGrainFactory;
         _botGrainFactory = botGrainFactory;
         _preprocessingLogic = preprocessingLogic;
         _processingLogic = processingLogic;
@@ -75,16 +78,20 @@ public class ProcessorLogic : IProcessorLogic
             await arenaGrain.DeleteBots(botsToDelete);
         });
 
-        var updateStateTasks = new List<Task>();
-
-        for (int i = 0; i < context.Bots.Count; i++)
+        // Persist all bot state updates atomically using the TickGrain
+        try
         {
-            Contracts.BotDto? bot = context.Bots[i];
-            updateStateTasks.Add(_botGrainFactory.FromGrain(bot.BotId, g => g.UpdateState(bot)));
+            await _tickGrainFactory.FromGrain(arenaName, async tickGrain =>
+            {
+                await tickGrain.PersistTickAsync(context.Bots.ToList());
+            });
+
+            _logger.LogInformation($"UPDATE: {Stopwatch.GetElapsedTime(startTime).TotalMilliseconds:F0}ms");
         }
-
-        await Task.WhenAll(updateStateTasks);
-
-        _logger.LogInformation($"UPDATE: {Stopwatch.GetElapsedTime(startTime).TotalMilliseconds:F0}ms");
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, $"Failed to atomically persist tick for arena '{arenaName}'. State may be partially updated. Manual recovery required.");
+            throw;
+        }
     }
 }

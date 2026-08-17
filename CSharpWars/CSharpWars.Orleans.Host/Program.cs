@@ -38,6 +38,7 @@ builder.UseOrleans(siloBuilder =>
         siloBuilder.AddMemoryGrainStorage("scriptStore");
         siloBuilder.AddMemoryGrainStorage("messagesStore");
         siloBuilder.AddMemoryGrainStorage("movesStore");
+        siloBuilder.AddMemoryGrainStorage("tickStore");
     }
     else
     {
@@ -61,6 +62,7 @@ builder.UseOrleans(siloBuilder =>
         siloBuilder.AddAzureBlobGrainStorage("scriptStore", config => config.BlobServiceClient = new BlobServiceClient(azureStorageConnectionString));
         siloBuilder.AddAzureBlobGrainStorage("messagesStore", config => config.BlobServiceClient = new BlobServiceClient(azureStorageConnectionString));
         siloBuilder.AddAzureBlobGrainStorage("movesStore", config => config.BlobServiceClient = new BlobServiceClient(azureStorageConnectionString));
+        siloBuilder.AddAzureBlobGrainStorage("tickStore", config => config.BlobServiceClient = new BlobServiceClient(azureStorageConnectionString));
     }
 
     siloBuilder.Configure<ClusterOptions>(options =>

@@ -30,6 +30,11 @@ public class BotState
     public int LastAttackY { get; set; }
     public DateTime? TimeOfDeath { get; set; }
     public string Memory { get; set; } = string.Empty;
+    /// <summary>
+    /// Tracks the last applied tick number for idempotent updates.
+    /// Prevents duplicate state application on retries or after failures.
+    /// </summary>
+    public long LastAppliedTick { get; set; }
 }
 
 public class BotGrain : GrainBase<IBotGrain>, IBotGrain
@@ -152,20 +157,43 @@ public class BotGrain : GrainBase<IBotGrain>, IBotGrain
     {
         if (_state.State.Exists)
         {
-            _state.State.CurrentHealth = bot.CurrentHealth;
-            _state.State.CurrentStamina = bot.CurrentStamina;
-            _state.State.Orientation = bot.Orientation;
-            _state.State.X = bot.X;
-            _state.State.Y = bot.Y;
-            _state.State.FromX = bot.FromX;
-            _state.State.FromY = bot.FromY;
-            _state.State.LastAttackX = bot.LastAttackX;
-            _state.State.LastAttackY = bot.LastAttackY;
-            _state.State.Memory = bot.Memory;
-            _state.State.TimeOfDeath = bot.TimeOfDeath;
-            _state.State.Move = bot.Move;
-
+            ApplyBotUpdate(bot);
             await _state.WriteStateAsync();
         }
+    }
+
+    public async Task UpdateStateTransactional(BotDto bot, long tickNumber)
+    {
+        if (!_state.State.Exists)
+        {
+            return;
+        }
+
+        // Idempotency check: skip if this tick was already applied
+        if (_state.State.LastAppliedTick >= tickNumber)
+        {
+            _logger.LogWarning($"Bot {this.GetPrimaryKey()}: Skipping duplicate update for tick {tickNumber} (already applied at tick {_state.State.LastAppliedTick})");
+            return;
+        }
+
+        ApplyBotUpdate(bot);
+        _state.State.LastAppliedTick = tickNumber;
+        await _state.WriteStateAsync();
+    }
+
+    private void ApplyBotUpdate(BotDto bot)
+    {
+        _state.State.CurrentHealth = bot.CurrentHealth;
+        _state.State.CurrentStamina = bot.CurrentStamina;
+        _state.State.Orientation = bot.Orientation;
+        _state.State.X = bot.X;
+        _state.State.Y = bot.Y;
+        _state.State.FromX = bot.FromX;
+        _state.State.FromY = bot.FromY;
+        _state.State.LastAttackX = bot.LastAttackX;
+        _state.State.LastAttackY = bot.LastAttackY;
+        _state.State.Memory = bot.Memory;
+        _state.State.TimeOfDeath = bot.TimeOfDeath;
+        _state.State.Move = bot.Move;
     }
 }
