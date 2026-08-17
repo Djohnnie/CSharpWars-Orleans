@@ -1,4 +1,6 @@
-﻿using Newtonsoft.Json;
+﻿using System;
+using System.Runtime.InteropServices;
+using Newtonsoft.Json;
 using System.Threading.Tasks;
 using Assets.Scripts.Model;
 using UnityEngine;
@@ -18,8 +20,13 @@ namespace Assets.Scripts.Networking
 
     public class ApiClient : IApiClient
     {
-        private readonly string _baseUrl = "https://api.csharpwars.com";
+        private readonly string _baseUrl;
         private Arena _arena;
+
+        public ApiClient()
+        {
+            _baseUrl = GetApiBaseAddress();
+        }
 
         public Task<Arena> GetArena()
         {
@@ -53,6 +60,29 @@ namespace Assets.Scripts.Networking
             web.Dispose();
             return arena;
         }
+
+        private static string GetApiBaseAddress()
+        {
+#if UNITY_WEBGL && !UNITY_EDITOR
+            var configuredAddress = CSharpWars_GetApiBaseAddress();
+#else
+            var configuredAddress = Environment.GetEnvironmentVariable("API_BASE_ADDRESS");
+#endif
+
+            if (!Uri.TryCreate(configuredAddress, UriKind.Absolute, out var apiBaseAddress)
+                || (apiBaseAddress.Scheme != Uri.UriSchemeHttp && apiBaseAddress.Scheme != Uri.UriSchemeHttps))
+            {
+                throw new InvalidOperationException(
+                    "API_BASE_ADDRESS must be configured with an absolute HTTP or HTTPS address.");
+            }
+
+            return apiBaseAddress.AbsoluteUri.TrimEnd('/');
+        }
+
+#if UNITY_WEBGL && !UNITY_EDITOR
+        [DllImport("__Internal")]
+        private static extern string CSharpWars_GetApiBaseAddress();
+#endif
     }
 
     public static class UnityWebRequestExtension

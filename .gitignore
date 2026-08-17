@@ -381,6 +381,7 @@ sysinfo.txt
 # Builds
 *.apk
 *.unitypackage
+/CSharpWars/CSharpWars.Web/wwwroot/lib/unity/
 
 # Crashlytics generated file
 crashlytics-build.properties

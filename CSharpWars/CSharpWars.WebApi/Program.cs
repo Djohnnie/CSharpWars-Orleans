@@ -15,6 +15,8 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Configuration.AddEnvironmentVariables();
 builder.AddServiceDefaults();
 
+var useAspire = builder.Configuration.GetValue<bool>("USE_ASPIRE");
+
 builder.Services.AddAutoMapper(cfg => cfg.AddMaps(typeof(StatusMapperProfile).Assembly));
 
 builder.Services.AddOrleansHelpers();
@@ -31,14 +33,19 @@ builder.Services.AddCors(options =>
     options.AddPolicy(name: myAllowSpecificOrigins,
         policy =>
         {
-            policy.WithOrigins("https://web.csharpwars.com");
+            if (useAspire)
+            {
+                policy.AllowAnyOrigin();
+            }
+            else
+            {
+                policy.WithOrigins("https://web.csharpwars.com");
+            }
         });
 });
 
 builder.Host.UseOrleansClient((hostBuilder, clientBuilder) =>
 {
-    var useAspire = hostBuilder.Configuration.GetValue<bool>("USE_ASPIRE");
-
     clientBuilder.Configure<ClusterOptions>(options =>
     {
         options.ClusterId = "csharpwars-orleans";

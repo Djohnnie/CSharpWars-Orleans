@@ -1,5 +1,22 @@
-﻿@{
+﻿@using System.Text.Json
+@using Microsoft.AspNetCore.Mvc.ViewFeatures
+@inject IFileVersionProvider FileVersionProvider
+@{
     ViewData["Title"] = "CSharpWars";
+    var apiBaseAddress = (string)ViewData["ApiBaseAddress"]!;
+    var unityLoaderUrl = FileVersionProvider.AddFileVersionToPath(
+        Context.Request.PathBase,
+        Url.Content("~/lib/unity/bin.loader.js"));
+    var unityDataUrl = FileVersionProvider.AddFileVersionToPath(
+        Context.Request.PathBase,
+        Url.Content("~/lib/unity/bin.data.gz"));
+    var unityFrameworkUrl = FileVersionProvider.AddFileVersionToPath(
+        Context.Request.PathBase,
+        Url.Content("~/lib/unity/bin.framework.js.gz"));
+    var unityCodeUrl = FileVersionProvider.AddFileVersionToPath(
+        Context.Request.PathBase,
+        Url.Content("~/lib/unity/bin.wasm.gz"));
+    var unityStreamingAssetsUrl = Url.Content("~/lib/unity/StreamingAssets");
 }
 
 
@@ -8,10 +25,13 @@
 </div>
 
 <canvas id="unity-canvas" style="width: 100%; background: #231F20"></canvas>
-<script src="~/lib/unity/bin.loader.js"></script>
 <script>
-      const unityBaseUrl = '@Url.Content("~/lib/unity")';
-
+    globalThis.csharpWarsConfig = {
+        apiBaseAddress: @Html.Raw(JsonSerializer.Serialize(apiBaseAddress))
+    };
+</script>
+<script src="@unityLoaderUrl"></script>
+<script>
       if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
         // Mobile device style: fill the whole browser client area with the game canvas:
         var meta = document.createElement('meta');
@@ -28,10 +48,10 @@
       }
 
       createUnityInstance(document.querySelector("#unity-canvas"), {
-        dataUrl: `${unityBaseUrl}/bin.data.gz`,
-        frameworkUrl: `${unityBaseUrl}/bin.framework.js.gz`,
-        codeUrl: `${unityBaseUrl}/bin.wasm.gz`,
-        streamingAssetsUrl: `${unityBaseUrl}/StreamingAssets`,
+        dataUrl: @Html.Raw(JsonSerializer.Serialize(unityDataUrl)),
+        frameworkUrl: @Html.Raw(JsonSerializer.Serialize(unityFrameworkUrl)),
+        codeUrl: @Html.Raw(JsonSerializer.Serialize(unityCodeUrl)),
+        streamingAssetsUrl: @Html.Raw(JsonSerializer.Serialize(unityStreamingAssetsUrl)),
         companyName: "Johnny Hooyberghs",
         productName: "CSharpWars",
         productVersion: "0.1",

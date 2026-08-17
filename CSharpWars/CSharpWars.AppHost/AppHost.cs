@@ -25,16 +25,21 @@ var validationHost = builder.AddProject<Projects.CSharpWars_Orleans_Validation_H
     })
     .WaitFor(orleansHost);
 
-builder.AddProject<Projects.CSharpWars_WebApi>("web-api")
+var webApi = builder.AddProject<Projects.CSharpWars_WebApi>("web-api")
     .WithEnvironment("USE_ASPIRE", "true")
     .WithEnvironment("JWT_SECRET", "local-development-jwt-secret-csharpwars-2026")
     .WithEnvironment("ADMIN_KEY", "local-development-admin-key")
     .WaitFor(orleansHost)
     .WaitFor(validationHost)
-    .WithExternalHttpEndpoints();
+    .WithExternalHttpEndpoints()
+    .WithUrlForEndpoint("https", url =>
+    {
+        url.DisplayText = "CSharpWars API";
+    });
 
 builder.AddProject<Projects.CSharpWars_Web>("web")
     .WithEnvironment("USE_ASPIRE", "true")
+    .WithEnvironment("API_BASE_ADDRESS", webApi.GetEndpoint("https"))
     .WithEnvironment("ARENA_WIDTH", "8")
     .WithEnvironment("ARENA_HEIGHT", "8")
     .WithEnvironment("POINTS_LIMIT", "200")
@@ -45,6 +50,11 @@ builder.AddProject<Projects.CSharpWars_Web>("web")
     .WithEnvironment("QUICK_PLAY", "false")
     .WaitFor(orleansHost)
     .WaitFor(validationHost)
-    .WithExternalHttpEndpoints();
+    .WaitFor(webApi)
+    .WithExternalHttpEndpoints()
+    .WithUrlForEndpoint("https", url =>
+    {
+        url.DisplayText = "CSharpWars Web App";
+    });
 
 builder.Build().Run();
