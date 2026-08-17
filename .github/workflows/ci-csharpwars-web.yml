@@ -1,0 +1,59 @@
+name: CI - CSharpWars.Web
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build-test-publish:
+    name: Build, Test & Push CSharpWars.Web
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '9.0.x'
+
+      - name: Restore
+        run: dotnet restore CSharpWars/CSharpWars.sln
+
+      - name: Build
+        run: dotnet build CSharpWars/CSharpWars.sln -c Release --no-restore
+
+      - name: Test
+        run: dotnet test CSharpWars/CSharpWars.sln -c Release --no-build --verbosity normal
+
+      - name: Determine build version
+        id: version
+        run: |
+          DATE=$(date +'%Y.%m.%d')
+          # Count how many times this workflow has run today by using the run number
+          # Use GitHub run number scoped to the date as the revision
+          REVISION=${{ github.run_number }}
+          VERSION="${DATE}-${REVISION}"
+          echo "version=${VERSION}" >> $GITHUB_OUTPUT
+          echo "Build version: ${VERSION}"
+
+      - name: Log in to Docker registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ secrets.DOCKER_REGISTRY }}
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v6
+        with:
+          context: ./CSharpWars
+          file: ./CSharpWars/CSharpWars.Web.Dockerfile
+          push: true
+          tags: |
+            ${{ secrets.DOCKER_REGISTRY }}/csharpwars.web:${{ steps.version.outputs.version }}
+            ${{ secrets.DOCKER_REGISTRY }}/csharpwars.web:latest
