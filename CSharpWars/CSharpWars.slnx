@@ -1,4 +1,8 @@
 <Solution>
+  <Folder Name="/0. Aspire/">
+    <Project Path="CSharpWars.AppHost/CSharpWars.AppHost.csproj" />
+    <Project Path="CSharpWars.ServiceDefaults/CSharpWars.ServiceDefaults.csproj" />
+  </Folder>
   <Folder Name="/1. Common/">
     <Project Path="CSharpWars.Common/CSharpWars.Common.csproj" />
     <Project Path="CSharpWars.Enums/CSharpWars.Enums.csproj" />

@@ -1,10 +1,11 @@
+using Azure.Data.Tables;
 using CSharpWars.Orleans.Common;
 using CSharpWars.Web.Client;
 using Orleans.Configuration;
-using System.Net;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Configuration.AddEnvironmentVariables();
+builder.AddServiceDefaults();
 builder.WebHost.UseKestrel();
 
 builder.Services.AddControllers();
@@ -28,7 +29,7 @@ builder.Services.AddClients();
 
 builder.Host.UseOrleansClient((hostBuilder, clientBuilder) =>
 {
-    var azureStorageConnectionString = hostBuilder.Configuration.GetValue<string>("AZURE_STORAGE_CONNECTION_STRING");
+    var useAspire = hostBuilder.Configuration.GetValue<bool>("USE_ASPIRE");
 
     clientBuilder.Configure<ClusterOptions>(options =>
     {
@@ -36,14 +37,21 @@ builder.Host.UseOrleansClient((hostBuilder, clientBuilder) =>
         options.ServiceId = "csharpwars-orleans";
     });
 
-#if DEBUG
-    clientBuilder.UseLocalhostClustering(gatewayPort: 30001, clusterId: "csharpwars-orleans", serviceId: "csharpwars-orleans");
-#else
-    clientBuilder.UseAzureStorageClustering(options =>
+    if (useAspire)
     {
-        options.ConfigureTableServiceClient(azureStorageConnectionString);
-    });
-#endif
+        clientBuilder.UseLocalhostClustering(
+            gatewayPort: 30001,
+            clusterId: "csharpwars-orleans",
+            serviceId: "csharpwars-orleans");
+    }
+    else
+    {
+        var azureStorageConnectionString = hostBuilder.Configuration.GetValue<string>("AZURE_STORAGE_CONNECTION_STRING");
+        clientBuilder.UseAzureStorageClustering(options =>
+        {
+            options.TableServiceClient = new TableServiceClient(azureStorageConnectionString);
+        });
+    }
 });
 
 var app = builder.Build();
@@ -90,8 +98,6 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
-#if DEBUG
-await Task.Delay(30000);
-#endif
+app.MapDefaultEndpoints();
 
 app.Run();

@@ -6,6 +6,7 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 		<DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
 	</PropertyGroup>
+	
 	<ItemGroup>
 		<PackageReference Include="AutoMapper" Version="16.2.0" />
 		<PackageReference Include="Microsoft.Orleans.Clustering.AzureStorage" Version="10.2.2" />
@@ -13,11 +14,13 @@
 		<PackageReference Include="Microsoft.Orleans.Persistence.AzureStorage" Version="10.2.2" />
 		<PackageReference Include="Microsoft.Orleans.Server" Version="10.2.2" />
 	</ItemGroup>
+	
 	<ItemGroup>
 		<ProjectReference Include="..\CSharpWars.Common\CSharpWars.Common.csproj" />
 		<ProjectReference Include="..\CSharpWars.Mappers\CSharpWars.Mappers.csproj" />
 		<ProjectReference Include="..\CSharpWars.Orleans.Common\CSharpWars.Orleans.Common.csproj" />
 		<ProjectReference Include="..\CSharpWars.Orleans.Contracts\CSharpWars.Orleans.Contracts.csproj" />
+		<ProjectReference Include="..\CSharpWars.ServiceDefaults\CSharpWars.ServiceDefaults.csproj" />
 		<ProjectReference Include="..\CSharpWars.WebApi.Contracts\CSharpWars.WebApi.Contracts.csproj" />
 	</ItemGroup>
 

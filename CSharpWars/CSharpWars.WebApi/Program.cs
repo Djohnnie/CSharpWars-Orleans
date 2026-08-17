@@ -1,3 +1,4 @@
+using Azure.Data.Tables;
 using CSharpWars.Common.Helpers;
 using CSharpWars.Mappers;
 using CSharpWars.Orleans.Common;
@@ -12,6 +13,7 @@ using Orleans.Configuration;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Configuration.AddEnvironmentVariables();
+builder.AddServiceDefaults();
 
 builder.Services.AddAutoMapper(cfg => cfg.AddMaps(typeof(StatusMapperProfile).Assembly));
 
@@ -35,7 +37,7 @@ builder.Services.AddCors(options =>
 
 builder.Host.UseOrleansClient((hostBuilder, clientBuilder) =>
 {
-    var azureStorageConnectionString = hostBuilder.Configuration.GetValue<string>("AZURE_STORAGE_CONNECTION_STRING");
+    var useAspire = hostBuilder.Configuration.GetValue<bool>("USE_ASPIRE");
 
     clientBuilder.Configure<ClusterOptions>(options =>
     {
@@ -43,14 +45,21 @@ builder.Host.UseOrleansClient((hostBuilder, clientBuilder) =>
         options.ServiceId = "csharpwars-orleans";
     });
 
-#if DEBUG
-    clientBuilder.UseLocalhostClustering(gatewayPort: 30001, clusterId: "csharpwars-orleans", serviceId: "csharpwars-orleans");
-#else
-    clientBuilder.UseAzureStorageClustering(options =>
+    if (useAspire)
     {
-        options.ConfigureTableServiceClient(azureStorageConnectionString);
-    });
-#endif
+        clientBuilder.UseLocalhostClustering(
+            gatewayPort: 30001,
+            clusterId: "csharpwars-orleans",
+            serviceId: "csharpwars-orleans");
+    }
+    else
+    {
+        var azureStorageConnectionString = hostBuilder.Configuration.GetValue<string>("AZURE_STORAGE_CONNECTION_STRING");
+        clientBuilder.UseAzureStorageClustering(options =>
+        {
+            options.TableServiceClient = new TableServiceClient(azureStorageConnectionString);
+        });
+    }
 });
 
 var app = builder.Build();
@@ -119,5 +128,7 @@ app.MapAdminDelete("/arena/{name}", async (string name, IApiHelper<IArenaManager
 {
     await helper.Execute(m => m.DeleteArena(name));
 });
+
+app.MapDefaultEndpoints();
 
 app.Run();
