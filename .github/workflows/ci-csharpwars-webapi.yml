@@ -22,13 +22,13 @@ jobs:
           dotnet-version: '10.0.x'
 
       - name: Restore
-        run: dotnet restore CSharpWars/CSharpWars.Frontend/CSharpWars.sln
+        run: dotnet restore CSharpWars/CSharpWars.Frontend/CSharpWars.slnx
 
       - name: Build
-        run: dotnet build CSharpWars/CSharpWars.Frontend/CSharpWars.sln -c Release --no-restore
+        run: dotnet build CSharpWars/CSharpWars.Frontend/CSharpWars.slnx -c Release --no-restore
 
       - name: Test
-        run: dotnet test CSharpWars/CSharpWars.Frontend/CSharpWars.sln -c Release --no-build --verbosity normal
+        run: dotnet test CSharpWars/CSharpWars.Frontend/CSharpWars.slnx -c Release --no-build --verbosity normal
 
       - name: Determine build version
         id: version
